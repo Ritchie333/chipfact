@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Technician Ted: Routine at 5D80</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+
+</head>
+<body class="Loading system-Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html">Technician Ted</a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="23779.html">5CE3</a></span></td>
+<td class="up">Up: <a href="Loading system.html#23936">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="24023.html">5DD7</a></span></td>
+</tr>
+</table>
+<div class="description">5D80: Initialize display</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="4">
+<div class="details">
+<div class="paragraph">
+This routine takes the text starting at <a href="24149.html">5E55</a> and scrolls it onto screen, accompanied by white noises
+</div>
+</div>
+<table class="input-0">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+
+</table>
+<table class="output-0">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="23936"></span>5D80</td>
+<td class="instruction">DI</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23937"></span>5D81</td>
+<td class="instruction">LD B,$20</td>
+<td class="comment-11" rowspan="1">Scroll for 20 characters</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23939"></span>5D83</td>
+<td class="instruction">XOR A</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23940"></span>5D84</td>
+<td class="instruction">INC A</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23941"></span>5D85</td>
+<td class="instruction">LD ($5E08),A</td>
+<td class="comment-11" rowspan="1">Store current offset of text</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="23944"></span>5D88</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23945"></span>5D89</td>
+<td class="instruction">LD A,($5E08)</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23948"></span>5D8C</td>
+<td class="instruction">LD E,A</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23949"></span>5D8D</td>
+<td class="instruction">LD D,$00</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23951"></span>5D8F</td>
+<td class="instruction">LD HL,$5E75</td>
+<td class="comment-11" rowspan="1">First line</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23954"></span>5D92</td>
+<td class="instruction">SBC HL,DE</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23956"></span>5D94</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23957"></span>5D95</td>
+<td class="instruction">LD DE,$4000</td>
+<td class="comment-11" rowspan="1">Put it on the top of the screen</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23960"></span>5D98</td>
+<td class="instruction">CALL <a href="24039.html">$5DE7</a></td>
+<td class="comment-11" rowspan="1">Scroll it</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23963"></span>5D9B</td>
+<td class="instruction">POP HL</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23964"></span>5D9C</td>
+<td class="instruction">LD DE,$0060</td>
+<td class="comment-11" rowspan="2">Third line</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23967"></span>5D9F</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23968"></span>5DA0</td>
+<td class="instruction">LD DE,$50C0</td>
+<td class="comment-11" rowspan="1">Second bottom line of screen</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23971"></span>5DA3</td>
+<td class="instruction">CALL <a href="24039.html">$5DE7</a></td>
+<td class="comment-11" rowspan="1">Scroll it</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23974"></span>5DA6</td>
+<td class="instruction">LD A,($5E08)</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23977"></span>5DA9</td>
+<td class="instruction">LD E,A</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23978"></span>5DAA</td>
+<td class="instruction">LD D,$00</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23980"></span>5DAC</td>
+<td class="instruction">LD HL,$5E75</td>
+<td class="comment-11" rowspan="1">Second line</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23983"></span>5DAF</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23984"></span>5DB0</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23985"></span>5DB1</td>
+<td class="instruction">LD DE,$4020</td>
+<td class="comment-11" rowspan="1">Second to top line of screen</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23988"></span>5DB4</td>
+<td class="instruction">CALL <a href="24039.html">$5DE7</a></td>
+<td class="comment-11" rowspan="1">Scroll it</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23991"></span>5DB7</td>
+<td class="instruction">POP HL</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23992"></span>5DB8</td>
+<td class="instruction">LD DE,$0060</td>
+<td class="comment-11" rowspan="2">Fourth line</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23995"></span>5DBB</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23996"></span>5DBC</td>
+<td class="instruction">LD DE,$50E0</td>
+<td class="comment-11" rowspan="1">Bottom line of screen</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="23999"></span>5DBF</td>
+<td class="instruction">CALL <a href="24039.html">$5DE7</a></td>
+<td class="comment-11" rowspan="1">Scroll it</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24002"></span>5DC2</td>
+<td class="instruction">LD HL,$5E08</td>
+<td class="comment-11" rowspan="1">Get current text offset</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24005"></span>5DC5</td>
+<td class="instruction">INC (HL)</td>
+<td class="comment-11" rowspan="1">Move on by one</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24006"></span>5DC6</td>
+<td class="instruction">CALL <a href="24073.html">$5E09</a></td>
+<td class="comment-11" rowspan="1">Play a sound</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24009"></span>5DC9</td>
+<td class="instruction">POP BC</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24010"></span>5DCA</td>
+<td class="instruction">DJNZ $5D88</td>
+<td class="comment-11" rowspan="1">Onto the next character</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24012"></span>5DCC</td>
+<td class="instruction">LD HL,$5AFA</td>
+<td class="comment-11" rowspan="4">Set 3 characters starting at 5AFA to be red-on white. This means the timer gets displayed as inverse to everything else.</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24015"></span>5DCF</td>
+<td class="instruction">LD B,$03</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="24017"></span>5DD1</td>
+<td class="instruction">LD (HL),$7A</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24019"></span>5DD3</td>
+<td class="instruction">INC HL</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24020"></span>5DD4</td>
+<td class="instruction">DJNZ $5DD1</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24022"></span>5DD6</td>
+<td class="instruction">RET</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="23779.html">5CE3</a></span></td>
+<td class="up">Up: <a href="Loading system.html#23936">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="24023.html">5DD7</a></span></td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">Copyright Steve Marsden and David Cooke 1984. This dissassembly by Ritchie Swann 2018.</div>
+<div class="created">Created using <a href="http://skoolkit.ca/">SkoolKit</a> 7.0.</div>
+</footer>
+</body>
+</html>

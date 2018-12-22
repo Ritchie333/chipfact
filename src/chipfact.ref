@@ -1,0 +1,169 @@
+[Game]
+Game=Technician Ted
+TitlePrefix=
+TitleSuffix=disassembly (work in progress)
+Copyright=Copyright Steve Marsden and David Cooke 1984. This dissassembly by Ritchie Swann 2018.
+[Page:Pokes]
+SectionType=ListItems
+[Trivia:Task order]
+Content=tasks.html
+[Poke:Pokes]
+.
+
+Infinite lives
+  ACB2,18
+  ACB3,51
+
+Infinite time
+  AB72,0
+
+Immortality
+  BA70,0
+
+Walk through walls
+  BA5F,0
+
+Complete tasks in any order
+  B371,0
+[OtherCode:Loading system]
+Source=chipfact_loader.skool
+[RoomFormatText]
+The room format in Technician Ted is very different from Manic Miner and Jet Set Willy,
+which have a fixed grid that is simple to decode.
+Instead, it has a mini Logo-style language, which takes advantage of the fact that most rooms
+in platform games contain either empty space to move into, or long rows or columns.
+
+The tables for each room are pointed to by the value in (#R$A471) - normally #R$E1E6 and are
+offsets from a base pointer stored in (#R$A473) - normally #R$E248. The structure is then:
+<ul>
+ <li>1 byte for the border</li>
+ <li>1 byte for the background colour</li>
+ <li>Three UDG tables. The first is for the main screen, the others for the alternative screens (not always used).
+ Each byte is a command that moves a direction on screen and optionally does something else:
+ <ul>
+  <li>Bit 0 - If set, the direction is up / down, otherwise it is left / right</li>
+  <li>Bit 1 - If set, the direction if left or up, otherwise it is right or down</li>
+  <li>Bit 2 - If set, draw the current UDG here, otherwise draw whitespace</li>
+  <li>Bit 3 - If set, change to a UDG stored in bits 1-7 of the following byte. If bit 0 of that byte is set, change the attribute to the byte after that. If the UDG is 7F (ie: byte is FE), it marks the end of the table.</li>
+  <li>Bit 4 - 7 : The direction to move in (0 - 15)</li>
+ </ul>
+  <li>If the room has task buttons, the room has the following additional data:
+  <ul>
+    <li>Two sets of three bytes containing task button information, with the format:
+      <ul>
+        <li>Byte 0 - If bit 0 is set, the button is in the top half of the screen,
+        otherwise it is in the bottom half. Bits 1-7 hold the attribute of the button.</li>
+        <li>Byte 1 - The character position of the button (row x $20 + column)</li>
+        <li>Byte 2 - Bits 0 - 4 contain the offset of the button graphic
+        relative to the value in (#R$A467) - normally #R$C609</li>
+      </ul>
+     </li>
+     <li>Followed by three bytes :
+      <ul>
+        <li>Byte 0 - If bit 4 is set, the task must be completed megaquickly!</li>
+        <li>Byte 1 - Bits 0 - 5 hold the number of a room where an effect
+        should be triggered if the task in this room is completed. If the room
+        is this room, the effect is triggered as soon as the first task box is touched instead.</li>
+        <li>Byte 2 - A bitmask that flips bits on on the respective room flag (stored as an offset from #R$7DC0).
+        This allows the same room to change multiple times in different places.</li>
+      </ul>
+    </li>
+    <li>If a room has no task buttons, 0 is stored here instead.</li>
+  </ul>
+  </li>
+  <li>A 0 terminated list of WATER attributes that can be walked through. A pointer to this is copied to #R$A41D</li>
+  <li>A 0 terminated list of EARTH attributes that can be stood on but not walked through.</li>
+  <li>A 0 terminated list of conveyor belt attributes in the room. A pointer to this is copied to #R$A41F</li>
+  Note, if Ted walks into any other attribute not defined in this list (or is the background colour), it is deadly
+  and will forfeit a life. 
+  Either Ted has touched a moving object or a dangerous static object (eg: coat hook)</li>
+  <li>A list of moving objects in the room. Each entry has the following format:
+  <ul>
+    <li>Byte 0 : Location (?)</li>
+    <li>Byte 1 : Bit 7 : Set for up / down, reset for left : right</li>
+    <li>Byte 2 - 3 : Screen bounds</li>
+    <li>Byte 4 : Attribute</li>
+    <li>Byte 5 : Graphic ID</li>
+    <li>A number of additional bytes depending on the object type</li>
+  </ul>
+  The list is ended with two null bytes.</li>
+  <li>1 byte for the attribute for the status text</li>
+  <li>1 byte for the attribute for the title</li>
+  <li>1 byte for the X offset where the title should start</li>
+  <li>The title, in ASCII format, with bit 7 set on the last character.
+</ul>
+[RoomObjectsBuffer]
+Information about the current room's moving objects is stored in #R$7E00.
+Each entry takes up $21 bytes.
+#TABLE(map)
+{ 00-01 | Current screen position }
+{ 02-03 | Bounds 1 } 
+{ 04-05 | Bounds 2 }
+{ 06 | Bit 7 : Set for up / down, reset for left : right }
+{ 07 | UDG height }
+{ 08 | UDG width }
+{ 09 | Attribute }
+{ 0A-0B | Graphic base address }
+{ 0C-0D | Extended graphic }
+{ 14-15 | UDG size }
+{ 16-17 | Offset for reverse direction graphic }
+{ 1D-1E | UDG 1 size }
+{ 1F-20 | UDG 2 size }
+TABLE#
+[Page:RoomFormat]
+PageContent=#INCLUDE(RoomFormatText)
+[Page:RoomObjectsBuffer]
+PageContent=#INCLUDE(RoomObjectsBuffer)
+[Fact:Tasks]
+The order in which to complete tasks is straightforward in code.
+A task in room 'n' can only be done if the number of already completed tasks
+is 'n - 2'. For example, room 02 : "Ted's Desk" will only count if there are
+0 tasks completed; room 16 : "The Wage Department" will only count if there are
+$14 (20) tasks completed. As is documented elsewhere, the full list is:
+#TABLE
+{ Ted's Desk }
+{ Silicon Slice Store }
+{ Slice Diffusion Furnace }
+{ The Fuming Cupboard }
+{ The Clean Room }
+{ The Silicon Etching Tank }
+{ The Canteen }
+{ The Photocopier }
+{ The Boardroom }
+{ Slice Surface Abrasion }
+{ Laser Slice Separation Plant }
+{ Bay 7 }
+{ Microchip Mounting Furnace }
+{ The Tea Machine }
+{ Power Generator }
+{ The Electroplating Bath }
+{ Quality Assurance Department }
+{ Abrasion Dust Extraction }
+{ Matthew's Lair }
+{ We Call Him Sir! }
+{ The Wage Department }
+TABLE#
+[Fact:Theme tunes]
+The tune on the intro screen is an extract of The Blue Danube, composed by Johann Strauss II in 1866.
+A shorter arrangement of this tune had previously featured in Manic Miner.
+
+The tune during the game is the Radetzky March, composed by Johann Strauss Sr in 1848.
+[Fact:Name dropping]
+As well as the overall game style, there are several references to Matthew Smith, Manic Miner and
+Jet Set Willy.
+Matthew's Lair references Manic Miner's Eugene's Lair (itself a reference to
+programmer Eugene Evans) and features a large toilet, a stock-in-trade prop of Matthew Smith.
+Surbiton Colliery is a reference to Manic Miner.
+The Forgotten Room may be a reference to the Forgotten Abbey in Jet Set Willy.
+Satellite Communication System's design resembles the Watch Tower in Jet Set Willy.
+
+The favour was returned in Jet Set Willy II (though not programmed by Matthew Smith), which
+featured a room called Macaroni Ted, a sly dig at Technician Ted's programmers whose day jobs
+were working as engineers at Marconi.
+[Index:DataTables:Data tables and buffers]
+GameStatusBuffer
+RoomFormat
+RoomObjectsBuffer
+[Links]
+RoomFormat=Room format
+RoomObjectsBuffer=Room objects buffer

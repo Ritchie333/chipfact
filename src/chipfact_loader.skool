@@ -1,0 +1,757 @@
+; BASIC
+;
+; The listing says RANDOMIZE USR 24114 (#R$5E32) but the real value is #R$5F15
+b$5CCB DEFB $00,$00,$9B,$03,$F9,$C0,$32,$34
+ $5CD3 DEFB $31,$31,$34,$0E,$00,$00,$15,$5F
+ $5CDB DEFB $00,$00,$00,$12,$00,$00,$00,$00
+
+; Message
+t$5CE3 DEFM "THE CHIP FACTORY BY S.MARSDEN AND D.COOKE COPYRIGHT 1984*** MAIN C"
+ $5D25 DEFM "ODE IS LOADED TO THE VALUE IN HL AFTER SWITCH ON ADDED TO 12571. T"
+ $5D67 DEFM "HE LENGTH IS 32768 BYTES."
+
+; Initialize display
+;
+; This routine takes the text starting at #R$5E55 and scrolls it onto screen,
+; accompanied by white noises
+c$5D80 DI            ;
+ $5D81 LD B,$20      ; Scroll for 20 characters
+ $5D83 XOR A         ;
+ $5D84 INC A         ;
+ $5D85 LD ($5E08),A  ; Store current offset of text
+*$5D88 PUSH BC       ;
+ $5D89 LD A,($5E08)  ;
+ $5D8C LD E,A        ;
+ $5D8D LD D,$00      ;
+ $5D8F LD HL,$5E75   ; First line
+ $5D92 SBC HL,DE     ;
+ $5D94 PUSH HL       ;
+ $5D95 LD DE,$4000   ; Put it on the top of the screen
+ $5D98 CALL $5DE7    ; Scroll it
+ $5D9B POP HL        ;
+ $5D9C LD DE,$0060   ; { Third line
+ $5D9F ADD HL,DE     ; }
+ $5DA0 LD DE,$50C0   ; Second bottom line of screen
+ $5DA3 CALL $5DE7    ; Scroll it
+ $5DA6 LD A,($5E08)  ;
+ $5DA9 LD E,A        ;
+ $5DAA LD D,$00      ;
+ $5DAC LD HL,$5E75   ; Second line
+ $5DAF ADD HL,DE     ;
+ $5DB0 PUSH HL       ;
+ $5DB1 LD DE,$4020   ; Second to top line of screen
+ $5DB4 CALL $5DE7    ; Scroll it
+ $5DB7 POP HL        ;
+ $5DB8 LD DE,$0060   ; { Fourth line
+ $5DBB ADD HL,DE     ; }
+ $5DBC LD DE,$50E0   ; Bottom line of screen
+ $5DBF CALL $5DE7    ; Scroll it
+ $5DC2 LD HL,$5E08   ; Get current text offset
+ $5DC5 INC (HL)      ; Move on by one
+ $5DC6 CALL $5E09    ; Play a sound
+ $5DC9 POP BC        ;
+ $5DCA DJNZ $5D88    ; Onto the next character
+ $5DCC LD HL,$5AFA   ; { Set 3 characters starting at 5AFA
+ $5DCF LD B,$03      ; to be red-on white. This means the 
+*$5DD1 LD (HL),$7A   ; timer gets displayed as inverse to
+ $5DD3 INC HL        ; everything else. }
+ $5DD4 DJNZ $5DD1    ;
+ $5DD6 RET           ;
+
+; Timing constant for white noise
+b$5DD7 DEFB $C8
+
+; Return the next timing constant for white noise in A
+;
+; Used by the routine at #R$5E09.
+c$5DD8 LD A,($5DD7)  ; Get old value
+ $5DDB LD B,A        ;
+ $5DDC ADD A,A       ; Shift four times
+ $5DDD ADD A,A       ;
+ $5DDE ADD A,A       ;
+ $5DDF ADD A,A       ;
+ $5DE0 ADD A,B       ; Add original value
+ $5DE1 ADD A,$0B     ; Add 11
+ $5DE3 LD ($5DD7),A  ; Store new value
+ $5DE6 RET           ;
+
+; Scroll a line of text onto the screen
+;
+; Used by the routine at #R$5D80.
+;
+; HL Pointer to the string to display
+; DE Destination address on screen
+c$5DE7 LD B,$20      ; Number of characters to scroll
+*$5DE9 PUSH BC       ;
+ $5DEA PUSH HL       ;
+ $5DEB PUSH DE       ;
+ $5DEC LD A,(HL)     ; Get the next character
+ $5DED LD BC,($5C36) ; Get the CHARS system variable
+ $5DF1 LD L,A        ; { Convert it to a location in the character set
+ $5DF2 LD H,$00      ;
+ $5DF4 ADD HL,HL     ;
+ $5DF5 ADD HL,HL     ;
+ $5DF6 ADD HL,HL     ; 
+ $5DF7 ADD HL,BC     ; } 
+ $5DF8 LD B,$08      ; 8 lines per character
+*$5DFA LD A,(HL)     ; { Copy the value
+ $5DFB LD (DE),A     ; }
+ $5DFC INC HL        ; Next byte
+ $5DFD INC D         ; { Onto the next line
+ $5DFE DJNZ $5DFA    ; }
+ $5E00 POP DE        ;
+ $5E01 POP HL        ;
+ $5E02 POP BC        ;
+ $5E03 INC DE        ;
+ $5E04 INC HL        ;
+ $5E05 DJNZ $5DE9    ; Onto the next character
+ $5E07 RET           ;
+
+; Current offset of text being drawn
+g$5E08 DEFB $00
+
+; Play a white noise
+;
+; Used by the routine at #R$5D80.
+c$5E09 EXX           ;
+ $5E0A PUSH HL       ;
+ $5E0B LD HL,$0050   ; Timing constant
+ $5E0E LD C,$10      ; Value to write to the speaker
+*$5E10 LD A,C        ; Get current speaker bit
+ $5E11 EX AF,AF'     ;
+ $5E12 CALL $5DD8    ; Get timing value and wait
+ $5E15 LD B,A        ;
+ $5E16 EX AF,AF'     ;
+*$5E17 DJNZ $5E17    ;
+ $5E19 EX AF,AF'     ;
+ $5E1A CALL $5DD8    ; Get timing value and wait
+ $5E1D LD B,A        ;
+ $5E1E EX AF,AF'     ;
+*$5E1F DJNZ $5E1F    ;
+ $5E21 LD C,$FE      ; { Output to the speaker.
+ $5E23 CALL $1E7D    ; This is equivalent to OUT (C),A}
+ $5E26 XOR $10       ; Toggle speaker, so we can hear something
+ $5E28 LD C,A        ; Store new value
+ $5E29 DEC HL        ;
+ $5E2A DEC HL        ;
+ $5E2B LD A,H        ; {Time to stop?
+ $5E2C OR L          ; }
+ $5E2D JR NZ,$5E10   ; Not yet, so make some more noise
+ $5E2F POP HL        ;
+ $5E30 EXX           ;
+ $5E31 RET           ;
+
+; Write the attributes for the loading display
+;
+; Used by the routine at #R$5F15.
+c$5E32 LD C,$0C      ; Number of 2-line strips to colour in 
+ $5E34 LD DE,#R$5E49   ; Holds the colours to put on screen
+ $5E37 LD HL,$5800   ; Holds destination address in attribute buffer
+*$5E3A LD A,(DE)     ; Get the next colour byte
+ $5E3B LD B,$40      ; Fill it for the next 40 bytes
+*$5E3D LD (HL),A     ; Set the value
+ $5E3E INC HL        ; Next byte
+ $5E3F DJNZ $5E3D    ; Repeat until done
+ $5E41 INC DE        ; { Next set of colours
+ $5E42 DEC C         ; }
+ $5E43 JR NZ,$5E3A   ; Loop back round if we haven't finished
+ $5E45 XOR A         ; { Make the border black
+ $5E46 OUT ($FE),A   ; }
+ $5E48 RET           ;
+
+; The colours to display on screen for each row
+b$5E49 DEFB $57      ; White on red
+ $5E4A DEFB $03      ; Magenta
+ $5E4B DEFB $04      ; Green
+ $5E4C DEFB $05      ; Cyan
+ $5E4D DEFB $06      ; Yellow
+ $5E4E DEFB $07      ; White
+ $5E4F DEFB $03      ; Magenta
+ $5E50 DEFB $04      ; Green
+ $5E51 DEFB $05      ; Cyan
+ $5E52 DEFB $06      ; Yellow
+ $5E53 DEFB $07      ; White
+ $5E54 DEFB $57      ; White on red
+
+; Main loading screen text
+t$5E55 DEFM " *****  THE CHIP FACTORY  *****                 "
+ $5E85 DEFM "                   FEATURING 'TECHNICIAN TED'   "
+ $5EB5 DEFM " "
+ $5EB6 DEFB $7F
+ $5EB7 DEFM " S. MARSDEN AND D. COOKE 1984                 "
+ $5EE5 DEFM "                  TIME TO LOAD - T MINUS '226'  "
+
+; Main entry point (BASIC)
+c$5F15 DI            ; Turn off all interrupts until the game's loaded
+ $5F16 LD HL,$4000   ; { Blank the screen
+ $5F19 LD DE,$4001   ;
+ $5F1C LD BC,$17FF   ;
+ $5F1F LD (HL),$00   ;
+ $5F21 LDIR          ; }
+ $5F23 CALL $5E32    ; Set up loading screen colours
+ $5F26 JP $5F38      ; Move onto the next bit
+
+; Return the next hash byte in A
+;
+; Used by the routine at #R$5F93.
+c$5F29 LD A,($5FA8)  ; Get the previous value
+ $5F2C LD E,A        ;
+ $5F2D ADD A,A       ; { Shift four times
+ $5F2E ADD A,A       ;
+ $5F2F ADD A,A       ;
+ $5F30 ADD A,A       ; }
+ $5F31 ADD A,E       ; Add the original value
+ $5F32 ADD A,$0B     ; Add 11
+ $5F34 LD ($5FA8),A  ; Store new value
+ $5F37 RET           ;
+
+; Main entry point (continued)
+;
+; Used by the routine at #R$5F15.
+c$5F38 LD HL,$5FAB   ; { Fill memory with hashes from 5FAB
+ $5F3B LD BC,$A059   ; up to the top of RAM }
+ $5F3E LD SP,$5C00   ; Put the stack somewhere safe
+ $5F41 LD A,($5FA8)  ; Get the next hash byte
+ $5F44 LD D,A        ;
+ $5F45 LD E,$0B      ;
+*$5F47 LD A,D        ;
+ $5F48 ADD A,A       ; { Shift left 4 times
+ $5F49 ADD A,A       ;
+ $5F4A ADD A,A       ;
+ $5F4B ADD A,A       ; }
+ $5F4C ADD A,D       ; { Add the other values
+ $5F4D ADD A,E       ; }
+ $5F4E LD D,A        ; Store for next iteration
+ $5F4F LD (HL),A     ; Store next hash byte
+ $5F50 INC HL        ; { Onto the next address
+ $5F51 DEC BC        ; }
+ $5F52 LD A,B        ; { All done yet?
+ $5F53 OR C          ; }
+ $5F54 JR NZ,$5F47   ; No, loop back round again
+ $5F56 CALL $5F93    ; Get another hash byte
+ $5F59 CALL $5D80    ; Scroll the main game message across screen
+ $5F5C LD A,($6066)  ; { Store an address from the memory hash in HL (#R$8000)
+ $5F5F LD L,A        ;
+ $5F60 LD A,($60E6)  ;
+ $5F63 LD H,A        ; }
+ $5F64 PUSH HL       ; Remember this
+ $5F65 LD A,($FC4F)  ; { Store an address from the memory hash in DE (03C3)
+ $5F68 LD E,A        ;
+ $5F69 LD A,($600F)  ;
+ $5F6C LD D,A        ; }
+ $5F6D POP IX        ; Restore $8000 into IX - start of memory block
+ $5F6F SCF           ; Set LOAD, not VERIFY
+ $5F70 LD A,$FF      ; Standard value for a headerless block
+ $5F72 INC D         ; { Reset the zero flag and swap AF
+ $5F73 EX AF,AF'     ;
+ $5F74 DEC D         ; }
+ $5F75 LD A,($6366)  ; { Store an address from the memory hash in HL (#R$8000)
+ $5F78 LD L,A        ;
+ $5F79 LD A,($63E6)  ;
+ $5F7C LD H,A        ; }
+ $5F7D PUSH HL       ; Remember this - this is the entry point for the next bit of the loader
+ $5F7E IN A,($FE)    ; Read the EAR flag
+ $5F80 RRA           ;
+ $5F81 AND $20       ;
+ $5F83 OR $01        ; { Set the border colour to blue. This will
+ $5F85 LD C,A        ; create blue + yellow borders when loading }
+ $5F86 CP A          ; Set the zero flag
+ $5F87 PUSH AF       ; { Store an address from the memory hash in HL (056B)
+ $5F88 LD A,($6587)  ;
+ $5F8B LD L,A        ;
+ $5F8C LD A,($6485)  ;
+ $5F8F LD H,A        ;
+ $5F90 POP AF        ; }
+ $5F91 PUSH HL       ; { Jump to 056B - this is near the start of the ROM LD-BYTES routine,
+ $5F92 RET           ; but past setting the initial border (which is done above). Control returns to #R$8000 when the first headerless block has loaded. }
+
+; Hash memory with "safe" instructions
+;
+; This is another memory routine which hashes #R$8000 - 8CA0 with instructions
+; that do nothing except copy register values around. This means that when the
+; loading system finishes and steps into #R$83C3, it will execute this code
+; until it finds the game decrypter at #R$8C1C.
+c$5F93 LD HL,$8000   ; Start of block
+ $5F96 LD BC,$0CA0   ; Length
+*$5F99 CALL $5F29    ; Return the next hash byte
+ $5F9C AND $BF       ; { Clear bit 6 and set bit 7. This restricts the instructions to the
+ $5F9E OR $80        ; range 80-BF, which have no jumps and write to no memory }
+ $5FA0 LD (HL),A     ; Set this
+ $5FA1 INC HL        ; Next address
+ $5FA2 DEC BC        ; { Are we done yet?
+ $5FA3 LD A,B        ;
+ $5FA4 OR C          ; }
+ $5FA5 JR NZ,$5F99   ; No, do the next location
+ $5FA7 RET           ;
+
+; Hash byte used to decrypt the game once loaded
+b$5FA8 DEFB $0C
+
+i$5FA9
+
+; Main entry point (second block)
+;
+; This block is loaded immediately after the screen is drawn and the banner
+; messages scrolled on screen.
+c$8000 JP NC,$0000   ; Reset if previous block didn't load
+ $8003 LD A,$08      ; { Make the border black
+ $8005 OUT ($FE),A   ; }
+ $8007 EXX           ;
+ $8008 LD C,$00      ; Set the encryption byte
+ $800A EXX           ;
+ $800B LD H,$00      ;
+ $800D LD B,$80      ;
+ $800F LD IX,$8C1C   ; Start of next block
+ $8013 LD D,$05      ; 
+*$8015 CALL $8341    ; Look for a bit on tape
+ $8018 JP NC,$0000   ; Reset if we couldn't find one
+ $801B LD B,$B1      ;
+ $801D DEC D         ;
+ $801E JR NZ,$8015   ;
+ $8020 LD DE,$72D8   ; Length
+ $8023 EXX           ;
+ $8024 INC C         ; Increase encryption byte
+ $8025 EXX           ;
+ $8026 JP $837D      ; Onto the next part
+
+; Data for the on screen characters
+;
+; This block of memory holds 6 bytes for each character on screen. These are:
+; #TABLE(default)
+; { 00 | current speed hash value }
+; { 01 | speed (lower = faster) }
+; { 02 | current address onscreen }
+; { 04 | current frame number. Bit 7 is off for left and on for right, other bits
+; make up an offset from #R$8077 (left) or #R$8177 (right) }
+; { 05 | current direction 1 = right, 0 = left }
+; TABLE#
+; The speed is static, but everything else alters as loading progresses...
+b$8029 DEFB $00,$3C,$40,$48,$00,$01
+ $802F DEFB $00,$44,$80,$40,$00,$01
+ $8035 DEFB $00,$4B,$00,$50,$00,$01
+ $803B DEFB $00,$53,$40,$50,$00,$01
+ $8041 DEFB $00,$59,$80,$50,$00,$01
+ $8047 DEFB $00,$60,$C0,$40,$00,$01
+ $804D DEFB $00,$67,$C0,$48,$00,$01
+ $8053 DEFB $00,$7A,$00,$48,$00,$01
+ $8059 DEFB $00,$90,$80,$48,$00,$01
+ $805F DEFB $00,$9C,$40,$40,$00,$01
+
+; Number of ticks until timer should be updated
+;
+; This evaluates to 1/10 second
+b$8065 DEFB $05,$CD
+
+; Number of ticks until a whole second has elapsed
+b$8067 DEFB $0A
+
+; Current timer value, in reverse
+;
+; These three bytes hold the current value of the timer in the order units,
+; tens, hundreds. Each value is the offset from 3D80 (in the ROM character set)
+; which holds the character to display.
+b$8068 DEFB $48,$08,$10  ; T MINUS 219 (3 minutes 39 seconds)
+
+; Temporary buffer for storing tape bits
+s$806B DEFS $0C
+
+; Ted left
+;
+; #UDG$8077,7,,2#UDG$8078,7,,2 #UDG$8097,7,,2#UDG$8098,7,,2
+; #UDG$80B7,7,,2#UDG$80B8,7,,2 #UDG$80D7,7,,2#UDG$80D8,7,,2
+;.
+; #UDG$8087,7,,2#UDG$8088,7,,2 #UDG$80A7,7,,2#UDG$80A8,7,,2
+; #UDG$80C7,7,,2#UDG$80C8,7,,2 #UDG$80E7,7,,2#UDG$80E8,7,,2
+b$8077 DEFB $1C,$00,$2E,$00,$1E,$00,$1C,$00
+ $807F DEFB $0C,$00,$12,$00,$33,$00,$39,$00
+ $8087 DEFB $31,$00,$27,$00,$3F,$00,$3F,$00
+ $808F DEFB $3F,$00,$0C,$00,$0C,$00,$1C,$00
+ $8097 DEFB $0E,$00,$17,$00,$0F,$00,$0E,$00
+ $809F DEFB $06,$00,$09,$00,$1C,$80,$1E,$40
+ $80A7 DEFB $1E,$40,$3C,$80,$3D,$80,$1F,$80
+ $80AF DEFB $1F,$80,$0C,$C0,$0D,$80,$1C,$00
+ $80B7 DEFB $07,$00,$0B,$80,$07,$80,$07,$00
+ $80BF DEFB $03,$00,$04,$80,$1C,$40,$12,$40
+ $80C7 DEFB $08,$20,$0E,$40,$0F,$C0,$0F,$C0
+ $80CF DEFB $0F,$C0,$0C,$E0,$0C,$40,$1C,$00
+ $80D7 DEFB $03,$80,$05,$C0,$03,$C0,$03,$80
+ $80DF DEFB $01,$80,$02,$40,$06,$60,$18,$70
+ $80E7 DEFB $10,$F0,$0F,$E0,$07,$E0,$07,$E0
+ $80EF DEFB $07,$E0,$06,$78,$1C,$18,$0C,$10
+ $80F7 DEFB $01,$C0,$02,$E0,$01,$E0,$01,$C0
+ $80FF DEFB $00,$C0,$01,$20,$02,$30,$04,$78
+ $8107 DEFB $08,$F4,$0F,$F8,$03,$F0,$03,$F0
+ $810F DEFB $03,$F0,$03,$38,$0E,$0C,$04,$18
+ $8117 DEFB $00,$E0,$01,$70,$00,$F0,$00,$E0
+ $811F DEFB $00,$60,$00,$90,$01,$18,$02,$3C
+ $8127 DEFB $02,$78,$01,$F8,$01,$F8,$01,$F8
+ $812F DEFB $01,$F8,$03,$98,$00,$0C,$00,$1C
+ $8137 DEFB $00,$70,$00,$B8,$00,$78,$00,$70
+ $813F DEFB $00,$30,$00,$48,$00,$CC,$01,$8C
+ $8147 DEFB $01,$1C,$00,$FC,$00,$FC,$00,$FC
+ $814F DEFB $00,$FC,$01,$D8,$00,$CC,$00,$1C
+ $8157 DEFB $00,$38,$00,$5C,$00,$3C,$00,$38
+ $815F DEFB $00,$18,$00,$24,$00,$66,$00,$46
+ $8167 DEFB $00,$46,$00,$1E,$00,$7E,$00,$7E
+ $816F DEFB $00,$7E,$00,$3C,$00,$4C,$00,$1C
+
+; Ted right
+;
+; #UDG$8177,7,,2#UDG$8178,7,,2 #UDG$8197,7,,2#UDG$8198,7,,2
+; #UDG$81B7,7,,2#UDG$81B8,7,,2 #UDG$81D7,7,,2#UDG$81D8,7,,2
+;.
+; #UDG$8187,7,,2#UDG$8188,7,,2 #UDG$81A7,7,,2#UDG$81A8,7,,2
+; #UDG$81C7,7,,2#UDG$81C8,7,,2 #UDG$81E7,7,,2#UDG$81E8,7,,2
+b$8177 DEFB $0E,$00,$1D,$00,$1E,$00,$0E,$00
+ $817F DEFB $0C,$00,$12,$00,$33,$00,$31,$00
+ $8187 DEFB $31,$00,$3C,$00,$3F,$00,$3F,$00
+ $818F DEFB $3F,$00,$1E,$00,$19,$00,$1C,$00
+ $8197 DEFB $07,$00,$0E,$80,$0F,$00,$07,$00
+ $819F DEFB $06,$00,$09,$00,$19,$80,$18,$C0
+ $81A7 DEFB $1C,$40,$1F,$80,$1F,$80,$1F,$80
+ $81AF DEFB $1F,$80,$0D,$C0,$19,$80,$1C,$00
+ $81B7 DEFB $03,$80,$07,$40,$07,$80,$03,$80
+ $81BF DEFB $03,$00,$04,$80,$0C,$40,$1E,$20
+ $81C7 DEFB $0F,$20,$0F,$C0,$0F,$C0,$0F,$C0
+ $81CF DEFB $0F,$C0,$0C,$E0,$18,$00,$1C,$00
+ $81D7 DEFB $01,$C0,$03,$A0,$03,$C0,$01,$C0
+ $81DF DEFB $01,$80,$02,$40,$06,$20,$0F,$10
+ $81E7 DEFB $17,$88,$0F,$F8,$07,$E0,$07,$E0
+ $81EF DEFB $07,$E0,$0E,$60,$18,$38,$0C,$10
+ $81F7 DEFB $00,$E0,$01,$D0,$01,$E0,$00,$E0
+ $81FF DEFB $00,$C0,$01,$20,$03,$30,$07,$0C
+ $8207 DEFB $07,$84,$03,$F8,$03,$F0,$03,$F0
+ $820F DEFB $03,$F0,$0F,$30,$0C,$1C,$04,$18
+ $8217 DEFB $00,$70,$00,$E8,$00,$F0,$00,$70
+ $821F DEFB $00,$60,$00,$90,$01,$1C,$01,$24
+ $8227 DEFB $02,$08,$01,$38,$01,$F8,$01,$F8
+ $822F DEFB $01,$F8,$03,$98,$01,$18,$00,$1C
+ $8237 DEFB $00,$38,$00,$74,$00,$78,$00,$38
+ $823F DEFB $00,$30,$00,$48,$00,$9C,$01,$3C
+ $8247 DEFB $01,$3C,$00,$9E,$00,$DE,$00,$FC
+ $824F DEFB $00,$FC,$01,$98,$00,$D8,$00,$1C
+ $8257 DEFB $00,$1C,$00,$3A,$00,$3C,$00,$1C
+ $825F DEFB $00,$18,$00,$24,$00,$66,$00,$4E
+ $8267 DEFB $00,$46,$00,$72,$00,$7E,$00,$7E
+ $826F DEFB $00,$7E,$00,$18,$00,$18,$00,$1C
+
+; Main animation routine
+;
+; This routine is called between tape signals. It loads the buffer contents
+; into memory, animates the onscreen graphics, and adjusts the timer.
+;
+; DE Pointer to the tape buffer
+; A The low byte index of the buffer to adjust
+c$8277 PUSH DE       ; Store the base of the tape buffer for later
+ $8278 LD L,A        ; Store the low byte
+ $8279 XOR A         ;
+ $827A LD (DE),A     ; Clear the start of the tape buffer
+ $827B LD H,$80      ; Run everything from 8000 - 80FF
+ $827D LD A,(HL)     ; Get the current speed hash
+ $827E INC HL        ; 
+ $827F ADD A,(HL)    ; Add on the speed value
+ $8280 DEC HL        ;
+ $8281 LD (HL),A     ; Store the new hash
+ $8282 INC HL        ; { Now point to the onscreen address
+ $8283 INC HL        ; }
+ $8284 PUSH BC       ;
+ $8285 LD A,L        ; { Is it time to animate a sprite?
+ $8286 CP $67        ; }
+ $8288 JR NZ,$82D4   ; Yes, so go and do it
+; A timer tick has occurred. This happens every 1/10 of a second as defined in
+; the speed byte at #R$8065
+ $828A LD A,$03      ;
+ $828C DEC (HL)      ; Tick the time again
+ $828D JP Z,$8296    ;
+ $8290 LD BC,$0300   ; 3 digits to update but no decrease
+ $8293 JP $829B      ;
+; At this point, a full second has elapsed so the display must be updated
+*$8296 LD (HL),$0A   ; Put another ten ticks in
+ $8298 LD BC,$0308   ; 3 digits to update and decrement by 1
+*$829B INC HL        ; { Get the timer units
+ $829C LD A,(HL)     ; }
+ $829D SUB C         ; Remove a second if need be
+ $829E LD (HL),A     ; Store it
+ $829F JR C,$82A5    ; Do we need to wrap from 0 to 9?
+ $82A1 LD C,$00      ; No, finished decrementing, don't change next digit
+ $82A3 JR $82A8      ;
+*$82A5 LD (HL),$48   ; Store '9' here instead and decrement next digit
+ $82A7 NOP           ;
+*$82A8 DJNZ $829B    ; Loop back to scan for next digit
+ $82AA LD DE,$3DFA   ; Point to the character set buffer
+ $82AD PUSH DE       ;
+*$82AE BIT 3,C       ; Are we trying to decrement past 0?
+ $82B0 JR NZ,$82B4   ;
+ $82B2 JR $82B5      ;
+*$82B4 LD (HL),B     ; Trying to decrement timer past 0. Ignore it. This is a loading error.
+; Redraw the timer
+*$82B5 LD A,(HL)     ; Get the next offset
+ $82B6 EX (SP),HL    ; Pull in the character buffer
+ $82B7 ADD A,$80     ; { Set DE to the relevant character buffer offset
+ $82B9 LD E,A        ; }
+ $82BA LD B,$04      ; Four pairs of lines to write
+ $82BC LD H,$50      ; Set HL to the relevant screen position
+*$82BE LD A,(DE)     ; Pull out the line
+ $82BF LD (HL),A     ; Put it on screen
+ $82C0 INC E         ; Next line in buffer
+ $82C1 INC H         ; Next line on screen
+ $82C2 LD A,(DE)     ; Pull out next line
+ $82C3 LD (HL),A     ; Put it on screen
+ $82C4 INC E         ; Next line in buffer
+ $82C5 INC H         ; Next line on screen
+ $82C6 DJNZ $82BE    ; Loop round to do next pair of lines
+ $82C8 INC L         ; Next digit
+ $82C9 LD A,L        ; { Get the character buffer offset back
+ $82CA EX (SP),HL    ; }
+ $82CB CP $FD        ; Done the last line of the last digit?
+ $82CD DEC HL        ; Point back to the start of the buffer
+ $82CE JR NZ,$82AE   ; Loop back round for another digit
+ $82D0 POP HL        ; Restore HL
+ $82D1 JP $8320      ; Move forward
+
+; Animate a sprite
+;
+; Used by the routine at #R$8277.
+;
+; HL Current screen address
+c$82D4 LD E,(HL)     ; { Put the on-screen address in DE
+ $82D5 INC HL        ;
+ $82D6 LD D,(HL)     ; 
+ $82D7 INC HL        ; }
+ $82D8 LD C,(HL)     ; { Put the frame counter in BC
+ $82D9 INC HL        ; 
+ $82DA LD B,$00      ;
+ $82DC LD A,C        ; }
+ $82DD BIT 0,(HL)    ; Are we going left or right?
+ $82DF JR Z,$82E8    ; Jump forward if we're going left
+ $82E1 ADD A,$20     ; { Get the next frame to the right
+ $82E3 LD C,A        ;
+ $82E4 LD A,E        ;
+ $82E5 ADC A,B       ;
+ $82E6 JR $82EF      ; }
+*$82E8 SUB $20       ; { Get the next frame to the left
+ $82EA LD C,A        ;
+ $82EB LD A,E        ;
+ $82EC SBC A,B       ;
+ $82ED LD B,$01      ; }
+*$82EF LD E,A        ; Store the next frame
+ $82F0 CPL           ; { Flip all the bits, but only keep the bottom 5 }
+ $82F1 AND $1F       ;
+ $82F3 JR NZ,$82FD   ; Move on if we don't need to change direction
+; A sprite needs changing direction. Don't get the next frame counter, position
+; and direction, but instead just reuse these values and go the other way.
+ $82F5 LD (HL),B     ; Current direction
+ $82F6 DEC HL        ;
+ $82F7 LD C,(HL)     ; Current position
+ $82F8 DEC HL        ;
+ $82F9 DEC HL        ;
+ $82FA LD E,(HL)     ; Current frame counter
+ $82FB JR $8305      ;
+; Otherwise, get the next set of values to animate with
+*$82FD LD B,(HL)     ; Next direction
+ $82FE DEC HL        ;
+ $82FF LD (HL),C     ; Next position
+ $8300 DEC HL        ;
+ $8301 DEC HL        ;
+ $8302 LD (HL),E     ; Next frame counter
+ $8303 CP $00        ;
+; Put the sprite on screen
+*$8305 LD HL,$8077   ; Base address of sprites
+ $8308 ADD HL,BC     ; Add 100 for right-facing, otherwise 0
+ $8309 EX DE,HL      ; Swap this with the screen offset to write to
+ $830A LD C,$01      ; Repeat this twice for 16 lines
+*$830C LD B,$08      ; Writing 8 lines at a time
+*$830E LD A,(DE)     ; Get the first half of the line
+ $830F LD (HL),A     ; Put it on screen
+ $8310 INC L         ; Move onto next half on screen
+ $8311 INC DE        ; Move onto next half in sprite buffer
+ $8312 LD A,(DE)     ; Get the second half of the line
+ $8313 LD (HL),A     ; Put it on screen
+ $8314 DEC L         ; Move back to left half on screen
+ $8315 INC DE        ; Move to next line in sprite buffer
+ $8316 INC H         ; Move onto next line on screen
+ $8317 DJNZ $830E    ; Loop round to write the next line
+ $8319 DEC C         ; Done the second half yet?
+ $831A LD BC,$F820   ; Point to second half of sprite
+ $831D ADD HL,BC     ;
+ $831E JR Z,$830C    ; Loop back if second half not yet done
+; At this point we are done with all animation and can move on to retrieve a
+; bit from tape
+*$8320 POP BC        ;
+ $8321 POP DE        ;
+ $8322 EXX           ;
+ $8323 LD B,$B0      ;
+ $8325 CALL $8362    ; Get a bit from tape
+ $8328 LD A,$16      ; { Wait to try again
+*$832A DEC A         ;
+ $832B JR NZ,$832A   ; }
+ $832D CALL C,$8362  ; Get the bit again if we didn't retrieve it
+ $8330 JP NC,$0000   ; If we still can't get a bit, there's a loading error. Reset.
+ $8333 LD B,$02      ; { Wait for a bit
+*$8335 DJNZ $8335    ; }
+ $8337 EXX           ; { Get the encryption byte and increment it
+ $8338 INC C         ;
+ $8339 INC C         ; }
+ $833A INC DE        ; { Do we need to draw anything?
+ $833B LD A,(DE)     ;
+ $833C AND A         ; }
+ $833D JP NZ,$8277   ; Jump back if so
+ $8340 RET           ; Otherwise all done
+
+; Get bits from tape
+;
+; Used by the routine at #R$8000.
+;
+; IX Current address to load the next byte
+; DE Length remaining in bytes
+c$8341 EXX           ;
+ $8342 LD DE,$806B   ;
+ $8345 LD HL,$8029   ;
+ $8348 LD B,$05      ;
+ $834A CALL $8351    ;
+ $834D RET NC        ; Bail out if error
+ $834E EXX           ;
+ $834F LD B,$06      ;
+*$8351 LD A,(HL)     ;
+ $8352 SUB C         ;
+ $8353 LD (HL),A     ;
+ $8354 LD A,L        ;
+ $8355 JR C,$835A    ;
+ $8357 NOP           ;
+ $8358 JR $835C      ;
+*$835A LD (DE),A     ;
+ $835B INC E         ;
+*$835C ADD A,$06     ;
+ $835E LD L,A        ;
+ $835F DJNZ $8351    ;
+ $8361 EXX           ;
+; This entry point is used by the routine at #R$82D4.
+*$8362 AND A         ;
+*$8363 INC B         ;
+ $8364 RET Z         ;
+ $8365 LD A,$7F      ; { Get the EAR bit
+ $8367 IN A,($FE)    ;
+ $8369 RRA           ; }
+ $836A RET NC        ; Bail out if error
+ $836B XOR C         ; Hash against the encryption byte
+ $836C AND $20       ; Is the EAR bit set?
+ $836E JR Z,$8363    ; Move on if so
+ $8370 LD A,C        ; { Set next encryption byte
+ $8371 CPL           ;
+ $8372 LD C,A        ; }
+ $8373 SCF           ; { Signal okay
+ $8374 RET           ; }
+*$8375 LD (IX+$00),L ; Got a byte, so store it
+ $8378 INC IX        ; Next address
+ $837A DEC DE        ; Decrease length
+ $837B LD B,$B2      ;
+; This entry point is used by the routine at #R$8000.
+*$837D LD L,$01      ;
+*$837F CALL $8341    ; Get a bit from tape
+ $8382 JP NC,$0000   ; Reset on error
+ $8385 LD A,$CB      ;
+ $8387 CP B          ;
+ $8388 RLA           ;
+ $8389 EXX           ;
+ $838A LD B,A        ;
+ $838B AND $01       ;
+ $838D INC A         ;
+ $838E LD C,A        ;
+ $838F LD DE,$806B   ;
+ $8392 LD A,(DE)     ;
+ $8393 AND A         ;
+ $8394 CALL NZ,$8277 ;
+ $8397 RR B          ;
+ $8399 EXX           ;
+ $839A RL L          ;
+ $839C LD B,$B1      ;
+ $839E JR NC,$837F   ;
+ $83A0 LD A,H        ;
+ $83A1 XOR L         ;
+ $83A2 LD H,A        ;
+ $83A3 LD A,D        ; { Reached the end of the block?
+ $83A4 OR E          ; }
+ $83A5 JR NZ,$8375   ; No, more work to do
+ $83A7 LD A,H        ; { Test our checksum byte
+ $83A8 AND A         ; }
+ $83A9 JP NZ,$0000   ; Reset if it doesn't match
+ $83AC LD DE,$EC2F   ;
+ $83AF LD B,$EB      ;
+*$83B1 CALL $8341    ; Read a bit from tape
+ $83B4 CP (HL)       ;
+ $83B5 NOP           ;
+ $83B6 INC D         ;
+ $83B7 LD A,$EA      ;
+ $83B9 CP B          ;
+ $83BA JP NC,$0000   ;
+ $83BD LD B,D        ;
+ $83BE DEC D         ;
+ $83BF DEC E         ;
+ $83C0 JP NZ,$83B1   ;
+
+; End of loader
+;
+; At this point, the main game block has finished loading. The memory contains
+; instructions that do nothing except copy register values around. This was set
+; up in the routine at #R$5F93.
+s$83C3 DEFS $0859
+
+; Game decrypter
+;
+; The code from here onwards is the third and final block loaded. It follows
+; immediately after the second block with no extra loading tone.
+; .
+; This code creates a hash from 4000 - 5BFF and 5C92 - FFFF and stores it in
+; HL. This means that if any bytes are changed anywhere en route to loading,
+; the game will not decrypt correctly and will crash. The area from 5C00 - 5C92
+; is not scanned as this contains system variables set up by BASIC and their
+; values are not predictable.
+c$8C1C LD A,$5C      ; Scan up to 5C00
+ $8C1E LD HL,$4000   ; First pass - start at 4000
+ $8C21 LD D,H        ;
+ $8C22 LD E,L        ;
+*$8C23 EX DE,HL      ; { Get next value
+ $8C24 LD C,(HL)     ;
+ $8C25 INC HL        ;
+ $8C26 LD B,(HL)     ;
+ $8C27 INC HL        ; }
+ $8C28 EX DE,HL      ; { Update it
+ $8C29 ADD HL,BC     ; }
+ $8C2A CP D          ; All done?
+ $8C2B JR NZ,$8C23   ; Loop back if more to do
+ $8C2D LD DE,$5C92   ; Switch target address to 5C92
+ $8C30 XOR $5C       ; Scan up to 0000
+ $8C32 JR Z,$8C23    ; Back to update again
+; At this point, the hash in HL should be 4DBD
+ $8C34 PUSH HL       ; Remember this
+ $8C35 LD HL,$5800   ; { Clear the screen
+ $8C38 LD DE,$5801   ;
+ $8C3B LD BC,$02FF   ;
+ $8C3E LD (HL),$00   ;
+ $8C40 LDIR          ; }
+ $8C42 POP HL        ; Restore HL
+; Now decrypt the game
+ $8C43 LD DE,$8C60   ; Start of game block
+ $8C46 LD C,$29      ;
+ $8C48 LD A,H        ;
+*$8C49 LD H,L        ; { Get next hash value
+ $8C4A LD B,A        ;
+ $8C4B ADD HL,BC     ; }
+ $8C4C LD A,(DE)     ; Get byte to decrypt
+ $8C4D XOR L         ; Invert bits against the first hash byte
+ $8C4E LD (DE),A     ; Store decrypted byte
+ $8C4F LD L,A        ; Next iteration
+ $8C50 INC DE        ; Next address
+ $8C51 LD A,(DE)     ; Get byte to decrypt
+ $8C52 XOR H         ; Invert bits against the second hash byte
+ $8C53 LD (DE),A     ; Store decrypted byte
+ $8C54 INC DE        ; Next address
+ $8C55 BIT 7,D       ; Are we still between 8000-FFFF?
+ $8C57 JR NZ,$8C49   ; Move back if we are
+; At this point, the game is decrypted and ready to run. HL should be EBF5 and A should be 38
+ $8C59 EI            ; Turn interrupts back on
+ $8C5A LD H,A        ; { Get the game's start address - AA65
+ $8C5B LD DE,$7170   ;
+ $8C5E ADD HL,DE     ; }
+ $8C5F JP (HL)       ; Jump to it. Control passes to the main entry point.
+

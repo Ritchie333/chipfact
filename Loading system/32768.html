@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Technician Ted: Routine at 8000</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+
+</head>
+<body class="Loading system-Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html">Technician Ted</a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="24488.html">5FA8</a></span></td>
+<td class="up">Up: <a href="Loading system.html#32768">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="32809.html">8029</a></span></td>
+</tr>
+</table>
+<div class="description">8000: Main entry point (second block)</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="4">
+<div class="details">
+<div class="paragraph">
+This block is loaded immediately after the screen is drawn and the banner messages scrolled on screen.
+</div>
+</div>
+<table class="input-0">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+
+</table>
+<table class="output-0">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="32768"></span>8000</td>
+<td class="instruction">JP NC,$0000</td>
+<td class="comment-11" rowspan="1">Reset if previous block didn't load</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32771"></span>8003</td>
+<td class="instruction">LD A,$08</td>
+<td class="comment-11" rowspan="2">Make the border black</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32773"></span>8005</td>
+<td class="instruction">OUT ($FE),A</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32775"></span>8007</td>
+<td class="instruction">EXX</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32776"></span>8008</td>
+<td class="instruction">LD C,$00</td>
+<td class="comment-11" rowspan="1">Set the encryption byte</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32778"></span>800A</td>
+<td class="instruction">EXX</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32779"></span>800B</td>
+<td class="instruction">LD H,$00</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32781"></span>800D</td>
+<td class="instruction">LD B,$80</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32783"></span>800F</td>
+<td class="instruction">LD IX,$8C1C</td>
+<td class="comment-11" rowspan="1">Start of next block</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32787"></span>8013</td>
+<td class="instruction">LD D,$05</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="32789"></span>8015</td>
+<td class="instruction">CALL <a href="33601.html">$8341</a></td>
+<td class="comment-11" rowspan="1">Look for a bit on tape</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32792"></span>8018</td>
+<td class="instruction">JP NC,$0000</td>
+<td class="comment-11" rowspan="1">Reset if we couldn't find one</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32795"></span>801B</td>
+<td class="instruction">LD B,$B1</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32797"></span>801D</td>
+<td class="instruction">DEC D</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32798"></span>801E</td>
+<td class="instruction">JR NZ,$8015</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32800"></span>8020</td>
+<td class="instruction">LD DE,$72D8</td>
+<td class="comment-11" rowspan="1">Length</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32803"></span>8023</td>
+<td class="instruction">EXX</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32804"></span>8024</td>
+<td class="instruction">INC C</td>
+<td class="comment-11" rowspan="1">Increase encryption byte</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32805"></span>8025</td>
+<td class="instruction">EXX</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32806"></span>8026</td>
+<td class="instruction">JP <a href="33601.html#33661">$837D</a></td>
+<td class="comment-11" rowspan="1">Onto the next part</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="24488.html">5FA8</a></span></td>
+<td class="up">Up: <a href="Loading system.html#32768">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="32809.html">8029</a></span></td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">Copyright Steve Marsden and David Cooke 1984. This dissassembly by Ritchie Swann 2018.</div>
+<div class="created">Created using <a href="http://skoolkit.ca/">SkoolKit</a> 7.0.</div>
+</footer>
+</body>
+</html>

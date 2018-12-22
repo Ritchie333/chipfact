@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Technician Ted: Routine at 5F15</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+
+</head>
+<body class="Loading system-Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html">Technician Ted</a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="24149.html">5E55</a></span></td>
+<td class="up">Up: <a href="Loading system.html#24341">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="24361.html">5F29</a></span></td>
+</tr>
+</table>
+<div class="description">5F15: Main entry point (BASIC)</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="4">
+<div class="details">
+
+</div>
+<table class="input-0">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+
+</table>
+<table class="output-0">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="24341"></span>5F15</td>
+<td class="instruction">DI</td>
+<td class="comment-11" rowspan="1">Turn off all interrupts until the game's loaded</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24342"></span>5F16</td>
+<td class="instruction">LD HL,$4000</td>
+<td class="comment-11" rowspan="5">Blank the screen</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24345"></span>5F19</td>
+<td class="instruction">LD DE,$4001</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24348"></span>5F1C</td>
+<td class="instruction">LD BC,$17FF</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24351"></span>5F1F</td>
+<td class="instruction">LD (HL),$00</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24353"></span>5F21</td>
+<td class="instruction">LDIR</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24355"></span>5F23</td>
+<td class="instruction">CALL <a href="24114.html">$5E32</a></td>
+<td class="comment-11" rowspan="1">Set up loading screen colours</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24358"></span>5F26</td>
+<td class="instruction">JP <a href="24376.html">$5F38</a></td>
+<td class="comment-11" rowspan="1">Move onto the next bit</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="24149.html">5E55</a></span></td>
+<td class="up">Up: <a href="Loading system.html#24341">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="24361.html">5F29</a></span></td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">Copyright Steve Marsden and David Cooke 1984. This dissassembly by Ritchie Swann 2018.</div>
+<div class="created">Created using <a href="http://skoolkit.ca/">SkoolKit</a> 7.0.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Technician Ted: Routine at 5E09</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+
+</head>
+<body class="Loading system-Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html">Technician Ted</a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="24072.html">5E08</a></span></td>
+<td class="up">Up: <a href="Loading system.html#24073">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="24114.html">5E32</a></span></td>
+</tr>
+</table>
+<div class="description">5E09: Play a white noise</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="4">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="23936.html">5D80</a>.
+</div>
+</div>
+<table class="input-0">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+
+</table>
+<table class="output-0">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="24073"></span>5E09</td>
+<td class="instruction">EXX</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24074"></span>5E0A</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24075"></span>5E0B</td>
+<td class="instruction">LD HL,$0050</td>
+<td class="comment-11" rowspan="1">Timing constant</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24078"></span>5E0E</td>
+<td class="instruction">LD C,$10</td>
+<td class="comment-11" rowspan="1">Value to write to the speaker</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="24080"></span>5E10</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-11" rowspan="1">Get current speaker bit</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24081"></span>5E11</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24082"></span>5E12</td>
+<td class="instruction">CALL <a href="24024.html">$5DD8</a></td>
+<td class="comment-11" rowspan="1">Get timing value and wait</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24085"></span>5E15</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24086"></span>5E16</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="24087"></span>5E17</td>
+<td class="instruction">DJNZ $5E17</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24089"></span>5E19</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24090"></span>5E1A</td>
+<td class="instruction">CALL <a href="24024.html">$5DD8</a></td>
+<td class="comment-11" rowspan="1">Get timing value and wait</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24093"></span>5E1D</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24094"></span>5E1E</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="24095"></span>5E1F</td>
+<td class="instruction">DJNZ $5E1F</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24097"></span>5E21</td>
+<td class="instruction">LD C,$FE</td>
+<td class="comment-11" rowspan="2">Output to the speaker. This is equivalent to OUT (C),A</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24099"></span>5E23</td>
+<td class="instruction">CALL $1E7D</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24102"></span>5E26</td>
+<td class="instruction">XOR $10</td>
+<td class="comment-11" rowspan="1">Toggle speaker, so we can hear something</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24104"></span>5E28</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-11" rowspan="1">Store new value</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24105"></span>5E29</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24106"></span>5E2A</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24107"></span>5E2B</td>
+<td class="instruction">LD A,H</td>
+<td class="comment-11" rowspan="2">Time to stop?</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24108"></span>5E2C</td>
+<td class="instruction">OR L</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24109"></span>5E2D</td>
+<td class="instruction">JR NZ,$5E10</td>
+<td class="comment-11" rowspan="1">Not yet, so make some more noise</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24111"></span>5E2F</td>
+<td class="instruction">POP HL</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24112"></span>5E30</td>
+<td class="instruction">EXX</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="24113"></span>5E31</td>
+<td class="instruction">RET</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="24072.html">5E08</a></span></td>
+<td class="up">Up: <a href="Loading system.html#24073">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="24114.html">5E32</a></span></td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">Copyright Steve Marsden and David Cooke 1984. This dissassembly by Ritchie Swann 2018.</div>
+<div class="created">Created using <a href="http://skoolkit.ca/">SkoolKit</a> 7.0.</div>
+</footer>
+</body>
+</html>

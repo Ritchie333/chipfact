@@ -1,0 +1,32 @@
+The room format in Technician Ted is very different from Manic Miner and Jet Set Willy,
+which have a fixed grid that is simple to decode. Instead, it has a mini Logo-style
+language, which takes advantage of the fact that most rooms in platform games contain
+either empty space to move into, or long rows or columns. It is also required as platforms
+come and go depending on what other flags are set
+
+The tables for each room are set up at (A471) - normally E1E6 and are and offsets
+from (A473) - normally E248. The structure is then:
+
+1 byte for the border
+1 byte for the background colour
+Three UDG tables. The first is always displayed, the others conditional on flags.
+Each entry is a command that moves a direction on screen and optionally does something else:
+
+* Bit 0 - If set, the direction is up / down, otherwise it is left / right
+* Bit 1 - If set, the direction if left or up, otherwise it is right or down
+* Bit 2 - If set, draw the current UDG here, otherwise draw whitespace
+* Bit 3 - If set, change to a UDG stored in bits 1-7 of the following byte.
+          If bit 0 of that byte is set, change the attribute to the byte after that.
+          If the UDG is 7F (ie: byte is FE), it marks the end of the table.
+* Bit 4 - 7 : The direction to move in (0 - 15)
+
+After the three tables is information about the moving objects on screen.
+
+The section ends with two zero bytes.
+
+The final part covers the status area on screen. This contains:
+1 byte for the attribute for the status text
+1 byte for the attribute for the title
+1 byte for the X offset where the title should start
+
+followed by the title, in ASCII format, with bit 7 set on the last character.

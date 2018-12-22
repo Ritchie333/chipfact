@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Technician Ted: Data at 8029</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+
+</head>
+<body class="Loading system-Asm-b">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html">Technician Ted</a></td>
+<td class="page-header">Data</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="32768.html">8000</a></span></td>
+<td class="up">Up: <a href="Loading system.html#32809">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="32869.html">8065</a></span></td>
+</tr>
+</table>
+<div class="description">8029: Data for the on screen characters</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="4">
+<div class="details">
+<div class="paragraph">
+This block of memory holds 6 bytes for each character on screen. These are: <table class="default">
+<tr>
+<td class="" colspan="1" rowspan="1">00</td>
+<td class="" colspan="1" rowspan="1">current speed hash value</td>
+</tr>
+<tr>
+<td class="" colspan="1" rowspan="1">01</td>
+<td class="" colspan="1" rowspan="1">speed (lower = faster)</td>
+</tr>
+<tr>
+<td class="" colspan="1" rowspan="1">02</td>
+<td class="" colspan="1" rowspan="1">current address onscreen</td>
+</tr>
+<tr>
+<td class="" colspan="1" rowspan="1">04</td>
+<td class="" colspan="1" rowspan="1">current frame number. Bit 7 is off for left and on for right, other bits make up an offset from <a href="32887.html">8077</a> (left) or <a href="33143.html">8177</a> (right)</td>
+</tr>
+<tr>
+<td class="" colspan="1" rowspan="1">05</td>
+<td class="" colspan="1" rowspan="1">current direction 1 = right, 0 = left</td>
+</tr>
+</table> The speed is static, but everything else alters as loading progresses...
+</div>
+</div>
+<table class="input-0">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+
+</table>
+<table class="output-0">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32809"></span>8029</td>
+<td class="instruction">DEFB $00,$3C,$40,$48,$00,$01</td>
+<td class="comment-10" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32815"></span>802F</td>
+<td class="instruction">DEFB $00,$44,$80,$40,$00,$01</td>
+<td class="comment-10" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32821"></span>8035</td>
+<td class="instruction">DEFB $00,$4B,$00,$50,$00,$01</td>
+<td class="comment-10" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32827"></span>803B</td>
+<td class="instruction">DEFB $00,$53,$40,$50,$00,$01</td>
+<td class="comment-10" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32833"></span>8041</td>
+<td class="instruction">DEFB $00,$59,$80,$50,$00,$01</td>
+<td class="comment-10" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32839"></span>8047</td>
+<td class="instruction">DEFB $00,$60,$C0,$40,$00,$01</td>
+<td class="comment-10" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32845"></span>804D</td>
+<td class="instruction">DEFB $00,$67,$C0,$48,$00,$01</td>
+<td class="comment-10" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32851"></span>8053</td>
+<td class="instruction">DEFB $00,$7A,$00,$48,$00,$01</td>
+<td class="comment-10" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32857"></span>8059</td>
+<td class="instruction">DEFB $00,$90,$80,$48,$00,$01</td>
+<td class="comment-10" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32863"></span>805F</td>
+<td class="instruction">DEFB $00,$9C,$40,$40,$00,$01</td>
+<td class="comment-10" rowspan="1"></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="32768.html">8000</a></span></td>
+<td class="up">Up: <a href="Loading system.html#32809">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="32869.html">8065</a></span></td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">Copyright Steve Marsden and David Cooke 1984. This dissassembly by Ritchie Swann 2018.</div>
+<div class="created">Created using <a href="http://skoolkit.ca/">SkoolKit</a> 7.0.</div>
+</footer>
+</body>
+</html>
