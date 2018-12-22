@@ -200,10 +200,6 @@ R $B203 A Index of the button to draw
 R $B203 HL Pointer to button data
 N $B25C Draw the task button attributes
 c $B2B6 Copy task box attributes into all the screen buffers
-R $B2C9 HL Offset of first box
-R $B2C9 BC Offset of second box relative to first
-R $B2C9 DE Address of attribute buffer
-R $B2C9 A Attribute to copy
 c $B2C9 Copy task box attributes onto the screen buffer
 R $B2C9 HL Offset of first box
 R $B2C9 BC Offset of second box relative to first

@@ -4166,10 +4166,6 @@ c$B2B6 LD BC,$001F   ;
 ; BC Offset of second box relative to first
 ; DE Address of attribute buffer
 ; A Attribute to copy
-; HL Offset of first box
-; BC Offset of second box relative to first
-; DE Address of attribute buffer
-; A Attribute to copy
 c$B2C9 ADD HL,DE     ;
  $B2CA LD (HL),A     ;
  $B2CB INC L         ;
