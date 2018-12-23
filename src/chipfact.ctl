@@ -135,13 +135,10 @@ N $A73C Check any valid keys have been pressed
 N $A747 Check for Kempston joystick, if we have it 
 b $A752 Offsets for LEFT input
 B $A752,9,1,2*4
-u $A75B
 b $A75C Offsets for RIGHT input
 B $A75C,9,1,2*3
-u $A763
 b $A764 Offsets for JUMP input
 B $A764,7,1,2*3
-u $A76B 
 b $A76C Movement table
 b $A85C UDG for main title text character
 D $A85C #UDG$A85C,7

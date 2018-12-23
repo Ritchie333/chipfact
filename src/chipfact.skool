@@ -2827,27 +2827,21 @@ b$A752 DEFB $04
  $A755 DEFB $DF,$02
  $A757 DEFB $F7,$10
  $A759 DEFB $EF,$10
-
-; Unused
-u$A75B DEFB $02
+ $A75B DEFB $02
 
 ; Offsets for RIGHT input
 b$A75C DEFB $03
  $A75D DEFB $FB,$02
  $A75F DEFB $DF,$01
  $A761 DEFB $EF,$0C
-
-; Unused
-u$A763 DEFB $01
+ $A763 DEFB $01
 
 ; Offsets for JUMP input
 b$A764 DEFB $03
  $A765 DEFB $FE,$1F
  $A767 DEFB $7F,$1F
  $A769 DEFB $EF,$03
-
-; Unused
-u$A76B DEFB $10
+ $A76B DEFB $10
 
 ; Movement table
 b$A76C DEFB $E8,$FE,$ED,$FE,$F1,$FE,$F3,$FE
