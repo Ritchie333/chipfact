@@ -110,10 +110,22 @@ Each entry takes up $21 bytes.
 { 1D-1E | UDG 1 size }
 { 1F-20 | UDG 2 size }
 TABLE#
+[InputTables]
+The main game input is driven by functions starting at #R$A72F. The routine
+is entered at different points with HL pointing to a table - 
+#R$A752, #R$A75C or #R$A764. Each table has the following format:
+<ul>
+  <li>A byte containing the count of keyboard entries</li>
+  <li>A pair of bytes for each keyboard entry; the first containing the input to IN A,(FE), the second
+  containing a bitmask of the expected value if an appropriate key was pressed</li>
+  <li>A byte containing the appropriate bitmask for a Kempston joystick</li>
+</ul>
 [Page:RoomFormat]
 PageContent=#INCLUDE(RoomFormatText)
 [Page:RoomObjectsBuffer]
 PageContent=#INCLUDE(RoomObjectsBuffer)
+[Page:InputTables]
+PageContent=#INCLUDE(InputTables)
 [Fact:Tasks]
 The order in which to complete tasks is straightforward in code.
 A task in room 'n' can only be done if the number of already completed tasks
@@ -164,6 +176,8 @@ were working as engineers at Marconi.
 GameStatusBuffer
 RoomFormat
 RoomObjectsBuffer
+InputTables
 [Links]
 RoomFormat=Room format
 RoomObjectsBuffer=Room objects buffer
+InputTables=Input tables
