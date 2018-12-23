@@ -2975,12 +2975,9 @@ t$A95A DEFB $A0
  $A9ED DEFM " S. MARSDEN AND D. COOKE 198"
  $AA09 DEFB $B4
  $AA0A DEFB $00
- $AA0B DEFB $0F
- $AA0C DEFM "\""
- $AA0D DEFB $0E
- $AA0E DEFB $1D
- $AA0F DEFB $06
- $AA10 DEFB $0B
+
+; Data block at AA0B
+b$AA0B DEFB $0F,$22,$0E,$1D,$06,$0B
 
 ; Directives for interrupt states
 ;

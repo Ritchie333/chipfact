@@ -154,6 +154,7 @@ b $A8C1 Sound data for "lose a life" effect
 b $A8C9
 b $A959
 t $A95A Text for instructions
+b $AA0B
 w $AA11 Directives for interrupt states
 D $AA11 These control how often a particular action is "interrupted". Higher value - more often
 w $AA2D Jump table for interrupt states
