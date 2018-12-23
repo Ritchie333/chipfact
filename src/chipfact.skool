@@ -2478,7 +2478,7 @@ g$A438 DEFB $7E
 
 ; Various flags
 ;
-; Set bit 1 to mark Ted has entered a room and is safe
+; Set bit 0 to mark Ted has entered a room and is safe
 ; .
 ; Set bit 1 to mark "repeated death" - instant game over
 g$A439 DEFB $0C
@@ -2555,6 +2555,8 @@ g$A459 DEFB $11,$AA
 ;
 ; .
 ;
+; Set bit 0 to draw to screen 1 instead of 2
+; .
 ; Set bit 1 to mark tune on or off
 ; .
 ; Set bit 5 to denote a Kempston joystick is used
@@ -2792,56 +2794,56 @@ w$A67B DEFW $D108
  $A72B DEFW $014C
  $A72D DEFW $0139
 
-; Check for input based on a particular table
+; Check for input based on a particular table. Returns with the zero flag set if there was a match.
 ;
 ; Used by the routine at #R$BB17.
-c$A72F LD HL,$A752   ;
+c$A72F LD HL,$A752   ; LEFT input table
  $A732 JR $A73C      ;
 ; This entry point is used by the routine at #R$BB17.
-*$A734 LD HL,$A75C   ;
+*$A734 LD HL,$A75C   ; RIGHT input table
  $A737 JR $A73C      ;
 ; This entry point is used by the routine at #R$BB17.
-*$A739 LD HL,$A764   ;
+*$A739 LD HL,$A764   ; JUMP input table
 ; Check any valid keys have been pressed
-*$A73C LD B,(HL)     ;
-*$A73D INC HL        ;
- $A73E LD A,(HL)     ;
- $A73F INC HL        ;
- $A740 IN A,($FE)    ;
- $A742 CPL           ;
- $A743 AND (HL)      ;
- $A744 RET NZ        ;
- $A745 DJNZ $A73D    ;
+*$A73C LD B,(HL)     ; Get the count of table entries
+*$A73D INC HL        ; Move to next entry
+ $A73E LD A,(HL)     ; Get the row to check
+ $A73F INC HL        ; Move to the bitmask
+ $A740 IN A,($FE)    ; Get the key
+ $A742 CPL           ; { Check against the bitmask
+ $A743 AND (HL)      ; }
+ $A744 RET NZ        ; Return if there was a match
+ $A745 DJNZ $A73D    ; Otherwise try the next one
 ; Check for Kempston joystick, if we have it
- $A747 LD A,($A45B)  ;
+ $A747 LD A,($A45B)  ; { Abort if we don't have Kempston configured
  $A74A BIT 5,A       ;
- $A74C RET Z         ;
- $A74D IN A,($1F)    ;
- $A74F INC HL        ;
- $A750 AND (HL)      ;
- $A751 RET           ;
+ $A74C RET Z         ; }
+ $A74D IN A,($1F)    ; Read the port
+ $A74F INC HL        ; Move to the Kempston entry
+ $A750 AND (HL)      ; { Check the appropriate movement
+ $A751 RET           ; and return with the zero flag set if the movement was found } 
 
 ; Offsets for LEFT input
-b$A752 DEFB $04
- $A753 DEFB $FB,$01
- $A755 DEFB $DF,$02
- $A757 DEFB $F7,$10
- $A759 DEFB $EF,$10
- $A75B DEFB $02
+b$A752 DEFB $04      ; Count of entries
+ $A753 DEFB $FB,$01  ; Q, E, T
+ $A755 DEFB $DF,$02  ; U, O
+ $A757 DEFB $F7,$10  ; 6 (Sinclair)
+ $A759 DEFB $EF,$10  ; 5 (Cursor)
+ $A75B DEFB $02      ; Kempston
 
 ; Offsets for RIGHT input
-b$A75C DEFB $03
- $A75D DEFB $FB,$02
- $A75F DEFB $DF,$01
- $A761 DEFB $EF,$0C
- $A763 DEFB $01
+b$A75C DEFB $03      ; Count of entries
+ $A75D DEFB $FB,$02  ; W, R
+ $A75F DEFB $DF,$01  ; Y, I, P
+ $A761 DEFB $EF,$0C  ; 7 (Sinclair), 8 (Cursor)
+ $A763 DEFB $01      ; Kempston
 
 ; Offsets for JUMP input
-b$A764 DEFB $03
- $A765 DEFB $FE,$1F
- $A767 DEFB $7F,$1F
- $A769 DEFB $EF,$03
- $A76B DEFB $10
+b$A764 DEFB $03      ; Count of entries
+ $A765 DEFB $FE,$1F  ; CAPS, Z, X, C, V
+ $A767 DEFB $7F,$1F  ; B, N, M, SS, SPACE
+ $A769 DEFB $EF,$03  ; 0 (Sinclair and Cursor)
+ $A76B DEFB $10      ; Kempston
 
 ; Movement table
 b$A76C DEFB $E8,$FE,$ED,$FE,$F1,$FE,$F3,$FE
@@ -3034,165 +3036,165 @@ b$AA49 DEFB $FF,$40,$88,$C3,$EC,$CB,$40,$87
 ; Main entry point
 ;
 ; Move memory buffers into the correct place
-c$AA65 LD SP,$5BFF   ;
- $AA68 LD HL,$8AC0   ;
- $AA6B LD DE,($A475) ;
+c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
+ $AA68 LD HL,$8AC0   ; { Work out the size of what to copy
+ $AA6B LD DE,($A475) ; based on the current location of the theme tune data
  $AA6F AND A         ;
- $AA70 SBC HL,DE     ;
+ $AA70 SBC HL,DE     ; 
  $AA72 LD B,H        ;
- $AA73 LD C,L        ;
- $AA74 LD HL,$A464   ;
- $AA77 LD DE,$7AFF   ;
- $AA7A LDDR          ;
- $AA7C LD A,$01      ;
- $AA7E LD ($A45B),A  ;
+ $AA73 LD C,L        ; }
+ $AA74 LD HL,$A464   ; First address to move (to make space for game status data)
+ $AA77 LD DE,$7AFF   ; Target address
+ $AA7A LDDR          ; Move it
+ $AA7C LD A,$01      ; { Select screen 2
+ $AA7E LD ($A45B),A  ; }
 ; Display the title screen
-*$AA81 LD A,$09      ;
- $AA83 LD ($A421),A  ;
-*$AA86 LD HL,($A475) ;
- $AA89 LD DE,$F040   ;
- $AA8C ADD HL,DE     ;
- $AA8D LD DE,$4000   ;
- $AA90 LD B,$C0      ;
-*$AA92 LD A,B        ;
- $AA93 PUSH BC       ;
- $AA94 PUSH DE       ;
- $AA95 LD BC,$0020   ;
- $AA98 CP $61        ;
- $AA9A JR C,$AAA5    ;
- $AA9C LD B,$1E      ;
- $AA9E XOR A         ;
+*$AA81 LD A,$09      ; { Blue border
+ $AA83 LD ($A421),A  ; }
+*$AA86 LD HL,($A475) ; Get the location just past end of main screen
+ $AA89 LD DE,$F040   ; { Minus FC0 bytes to find the start
+ $AA8C ADD HL,DE     ; }
+ $AA8D LD DE,$4000   ; Copy to start of screen
+ $AA90 LD B,$C0      ; Number of lines to copy
+*$AA92 LD A,B        ; { Remember these
+ $AA93 PUSH BC       ; 
+ $AA94 PUSH DE       ; }
+ $AA95 LD BC,$0020   ; Number of characters to copy on this line
+ $AA98 CP $61        ; Have we got to the bottom section yet?
+ $AA9A JR C,$AAA5    ; Yes, move forward 
+ $AA9C LD B,$1E      ; { On the top half of the screen, everything
+ $AA9E XOR A         ; but the right two characters is blank
 *$AA9F LD (DE),A     ;
  $AAA0 INC E         ;
- $AAA1 DJNZ $AA9F    ;
- $AAA3 LD C,$02      ;
-*$AAA5 LDIR          ;
- $AAA7 POP DE        ;
- $AAA8 INC D         ;
- $AAA9 LD A,D        ;
- $AAAA AND $07       ;
- $AAAC JR NZ,$AAB8   ;
- $AAAE LD A,E        ;
+ $AAA1 DJNZ $AA9F    ; }
+ $AAA3 LD C,$02      ; Copy the last two actual characters
+*$AAA5 LDIR          ; Do the copy
+ $AAA7 POP DE        ; Restore
+ $AAA8 INC D         ; Next line
+ $AAA9 LD A,D        ; { Done all the lines?
+ $AAAA AND $07       ; }
+ $AAAC JR NZ,$AAB8   ; { Yes, move on }
+ $AAAE LD A,E        ; { Recalculate next line
  $AAAF ADD A,$20     ;
- $AAB1 LD E,A        ;
- $AAB2 JR C,$AAB8    ;
- $AAB4 LD A,D        ;
+ $AAB1 LD E,A        ; }
+ $AAB2 JR C,$AAB8    ; Move on if there are no more lines
+ $AAB4 LD A,D        ; { Calculate next screen address
  $AAB5 SUB $08       ;
- $AAB7 LD D,A        ;
-*$AAB8 POP BC        ;
- $AAB9 DJNZ $AA92    ;
- $AABB LD BC,$0300   ;
- $AABE LDIR          ;
- $AAC0 LD A,$05      ;
+ $AAB7 LD D,A        ; }
+*$AAB8 POP BC        ; Restore
+ $AAB9 DJNZ $AA92    ; Loop if there are more lines to copy
+ $AABB LD BC,$0300   ; { Copy the attributes
+ $AABE LDIR          ; }
+ $AAC0 LD A,$05      ; 
  $AAC2 LD ($A425),A  ;
- $AAC5 LD DE,$A85C   ;
+ $AAC5 LD DE,$A85C   ; { Copy the title screen UDG to screen 2
  $AAC8 LD HL,$9000   ;
- $AACB LD ($A426),HL ;
+ $AACB LD ($A426),HL ; 
  $AACE LD C,$FF      ;
- $AAD0 CALL $B763    ;
- $AAD3 CALL $B74A    ;
- $AAD6 LD A,$0E      ;
- $AAD8 LD ($A448),A  ;
+ $AAD0 CALL $B763    ; }
+ $AAD3 CALL $B74A    ; Copy title text to screen 2
+ $AAD6 LD A,$0E      ; { Wait for ENTER or H to be pressed
+ $AAD8 LD ($A448),A  ; }
  $AADB LD A,$01      ;
  $AADD LD ($A400),A  ;
  $AAE0 LD HL,$A8C9   ;
  $AAE3 LD ($A455),HL ;
  $AAE6 LD HL,$5800   ;
  $AAE9 LD ($A457),HL ;
-*$AAEC CALL $C1C0    ;
- $AAEF EX AF,AF'     ;
- $AAF0 JR Z,$AA86    ;
- $AAF2 RRA           ;
- $AAF3 JR C,$AB4C    ;
+*$AAEC CALL $C1C0    ; Display the title screen
+ $AAEF EX AF,AF'     ; Restore flags
+ $AAF0 JR Z,$AA86    ; Loop back if end of sequence reached 
+ $AAF2 RRA           ; Get the carry flag
+ $AAF3 JR C,$AB4C    ; Move ahead if we're starting the game
 ; Display instructions
- $AAF5 PUSH DE       ;
- $AAF6 LD HL,$4000   ;
+ $AAF5 PUSH DE       ; Store this
+ $AAF6 LD HL,$4000   ; { Clear the display file
  $AAF9 LD DE,$4001   ;
  $AAFC LD BC,$17FF   ;
  $AAFF LD (HL),$00   ;
- $AB01 LDIR          ;
- $AB03 INC HL        ;
- $AB04 INC DE        ;
- $AB05 LD (HL),$07   ;
+ $AB01 LDIR          ; }
+ $AB03 INC HL        ; { Onto the attributes
+ $AB04 INC DE        ; }
+ $AB05 LD (HL),$07   ; { Fill with white paper / blank ink
  $AB07 LD BC,$02FF   ;
- $AB0A LDIR          ;
- $AB0C LD DE,$A95A   ;
- $AB0F LD HL,$4000   ;
-*$AB12 LD A,(DE)     ;
- $AB13 CP $20        ;
- $AB15 JR NC,$AB22   ;
- $AB17 AND A         ;
- $AB18 JR Z,$AB33    ;
- $AB1A XOR L         ;
+ $AB0A LDIR          ; }
+ $AB0C LD DE,$A95A   ; Pointer to instruction text
+ $AB0F LD HL,$4000   ; Start of display file
+*$AB12 LD A,(DE)     ; Get the next character
+ $AB13 CP $20        ; Is this a printable character? ( > 20 )
+ $AB15 JR NC,$AB22   ; Jump forward if it is
+ $AB17 AND A         ; Is this the null terminating character?
+ $AB18 JR Z,$AB33    ; Jump forward if it is
+ $AB1A XOR L         ; { Skip to new line
  $AB1B AND $1F       ;
  $AB1D XOR L         ;
- $AB1E LD L,A        ;
- $AB1F INC DE        ;
- $AB20 JR $AB12      ;
-*$AB22 CALL $B74A    ;
- $AB25 LD A,L        ;
+ $AB1E LD L,A        ; }
+ $AB1F INC DE        ; { Next character
+ $AB20 JR $AB12      ; }
+*$AB22 CALL $B74A    ; Print the character
+ $AB25 LD A,L        ; { Continue if we've not hit the end of this third of the screen
  $AB26 AND $E0       ;
  $AB28 ADD A,$20     ;
  $AB2A LD L,A        ;
- $AB2B JR NC,$AB12   ;
- $AB2D LD A,H        ;
+ $AB2B JR NC,$AB12   ; }
+ $AB2D LD A,H        ; { Move to next third of the screen
  $AB2E ADD A,$08     ;
  $AB30 LD H,A        ;
- $AB31 JR $AB12      ;
-*$AB33 POP DE        ;
+ $AB31 JR $AB12      ; }
+*$AB33 POP DE        ; Restore DE
  $AB34 LD A,$1E      ;
  $AB36 LD ($A448),A  ;
  $AB39 LD A,$01      ;
  $AB3B LD ($A400),A  ;
- $AB3E LD HL,$A959   ;
- $AB41 LD ($A455),HL ;
- $AB44 DI            ;
- $AB45 CALL $C05C    ;
- $AB48 EX AF,AF'     ;
- $AB49 JR Z,$AAEC    ;
- $AB4B EI            ;
+ $AB3E LD HL,$A959   ; { Set next command to exit on keypress
+ $AB41 LD ($A455),HL ; }
+ $AB44 DI            ; Turn off interrupts - using the game's system instead
+ $AB45 CALL $C05C    ; Yield to the game's interrupt handler
+ $AB48 EX AF,AF'     ; Restore flags
+ $AB49 JR Z,$AAEC    ; If tune finished, go back to the title sequence
+ $AB4B EI            ; Interrupts back on
 ; Start a new game
-*$AB4C LD HL,$5000   ;
+*$AB4C LD HL,$5000   ; { Blank the bottom third of the screen
  $AB4F LD DE,$5001   ;
  $AB52 LD BC,$07FF   ;
  $AB55 LD (HL),$00   ;
- $AB57 LDIR          ;
+ $AB57 LDIR          ; }
  $AB59 LD A,$80      ;
  $AB5B LD ($A42B),A  ;
  $AB5E XOR A         ;
- $AB5F LD ($A42C),A  ;
- $AB62 LD ($A45E),A  ;
+ $AB5F LD ($A42C),A  ; Full set of lives
+ $AB62 LD ($A45E),A  ; No tasks completed
  $AB65 LD ($A437),A  ;
  $AB68 LD ($A439),A  ;
- $AB6B LD ($A43A),A  ;
+ $AB6B LD ($A43A),A  ; Not visited any previous room
  $AB6E LD ($A43B),A  ;
- $AB71 LD A,$01      ;
- $AB73 LD ($A440),A  ;
- $AB76 LD C,$05      ;
+ $AB71 LD A,$01      ; {
+ $AB73 LD ($A440),A  ; Tick once on every frame }
+ $AB76 LD C,$05      ; { Set time to 08:30
  $AB78 LD DE,$A425   ;
  $AB7B LD HL,$A8B7   ;
- $AB7E LDIR          ;
- $AB80 LD HL,$A45B   ;
+ $AB7E LDIR          ; }
+ $AB80 LD HL,$A45B   ; { Set tune on
  $AB83 LD A,(HL)     ;
  $AB84 AND $01       ;
- $AB86 LD (HL),A     ;
+ $AB86 LD (HL),A     ; }
 ; Detect a Kempston joystick
- $AB87 LD BC,$001F   ;
- $AB8A XOR A         ;
-*$AB8B IN D,(C)      ;
- $AB8D OR D          ;
- $AB8E DJNZ $AB8B    ;
- $AB90 AND $20       ;
- $AB92 JR NZ,$AB96   ;
- $AB94 SET 5,(HL)    ;
+ $AB87 LD BC,$001F   ; Port 31 for Kempston 
+ $AB8A XOR A         ; Check for any bits set
+*$AB8B IN D,(C)      ; Read it
+ $AB8D OR D          ; Set zero flag if nothing read
+ $AB8E DJNZ $AB8B    ; Try 256 times to read a port
+ $AB90 AND $20       ; Did we get a read on bit 5?
+ $AB92 JR NZ,$AB96   ; No, keyboard only
+ $AB94 SET 5,(HL)    ; Set Kempston active
 ; Initialize game flags
 *$AB96 XOR A         ;
- $AB97 LD ($A438),A  ;
+ $AB97 LD ($A438),A  ; Tick counter to 0
  $AB9A LD ($A40E),A  ;
  $AB9D LD ($A403),A  ;
- $ABA0 LD ($A422),A  ;
- $ABA3 LD HL,$88AC   ;
- $ABA6 LD ($A406),HL ;
+ $ABA0 LD ($A422),A  ; Move to The Factory Gates
+ $ABA3 LD HL,$88AC   ; { Put Ted at the starting position
+ $ABA6 LD ($A406),HL ; }
  $ABA9 LD HL,$A57B   ;
  $ABAC LD ($A408),HL ;
  $ABAF LD HL,$00E0   ;
@@ -3203,41 +3205,41 @@ c$AA65 LD SP,$5BFF   ;
  $ABBD LD ($A40F),A  ;
  $ABC0 LD HL,$0000   ;
  $ABC3 LD ($A44B),HL ;
- $ABC6 LD HL,($A477) ;
- $ABC9 LD ($A451),HL ;
+ $ABC6 LD HL,($A477) ; { Set theme tune to be in the in-game one
+ $ABC9 LD ($A451),HL ; }
  $ABCC LD A,$01      ;
  $ABCE LD ($A450),A  ;
  $ABD1 LD HL,$AA23   ;
  $ABD4 LD ($A459),HL ;
- $ABD7 LD HL,($A46D) ;
- $ABDA LD DE,$7DC0   ;
- $ABDD LD IX,$AA53   ;
- $ABE1 LD B,$31      ;
-*$ABE3 LD A,(HL)     ;
- $ABE4 SUB (IX+$00)  ;
- $ABE7 LD (DE),A     ;
- $ABE8 INC HL        ;
- $ABE9 INC DE        ;
- $ABEA LD A,(IX+$00) ;
- $ABED INC IX        ;
- $ABEF CP $DC        ;
- $ABF1 JR NZ,$ABF7   ;
- $ABF3 LD IX,$AA49   ;
-*$ABF7 DJNZ $ABE3    ;
+ $ABD7 LD HL,($A46D) ; Point to default room flags
+ $ABDA LD DE,$7DC0   ; Copy to working store at #R$7DC0
+ $ABDD LD IX,$AA53   ; Point to offset table
+ $ABE1 LD B,$31      ; Number of rooms
+*$ABE3 LD A,(HL)     ; Get the entry
+ $ABE4 SUB (IX+$00)  ; Subtract the offset
+ $ABE7 LD (DE),A     ; Set the copy in the working store
+ $ABE8 INC HL        ; { Next room
+ $ABE9 INC DE        ; }
+ $ABEA LD A,(IX+$00) ; { Next entry
+ $ABED INC IX        ; }
+ $ABEF CP $DC        ; Have we reached the end of the offset table?
+ $ABF1 JR NZ,$ABF7   ; No, skip this
+ $ABF3 LD IX,$AA49   ; If we reached the end of the offset table, loop back to the beginning
+*$ABF7 DJNZ $ABE3    ; Loop back if more to do
 *$ABF9 XOR A         ;
  $ABFA LD ($A436),A  ;
- $ABFD CALL $AE77    ;
+ $ABFD CALL $AE77    ; Set up the room data
  $AC00 LD A,($A45B)  ;
  $AC03 BIT 3,A       ;
  $AC05 LD A,$00      ;
  $AC07 JR NZ,$AC0F   ;
  $AC09 LD ($A42E),A  ;
  $AC0C LD ($A42F),A  ;
-*$AC0F LD ($5C78),A  ;
- $AC12 LD HL,$A403   ;
+*$AC0F LD ($5C78),A  ; Set the FRAMES system variable
+ $AC12 LD HL,$A403   ; { Copy current flags over to the "last visited" copy
  $AC15 LD DE,$A410   ;
  $AC18 LD BC,$000D   ;
- $AC1B LDIR          ;
+ $AC1B LDIR          ; }
  $AC1D LD HL,$A439   ;
  $AC20 LD A,(HL)     ;
  $AC21 AND $E6       ;
@@ -3249,44 +3251,44 @@ c$AA65 LD SP,$5BFF   ;
  $AC2D LD HL,($A406) ;
  $AC30 LD A,($A40F)  ;
  $AC33 LD C,A        ;
- $AC34 CALL $B9EF    ;
- $AC37 CALL $AF5D    ;
- $AC3A JR C,$ACB2    ;
-; Move to another roo
- $AC3C BIT 7,A       ;
- $AC3E JP NZ,$AD56   ;
- $AC41 LD HL,($A422) ;
- $AC44 LD H,$00      ;
+ $AC34 CALL $B9EF    ; Set up moving objects and check collision detection
+ $AC37 CALL $AF5D    ; Enter the room and play until we leave it
+ $AC3A JR C,$ACB2    ; Jump forward if we left by losing a life
+; Move to another room
+ $AC3C BIT 7,A       ; Did we leave the room by walking out of it?
+ $AC3E JP NZ,$AD56   ; Jump if not
+ $AC41 LD HL,($A422) ; Get current room
+ $AC44 LD H,$00      ; { Set HL and DE to be offsets in the next rooms table
  $AC46 LD E,L        ;
  $AC47 LD D,H        ;
  $AC48 ADD HL,HL     ;
- $AC49 ADD HL,HL     ;
- $AC4A LD BC,($A46F) ;
- $AC4E ADD HL,BC     ;
- $AC4F LD C,A        ;
- $AC50 LD B,$00      ;
- $AC52 ADD HL,BC     ;
- $AC53 LD A,($A422)  ;
- $AC56 CP $2A        ;
- $AC58 JR NZ,$AC65   ;
- $AC5A LD A,($A43A)  ;
- $AC5D CP $2B        ;
- $AC5F JR NZ,$AC73   ;
+ $AC49 ADD HL,HL     ; }
+ $AC4A LD BC,($A46F) ; { Add the base of the next rooms table
+ $AC4E ADD HL,BC     ; }
+ $AC4F LD C,A        ; { Add offset for the direction
+ $AC50 LD B,$00      ; 
+ $AC52 ADD HL,BC     ; }
+ $AC53 LD A,($A422)  ; { Are we in the lift?
+ $AC56 CP $2A        ; }
+ $AC58 JR NZ,$AC65   ; Jump if we're not
+ $AC5A LD A,($A43A)  ; { Were we previously in the Forgotten Room?
+ $AC5D CP $2B        ; }
+ $AC5F JR NZ,$AC73   ; Jump if we weren't
  $AC61 LD A,$0F      ;
  $AC63 JR $AC73      ;
-*$AC65 LD ($A43A),A  ;
- $AC68 LD A,(HL)     ;
- $AC69 SRL E         ;
- $AC6B SRL E         ;
- $AC6D LD HL,$AA4A   ;
- $AC70 ADD HL,DE     ;
- $AC71 ADD HL,BC     ;
- $AC72 ADD A,(HL)    ;
-*$AC73 LD ($A422),A  ;
- $AC76 CP $30        ;
- $AC78 JP Z,$AD2B    ;
- $AC7B BIT 0,C       ;
- $AC7D JR NZ,$AC89   ;
+*$AC65 LD ($A43A),A  ; Set last visited room to this one
+ $AC68 LD A,(HL)     ; Get the appropriate next room entry
+ $AC69 SRL E         ; { Divide by 4
+ $AC6B SRL E         ; }
+ $AC6D LD HL,$AA4A   ; Point to the offset table
+ $AC70 ADD HL,DE     ; Add the offset
+ $AC71 ADD HL,BC     ; Add the direction
+ $AC72 ADD A,(HL)    ; Add this to the basic value in the next room table to give us the next room
+*$AC73 LD ($A422),A  ; Store next room
+ $AC76 CP $30        ; Is this the final room?
+ $AC78 JP Z,$AD2B    ; Move forward if it is
+ $AC7B BIT 0,C       ; Was the room entered by jumping or falling?
+ $AC7D JR NZ,$AC89   ; No, move on
  $AC7F LD A,($A406)  ;
  $AC82 XOR $1E       ;
  $AC84 LD ($A406),A  ;
@@ -3311,7 +3313,7 @@ c$AA65 LD SP,$5BFF   ;
  $ACA9 BIT 3,(HL)    ;
  $ACAB JR Z,$ACAF    ;
  $ACAD SET 4,(HL)    ;
-*$ACAF JP $ABF9      ;
+*$ACAF JP $ABF9      ; Jump back round to play the next room
 ; Lost a life - flash the screen and restart the room
 *$ACB2 LD A,($A42D)  ;
  $ACB5 ADD A,$08     ;
@@ -4919,6 +4921,7 @@ c$B755 LD B,A        ;
 ;
 ; HL Screen address to copy to
 ; DE Address of UDG graphic data
+; C Bitmask to apply to all cells (or FF for none)
 c$B760 LD DE,$A854   ;
 ; This entry point is used by the routines at #R$AA65 and #R$B140.
 *$B763 PUSH HL       ;

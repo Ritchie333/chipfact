@@ -20,7 +20,7 @@
 <td class="next"><span class="next-1">Next: <a href="42834.html">A752</a></span></td>
 </tr>
 </table>
-<div class="description">A72F: Check for input based on a particular table</div>
+<div class="description">A72F: Check for input based on a particular table. Returns with the zero flag set if there was a match.</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="4">
@@ -47,13 +47,13 @@ Used by the routine at <a href="47895.html">BB17</a>.
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="42799"></span>A72F</td>
 <td class="instruction">LD HL,$A752</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">LEFT input table</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42802"></span>A732</td>
 <td class="instruction">JR $A73C</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="4">
@@ -69,13 +69,13 @@ This entry point is used by the routine at <a href="47895.html">BB17</a>.
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="42804"></span>A734</td>
 <td class="instruction">LD HL,$A75C</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">RIGHT input table</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42807"></span>A737</td>
 <td class="instruction">JR $A73C</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="4">
@@ -91,7 +91,7 @@ This entry point is used by the routine at <a href="47895.html">BB17</a>.
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="42809"></span>A739</td>
 <td class="instruction">LD HL,$A764</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">JUMP input table</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="4">
@@ -107,55 +107,55 @@ Check any valid keys have been pressed
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="42812"></span>A73C</td>
 <td class="instruction">LD B,(HL)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get the count of table entries</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="42813"></span>A73D</td>
 <td class="instruction">INC HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move to next entry</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42814"></span>A73E</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get the row to check</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42815"></span>A73F</td>
 <td class="instruction">INC HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move to the bitmask</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42816"></span>A740</td>
 <td class="instruction">IN A,($FE)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get the key</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42818"></span>A742</td>
 <td class="instruction">CPL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Check against the bitmask</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42819"></span>A743</td>
 <td class="instruction">AND (HL)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42820"></span>A744</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Return if there was a match</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42821"></span>A745</td>
 <td class="instruction">DJNZ $A73D</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Otherwise try the next one</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="4">
@@ -171,43 +171,43 @@ Check for Kempston joystick, if we have it
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42823"></span>A747</td>
 <td class="instruction">LD A,($A45B)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="3">Abort if we don't have Kempston configured</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42826"></span>A74A</td>
 <td class="instruction">BIT 5,A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42828"></span>A74C</td>
 <td class="instruction">RET Z</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42829"></span>A74D</td>
 <td class="instruction">IN A,($1F)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Read the port</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42831"></span>A74F</td>
 <td class="instruction">INC HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move to the Kempston entry</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42832"></span>A750</td>
 <td class="instruction">AND (HL)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Check the appropriate movement and return with the zero flag set if the movement was found</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="42833"></span>A751</td>
 <td class="instruction">RET</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 </table>
 <table class="asm-navigation">

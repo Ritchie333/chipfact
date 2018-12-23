@@ -23,8 +23,14 @@ Immortality
 Walk through walls
   BA5F,0
 
+Fall any height
+  BBBA,0
+
 Complete tasks in any order
   B371,0
+
+Stop the clock during play
+  B0AE, 21
 [OtherCode:Loading system]
 Source=chipfact_loader.skool
 [RoomFormatText]
