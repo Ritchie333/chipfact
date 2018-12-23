@@ -115,7 +115,7 @@ w $A465 Pointer to conveyor belt graphics
 w $A467 Pointer to task button graphics
 w $A469 Pointer to moving graphics offsets
 w $A46B Pointer to moving graphics data
-w $A46D Pointer to data
+w $A46D Pointer to default room flags
 w $A46F Pointer to next rooms
 w $A471 Pointer to room offsets
 w $A473 Pointer to room data
@@ -458,17 +458,17 @@ D $C539 #UDG$C549,7#UDG$C551,7
 b $C559 UDG 53 - Lift 6
 D $C559 #UDG$C559,7#UDG$C561,7
 D $C559 #UDG$C569,7#UDG$C571,7
-b $C579 UDG 47
+b $C579 UDG 57
 D $C579 #UDG$C579,7
-b $C581 UDG 48
+b $C581 UDG 58
 D $C581 #UDG$C581,7
-b $C589 UDG 49
+b $C589 UDG 59
 D $C589 #UDG$C589,7
-b $C591 UDG 4A
+b $C591 UDG 5A
 D $C591 #UDG$C591,7
-b $C599 UDG 4B
+b $C599 UDG 5B
 D $C599 #UDG$C599,7
-b $C5A1 UDG 4C
+b $C5A1 UDG 5C
 D $C5A1 #UDG$C5A1,7
 b $C5A9 UDG Conveyor belt 1 (4 frames)
 D $C5A9 #UDG$C5A9,7 #UDG$C5B1,7 #UDG$C5B9,7 #UDG$C5C1,7
@@ -681,7 +681,7 @@ b $E071 Sprite 23 : 1620 - cheque
 D $E071 #UDG$E071,7,,2#UDG$E072,7,,2 #UDG$E091,7,,2#UDG$E092,7,,2 #UDG$E0B1,7,,2#UDG$E0B2,7,,2 #UDG$E0D1,7,,2#UDG$E0D2,7,,2
 D $E071 #UDG$E081,7,,2#UDG$E082,7,,2 #UDG$E0A1,7,,2#UDG$E0A2,7,,2 #UDG$E0C1,7,,2#UDG$E0C2,7,,2 #UDG$E0E1,7,,2#UDG$E0E2,7,,2
 b $E0F1 Initial room flags
-D $E0F1 Each entry holds flags for the current room. These are copied to #R$7DC0 when the game starts, and then modified as tasks are completed.
+D $E0F1 Each entry holds default flags for each room. These are copied to #R$7DC0 when the game starts, and then modified as tasks are completed.
 D $E0F1 Used in conjunction with the offset table at #R$AA49
 b $E122 Next room table
 B $E122,$C4,4*$31

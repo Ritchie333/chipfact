@@ -2596,7 +2596,7 @@ w$A469 DEFW $CA09
 ; Pointer to moving graphics data
 w$A46B DEFW $CA51
 
-; Pointer to data
+; Pointer to default room flags
 w$A46D DEFW $E0F1
 
 ; Pointer to next rooms
@@ -7135,32 +7135,32 @@ b$C559 DEFB $FF,$FF,$F0,$E0,$C0,$C7,$CF,$C8
  $C569 DEFB $C0,$C7,$C7,$C0,$E0,$F0,$FF,$FF
  $C571 DEFB $07,$E3,$E3,$03,$07,$0F,$FF,$FF
 
-; UDG 47
+; UDG 57
 ;
 ; #UDG$C579,7
 b$C579 DEFB $DB,$A5,$5A,$A5,$5A,$A5,$DB,$00
 
-; UDG 48
+; UDG 58
 ;
 ; #UDG$C581,7
 b$C581 DEFB $FF,$55,$00,$00,$00,$00,$00,$00
 
-; UDG 49
+; UDG 59
 ;
 ; #UDG$C589,7
 b$C589 DEFB $18,$3C,$7E,$DB,$18,$18,$18,$18
 
-; UDG 4A
+; UDG 5A
 ;
 ; #UDG$C591,7
 b$C591 DEFB $FF,$92,$92,$92,$92,$92,$92,$92
 
-; UDG 4B
+; UDG 5B
 ;
 ; #UDG$C599,7
 b$C599 DEFB $FF,$49,$49,$49,$49,$49,$49,$49
 
-; UDG 4C
+; UDG 5C
 ;
 ; #UDG$C5A1,7
 b$C5A1 DEFB $55,$AA,$41,$82,$41,$82,$41,$82
@@ -8589,8 +8589,8 @@ b$E071 DEFB $00,$2B,$00,$D5,$03,$EB,$1F,$FF
 
 ; Initial room flags
 ;
-; Each entry holds flags for the current room. These are copied to #R$7DC0 when
-; the game starts, and then modified as tasks are completed.
+; Each entry holds default flags for each room. These are copied to #R$7DC0
+; when the game starts, and then modified as tasks are completed.
 ; .
 ; Used in conjunction with the offset table at #R$AA49
 b$E0F1 DEFB $D7,$CF,$C0,$D3,$C0,$2A,$70,$4E
