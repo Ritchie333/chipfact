@@ -140,6 +140,9 @@ B $A75C,9,1,2*3
 b $A764 Offsets for JUMP input
 B $A764,7,1,2*3
 b $A76C Movement table
+b $A7BD Movement table - game over
+b $A813 Movement table - game won
+b $A844
 b $A85C UDG for main title text character
 D $A85C #UDG$A85C,7
 t $A864 FEATURING 'TECHNICIAN TED'
