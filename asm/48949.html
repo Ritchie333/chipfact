@@ -20,7 +20,7 @@
 <td class="next"><span class="next-1">Next: <a href="48971.html">BF4B</a></span></td>
 </tr>
 </table>
-<div class="description">BF35: Play a "killed" sound</div>
+<div class="description">BF35: Invert the screen (caused when losing a life)</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="4">
@@ -47,79 +47,79 @@ Used by the routine at <a href="43621.html">AA65</a>.
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="48949"></span>BF35</td>
 <td class="instruction">LD HL,$5800</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Start of attributes</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="48952"></span>BF38</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get next attribute</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48953"></span>BF39</td>
 <td class="instruction">XOR $3F</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Flip all paper and ink bits</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48955"></span>BF3B</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Store it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48956"></span>BF3C</td>
 <td class="instruction">INC HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next attribute</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48957"></span>BF3D</td>
 <td class="instruction">BIT 1,H</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Have reached $5A00?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48959"></span>BF3F</td>
 <td class="instruction">JR Z,$BF38</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">No, loop back and do the next attribute</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48961"></span>BF41</td>
 <td class="instruction">LD HL,$A421</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Get current border colour</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48964"></span>BF44</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48965"></span>BF45</td>
 <td class="instruction">XOR $07</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Invert the bits relevant to the border</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48967"></span>BF47</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Store it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48968"></span>BF48</td>
 <td class="instruction">OUT ($FE),A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Output it so the effect takes place immediately</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48970"></span>BF4A</td>
 <td class="instruction">RET</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">All done</td>
 </tr>
 </table>
 <table class="asm-navigation">

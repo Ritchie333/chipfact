@@ -833,7 +833,7 @@ Start a new game
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="43880"></span>AB68</td>
 <td class="instruction">LD ($A439),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Not dead</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -991,7 +991,7 @@ Initialize game flags
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="43930"></span>AB9A</td>
 <td class="instruction">LD ($A40E),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">On the ground</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1202,6 +1202,16 @@ Initialize game flags
 <td class="address-2"><span id="44023"></span>ABF7</td>
 <td class="instruction">DJNZ $ABE3</td>
 <td class="comment-11" rowspan="1">Loop back if more to do</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="4">
+<span id="44025"></span>
+<div class="comments">
+<div class="paragraph">
+Main game loop starts here
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1767,13 +1777,13 @@ Lost a life - flash the screen and restart the room
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44216"></span>ACB8</td>
 <td class="instruction">CALL <a href="48949.html">$BF35</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Invert the screen</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44219"></span>ACBB</td>
 <td class="instruction">LD IX,$A8C1</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Point to "killed" sound data</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1803,7 +1813,7 @@ Lost a life - flash the screen and restart the room
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44231"></span>ACC7</td>
 <td class="instruction">CALL <a href="48886.html">$BEF6</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Play it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1869,7 +1879,7 @@ Lost a life - flash the screen and restart the room
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44252"></span>ACDC</td>
 <td class="instruction">CALL <a href="48949.html">$BF35</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Invert the screen (back to normal)</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1923,85 +1933,85 @@ Lost a life - flash the screen and restart the room
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44271"></span>ACEF</td>
 <td class="instruction">LD HL,$A439</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get flags</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44274"></span>ACF2</td>
 <td class="instruction">BIT 0,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Has Ted entered the room safely?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44276"></span>ACF4</td>
 <td class="instruction">JR NZ,$AD05</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move forward if so</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44278"></span>ACF6</td>
 <td class="instruction">BIT 1,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Has Ted entered the room and died without hitting a safe spot?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44280"></span>ACF8</td>
 <td class="instruction">JR Z,$AD03</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move forward if so</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44282"></span>ACFA</td>
 <td class="instruction">LD A,$28</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="4">Pause for a bit</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="44284"></span>ACFC</td>
 <td class="instruction">DJNZ $ACFC</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44286"></span>ACFE</td>
 <td class="instruction">DEC A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44287"></span>ACFF</td>
 <td class="instruction">JR NZ,$ACFC</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44289"></span>AD01</td>
 <td class="instruction">JR $ACB2</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Back round to lose another life</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="44291"></span>AD03</td>
 <td class="instruction">SET 1,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Ted died when entering the room without hitting a safe spot, set "infinite death" flag</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="44293"></span>AD05</td>
 <td class="instruction">LD HL,$A410</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="3">Copy flags from the last room into the current one</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44296"></span>AD08</td>
 <td class="instruction">LD DE,$A403</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44299"></span>AD0B</td>
 <td class="instruction">LD BC,$000D</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -2085,79 +2095,79 @@ Lost a life - flash the screen and restart the room
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="44328"></span>AD28</td>
 <td class="instruction">JP $ABF9</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Back round to main loop</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="44331"></span>AD2B</td>
 <td class="instruction">LD A,($A45E)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Have we completed all 21 tasks?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44334"></span>AD2E</td>
 <td class="instruction">CP $15</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44336"></span>AD30</td>
 <td class="instruction">JR NZ,$AD56</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">No, so jump forward to the "Game over" routine</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44338"></span>AD32</td>
 <td class="instruction">LD HL,$7DC0</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Point to the room flags table</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44341"></span>AD35</td>
 <td class="instruction">XOR A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set A to 0 to check against room flags</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44342"></span>AD36</td>
 <td class="instruction">LD B,$31</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Iterate through all rooms</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="44344"></span>AD38</td>
 <td class="instruction">OR (HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Test for any flags set - this will be reflected in A</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44345"></span>AD39</td>
 <td class="instruction">INC HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next room</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44346"></span>AD3A</td>
 <td class="instruction">DJNZ $AD38</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Repeat until all rooms checked</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44348"></span>AD3C</td>
 <td class="instruction">RLA</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Was bit 8 set?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44349"></span>AD3D</td>
 <td class="instruction">JR C,$AD56</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Yes, a room wasn't completed properly, so jump to "Game over"</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44351"></span>AD3F</td>
 <td class="instruction">CALL <a href="44584.html">$AE28</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Ted has reached the last room with all tasks done - game won!</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -2317,13 +2327,13 @@ Run out of lives
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44428"></span>AD8C</td>
 <td class="instruction">LD A,$30</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Move straight to the final room</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44430"></span>AD8E</td>
 <td class="instruction">LD ($A422),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -2341,7 +2351,7 @@ Run out of lives
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44438"></span>AD96</td>
 <td class="instruction">CALL <a href="44663.html">$AE77</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Enter the final room</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -2401,7 +2411,7 @@ Run out of lives
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44465"></span>ADB1</td>
 <td class="instruction">CALL <a href="44893.html">$AF5D</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Enter the room and run the final sequence</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -2431,7 +2441,7 @@ Run out of lives
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44475"></span>ADBB</td>
 <td class="instruction">JP $AA81</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Jump back to the title screen</td>
 </tr>
 </table>
 <table class="asm-navigation">

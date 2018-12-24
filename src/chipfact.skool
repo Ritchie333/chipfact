@@ -2405,8 +2405,11 @@ g$A408 DEFB $78,$30
 ; Game status buffer entry at A40A
 g$A40A DEFB $30,$32,$1C,$00
 
-; Game status buffer entry at A40E
-g$A40E DEFB $00,$00
+; Height Ted has fallen by
+g$A40E DEFB $00
+
+; Game status buffer entry at A40F
+g$A40F DEFB $00
 
 ; Pointer to movement table when room was entered
 g$A410 DEFB $62,$62
@@ -2417,8 +2420,11 @@ g$A412 DEFB $62,$62
 ; Pointer to graphic buffer of Ted when entered the room
 g$A414 DEFB $3C,$00
 
-; Game status buffer entry at A416
-g$A416 DEFB $00,$00
+; Height Ted had fallen when entering the room
+g$A416 DEFB $00
+
+; Game status buffer entry at A417
+g$A417 DEFB $00
 
 ; Game status buffer entry at A418
 g$A418 DEFB $62,$62,$34,$34,$18
@@ -3165,7 +3171,7 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $AB5F LD ($A42C),A  ; Full set of lives
  $AB62 LD ($A45E),A  ; No tasks completed
  $AB65 LD ($A437),A  ;
- $AB68 LD ($A439),A  ;
+ $AB68 LD ($A439),A  ; Not dead
  $AB6B LD ($A43A),A  ; Not visited any previous room
  $AB6E LD ($A43B),A  ;
  $AB71 LD A,$01      ; {
@@ -3190,7 +3196,7 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
 ; Initialize game flags
 *$AB96 XOR A         ;
  $AB97 LD ($A438),A  ; Tick counter to 0
- $AB9A LD ($A40E),A  ;
+ $AB9A LD ($A40E),A  ; On the ground
  $AB9D LD ($A403),A  ;
  $ABA0 LD ($A422),A  ; Move to The Factory Gates
  $ABA3 LD HL,$88AC   ; { Put Ted at the starting position
@@ -3226,6 +3232,7 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $ABF1 JR NZ,$ABF7   ; No, skip this
  $ABF3 LD IX,$AA49   ; If we reached the end of the offset table, loop back to the beginning
 *$ABF7 DJNZ $ABE3    ; Loop back if more to do
+; Main game loop starts here
 *$ABF9 XOR A         ;
  $ABFA LD ($A436),A  ;
  $ABFD CALL $AE77    ; Set up the room data
@@ -3318,13 +3325,13 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
 *$ACB2 LD A,($A42D)  ;
  $ACB5 ADD A,$08     ;
  $ACB7 LD C,A        ;
- $ACB8 CALL $BF35    ;
- $ACBB LD IX,$A8C1   ;
+ $ACB8 CALL $BF35    ; Invert the screen
+ $ACBB LD IX,$A8C1   ; Point to "killed" sound data
 *$ACBF LD L,(IX+$00) ;
  $ACC2 LD H,$00      ;
  $ACC4 LD B,$0A      ;
  $ACC6 PUSH BC       ;
- $ACC7 CALL $BEF6    ;
+ $ACC7 CALL $BEF6    ; Play it
  $ACCA POP BC        ;
  $ACCB AND A         ;
  $ACCC LD HL,$AD51   ;
@@ -3335,7 +3342,7 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $ACD6 LD A,($A42D)  ;
  $ACD9 CP C          ;
  $ACDA JR NZ,$ACBF   ;
- $ACDC CALL $BF35    ;
+ $ACDC CALL $BF35    ; Invert the screen (back to normal)
  $ACDF LD A,($A42C)  ;
  $ACE2 INC A         ;
  $ACE3 LD ($A42C),A  ;
@@ -3344,20 +3351,20 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $ACE9 LD H,$5A      ;
  $ACEB LD A,($A45D)  ;
  $ACEE LD (HL),A     ;
- $ACEF LD HL,$A439   ;
- $ACF2 BIT 0,(HL)    ;
- $ACF4 JR NZ,$AD05   ;
- $ACF6 BIT 1,(HL)    ;
- $ACF8 JR Z,$AD03    ;
- $ACFA LD A,$28      ;
+ $ACEF LD HL,$A439   ; Get flags
+ $ACF2 BIT 0,(HL)    ; Has Ted entered the room safely?
+ $ACF4 JR NZ,$AD05   ; Move forward if so
+ $ACF6 BIT 1,(HL)    ; Has Ted entered the room and died without hitting a safe spot?
+ $ACF8 JR Z,$AD03    ; Move forward if so
+ $ACFA LD A,$28      ; { Pause for a bit
 *$ACFC DJNZ $ACFC    ;
  $ACFE DEC A         ;
- $ACFF JR NZ,$ACFC   ;
- $AD01 JR $ACB2      ;
-*$AD03 SET 1,(HL)    ;
-*$AD05 LD HL,$A410   ;
+ $ACFF JR NZ,$ACFC   ; }
+ $AD01 JR $ACB2      ; Back round to lose another life
+*$AD03 SET 1,(HL)    ; Ted died when entering the room without hitting a safe spot, set "infinite death" flag
+*$AD05 LD HL,$A410   ; { Copy flags from the last room into the current one
  $AD08 LD DE,$A403   ;
- $AD0B LD BC,$000D   ;
+ $AD0B LD BC,$000D   ; } 
  $AD0E LDIR          ;
  $AD10 LD HL,$A45B   ;
  $AD13 BIT 3,(HL)    ;
@@ -3371,19 +3378,19 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $AD23 LD DE,$7DC0   ;
  $AD26 ADD HL,DE     ;
  $AD27 LD (HL),A     ;
-*$AD28 JP $ABF9      ;
-*$AD2B LD A,($A45E)  ;
- $AD2E CP $15        ;
- $AD30 JR NZ,$AD56   ;
- $AD32 LD HL,$7DC0   ;
- $AD35 XOR A         ;
- $AD36 LD B,$31      ;
-*$AD38 OR (HL)       ;
- $AD39 INC HL        ;
- $AD3A DJNZ $AD38    ;
- $AD3C RLA           ;
- $AD3D JR C,$AD56    ;
- $AD3F CALL $AE28    ;
+*$AD28 JP $ABF9      ; Back round to main loop
+*$AD2B LD A,($A45E)  ; { Have we completed all 21 tasks?
+ $AD2E CP $15        ; }
+ $AD30 JR NZ,$AD56   ; No, so jump forward to the "Game over" routine
+ $AD32 LD HL,$7DC0   ; Point to the room flags table
+ $AD35 XOR A         ; Set A to 0 to check against room flags
+ $AD36 LD B,$31      ; Iterate through all rooms
+*$AD38 OR (HL)       ; Test for any flags set - this will be reflected in A
+ $AD39 INC HL        ; Next room
+ $AD3A DJNZ $AD38    ; Repeat until all rooms checked
+ $AD3C RLA           ; Was bit 8 set?
+ $AD3D JR C,$AD56    ; Yes, a room wasn't completed properly, so jump to "Game over"
+ $AD3F CALL $AE28    ; Ted has reached the last room with all tasks done - game won!
 *$AD42 LD HL,$88BE   ;
  $AD45 LD DE,$A813   ;
  $AD48 LD BC,$010D   ;
@@ -3409,11 +3416,11 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $AD83 LD ($A40F),A  ;
  $AD86 LD A,(IX-$01) ;
  $AD89 LD ($A43C),A  ;
- $AD8C LD A,$30      ;
- $AD8E LD ($A422),A  ;
+ $AD8C LD A,$30      ; { Move straight to the final room 
+ $AD8E LD ($A422),A  ; }
  $AD91 LD HL,$A45B   ;
  $AD94 SET 4,(HL)    ;
- $AD96 CALL $AE77    ;
+ $AD96 CALL $AE77    ; Enter the final room
  $AD99 CALL $BECF    ;
  $AD9C XOR A         ;
  $AD9D LD ($A42F),A  ;
@@ -3423,12 +3430,12 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $ADA9 LD ($A403),A  ;
  $ADAC LD HL,$A439   ;
  $ADAF SET 2,(HL)    ;
- $ADB1 CALL $AF5D    ;
+ $ADB1 CALL $AF5D    ; Enter the room and run the final sequence
  $ADB4 LD HL,($7ED0) ;
  $ADB7 LD A,H        ;
  $ADB8 OR L          ;
  $ADB9 JR Z,$AD42    ;
- $ADBB JP $AA81      ;
+ $ADBB JP $AA81      ; Jump back to the title screen
 
 ; Adjust movement in the final room
 ;
@@ -5628,16 +5635,16 @@ c$BB17 LD HL,($A408) ;
  $BBAA LD A,$01      ;
  $BBAC JR $BB93      ;
 *$BBAE EX DE,HL      ;
- $BBAF CALL $BA34    ;
- $BBB2 RET C         ;
+ $BBAF CALL $BA34    ; Has Ted collided with anything?
+ $BBB2 RET C         ; If he has, and it's fatal, exit with carry flag set
  $BBB3 LD D,A        ;
- $BBB4 LD HL,$A40E   ;
- $BBB7 LD A,$27      ;
- $BBB9 CP (HL)       ;
- $BBBA RET C         ;
- $BBBB LD (HL),$00   ;
- $BBBD LD HL,$A439   ;
- $BBC0 SET 0,(HL)    ;
+ $BBB4 LD HL,$A40E   ; Get the fallen height
+ $BBB7 LD A,$27      ; { Is it more than the maximum to survive?
+ $BBB9 CP (HL)       ; }
+ $BBBA RET C         ; If not, return with carry flag set to show life lost
+ $BBBB LD (HL),$00   ; Set on the ground
+ $BBBD LD HL,$A439   ; { Mark that Ted will not get an infinite death loop now 
+ $BBC0 SET 0,(HL)    ; }
  $BBC2 LD HL,$010D   ;
  $BBC5 LD ($A40C),HL ;
  $BBC8 XOR A         ;
@@ -5745,9 +5752,9 @@ c$BB17 LD HL,($A408) ;
  $BC88 LD A,($A403)  ;
  $BC8B OR $08        ;
  $BC8D LD ($A403),A  ;
- $BC90 LD DE,$A40E   ;
+ $BC90 LD DE,$A40E   ; { Increase height fallen by
 *$BC93 LD A,(DE)     ;
- $BC94 INC A         ;
+ $BC94 INC A         ; }
  $BC95 JR NZ,$BC98   ;
  $BC97 DEC A         ;
 *$BC98 LD (DE),A     ;
@@ -6149,22 +6156,22 @@ c$BF1B PUSH BC       ;
  $BF33 EI            ;
  $BF34 RET           ;
 
-; Play a "killed" sound
+; Invert the screen (caused when losing a life)
 ;
 ; Used by the routine at #R$AA65.
-c$BF35 LD HL,$5800   ;
-*$BF38 LD A,(HL)     ;
- $BF39 XOR $3F       ;
- $BF3B LD (HL),A     ;
- $BF3C INC HL        ;
- $BF3D BIT 1,H       ;
- $BF3F JR Z,$BF38    ;
- $BF41 LD HL,$A421   ;
- $BF44 LD A,(HL)     ;
- $BF45 XOR $07       ;
- $BF47 LD (HL),A     ;
- $BF48 OUT ($FE),A   ;
- $BF4A RET           ;
+c$BF35 LD HL,$5800   ; Start of attributes
+*$BF38 LD A,(HL)     ; Get next attribute
+ $BF39 XOR $3F       ; Flip all paper and ink bits
+ $BF3B LD (HL),A     ; Store it
+ $BF3C INC HL        ; Next attribute
+ $BF3D BIT 1,H       ; Have reached $5A00?
+ $BF3F JR Z,$BF38    ; No, loop back and do the next attribute
+ $BF41 LD HL,$A421   ; { Get current border colour
+ $BF44 LD A,(HL)     ; }
+ $BF45 XOR $07       ; Invert the bits relevant to the border
+ $BF47 LD (HL),A     ; Store it
+ $BF48 OUT ($FE),A   ; Output it so the effect takes place immediately
+ $BF4A RET           ; All done
 
 ; Interruptable routine A
 ;
