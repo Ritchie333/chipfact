@@ -47,97 +47,97 @@ Used by the routine at <a href="46960.html">B770</a>.
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46983"></span>B787</td>
 <td class="instruction">LD HL,$A429</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Last digit of timer</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46986"></span>B78A</td>
 <td class="instruction">LD B,$04</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Number of digits to update</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46988"></span>B78C</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get next digit</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46989"></span>B78D</td>
 <td class="instruction">INC A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Increment it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46990"></span>B78E</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46991"></span>B78F</td>
 <td class="instruction">BIT 0,B</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Are we handling the minutes digit?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46993"></span>B791</td>
 <td class="instruction">JR Z,$B795</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move on if not</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46995"></span>B793</td>
 <td class="instruction">ADD A,$04</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Adjust 60 -&gt; 00 for minutes in the hour</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46997"></span>B795</td>
 <td class="instruction">CP $3A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Have we overflowed past 9?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46999"></span>B797</td>
 <td class="instruction">JR C,<a href="47011.html">$B7A3</a></td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Jump forward if we haven't</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47001"></span>B799</td>
 <td class="instruction">LD (HL),$30</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Put '0' in this column</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47003"></span>B79B</td>
 <td class="instruction">DEC HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move to next column</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47004"></span>B79C</td>
 <td class="instruction">BIT 0,B</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Are we handling minutes?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47006"></span>B79E</td>
 <td class="instruction">JR Z,$B7A1</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move on if not</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47008"></span>B7A0</td>
 <td class="instruction">DEC HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">After minutes, skip one column for hours</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="47009"></span>B7A1</td>
 <td class="instruction">DJNZ $B78C</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Loop back for next digit</td>
 </tr>
 </table>
 <table class="asm-navigation">

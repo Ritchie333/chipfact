@@ -54,37 +54,37 @@ Used by the routines at <a href="43621.html">AA65</a>, <a href="45376.html">B140
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46922"></span>B74A</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get first character</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46923"></span>B74B</td>
 <td class="instruction">INC DE</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Increment string pointer ready for next one</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46924"></span>B74C</td>
 <td class="instruction">BIT 7,A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Is bit 7 set?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46926"></span>B74E</td>
 <td class="instruction">JR Z,<a href="46893.html#46919">$B747</a></td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">If not, print and carry on</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46928"></span>B750</td>
 <td class="instruction">AND $7F</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Strip off the extra bit</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46930"></span>B752</td>
 <td class="instruction">JP <a href="46893.html">$B72D</a></td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Print this character then exit</td>
 </tr>
 </table>
 <table class="asm-navigation">

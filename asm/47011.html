@@ -47,85 +47,85 @@ Used by the routines at <a href="45376.html">B140</a> and <a href="46983.html">B
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="47011"></span>B7A3</td>
 <td class="instruction">LD HL,$A425</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get time</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47014"></span>B7A6</td>
 <td class="instruction">LD DE,$A8BC</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get "end of day" time</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47017"></span>B7A9</td>
 <td class="instruction">LD B,$05</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Five character to check</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="47019"></span>B7AB</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get next character</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47020"></span>B7AC</td>
 <td class="instruction">CP (HL)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Is there a match?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47021"></span>B7AD</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Return if not</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47022"></span>B7AE</td>
 <td class="instruction">INC HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next time character</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47023"></span>B7AF</td>
 <td class="instruction">INC DE</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next check character</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47024"></span>B7B0</td>
 <td class="instruction">DJNZ $B7AB</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Loop to check more</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47026"></span>B7B2</td>
 <td class="instruction">XOR A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set zero flag</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47027"></span>B7B3</td>
 <td class="instruction">POP HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="2">"Throw exception" and bypass stack calls</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47028"></span>B7B4</td>
 <td class="instruction">POP HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47029"></span>B7B5</td>
 <td class="instruction">LD A,$80</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Signal "out of time"</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47031"></span>B7B7</td>
 <td class="instruction">RET</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Bail out</td>
 </tr>
 </table>
 <table class="asm-navigation">

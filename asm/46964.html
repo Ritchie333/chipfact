@@ -47,67 +47,67 @@ Used by the routine at <a href="45376.html">B140</a>.
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46964"></span>B774</td>
 <td class="instruction">LD HL,$50FB</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Where to print it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46967"></span>B777</td>
 <td class="instruction">LD DE,$A425</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Pointer to current time buffer</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46970"></span>B77A</td>
 <td class="instruction">LD A,$05</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Number of characters</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46972"></span>B77C</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Remember A</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46973"></span>B77D</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get character from buffer</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46974"></span>B77E</td>
 <td class="instruction">CALL <a href="46893.html">$B72D</a></td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Print it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46977"></span>B781</td>
 <td class="instruction">INC DE</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next character</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46978"></span>B782</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Restore A</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46979"></span>B783</td>
 <td class="instruction">DEC A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Loop back if there are more characteres</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46980"></span>B784</td>
 <td class="instruction">JR NZ,$B77C</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46982"></span>B786</td>
 <td class="instruction">RET</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1"></td>
 </tr>
 </table>
 <table class="asm-navigation">

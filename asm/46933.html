@@ -50,43 +50,43 @@ Used by the routine at <a href="45376.html">B140</a>.
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46933"></span>B755</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Store number of spaces in B</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46934"></span>B756</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Remember this</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46935"></span>B757</td>
 <td class="instruction">LD A,$20</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">ASCII for space</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46937"></span>B759</td>
 <td class="instruction">CALL <a href="46893.html">$B72D</a></td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Print it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46940"></span>B75C</td>
 <td class="instruction">POP BC</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Restore</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46941"></span>B75D</td>
 <td class="instruction">DJNZ $B756</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Loop back if there's more to do</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46943"></span>B75F</td>
 <td class="instruction">RET</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">All done</td>
 </tr>
 </table>
 <table class="asm-navigation">

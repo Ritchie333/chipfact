@@ -45,55 +45,55 @@
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="47032"></span>B7B8</td>
 <td class="instruction">LD HL,$5080</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Where to print it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47035"></span>B7BB</td>
 <td class="instruction">LD DE,$A88F</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">String for "You have run out of time"</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47038"></span>B7BE</td>
 <td class="instruction">CALL <a href="46922.html">$B74A</a></td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Print it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47041"></span>B7C1</td>
 <td class="instruction">LD HL,$5A80</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Point to attributes of message</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47044"></span>B7C4</td>
 <td class="instruction">LD B,$20</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Number of attributes to set</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="47046"></span>B7C6</td>
 <td class="instruction">LD (HL),$C7</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Flash, bright, white paper, black ink</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47048"></span>B7C8</td>
 <td class="instruction">INC L</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next attribute</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47049"></span>B7C9</td>
 <td class="instruction">DJNZ $B7C6</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Jump if there's more to do</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47051"></span>B7CB</td>
 <td class="instruction">RET</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">All done</td>
 </tr>
 </table>
 <table class="asm-navigation">

@@ -58,14 +58,14 @@ Used by the routines at <a href="46922.html">B74A</a>, <a href="46933.html">B755
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46893"></span>B72D</td>
 <td class="instruction">LD BC,$7700</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">100 less than the character set (which is at <a href="30720.html">7800</a>). This allows ASCII text to be stored and easily printed.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="4">
 <span id="46896"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="45571.html">B203</a>.
+This entry point is used by the routine at <a href="45571.html">B203</a>, which uses the task button graphics to print "characters" for those instead.
 </div>
 </div>
 </td>
@@ -74,121 +74,121 @@ This entry point is used by the routine at <a href="45571.html">B203</a>.
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46896"></span>B730</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Remember this</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46897"></span>B731</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Put address in DE</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46898"></span>B732</td>
 <td class="instruction">LD L,A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Get the character to print</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46899"></span>B733</td>
 <td class="instruction">LD H,$00</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46901"></span>B735</td>
 <td class="instruction">ADD HL,HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="4">Shift it to be a pointer to the appropriate character set graphic</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46902"></span>B736</td>
 <td class="instruction">ADD HL,HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46903"></span>B737</td>
 <td class="instruction">ADD HL,HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46904"></span>B738</td>
 <td class="instruction">ADD HL,BC</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46905"></span>B739</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Put address back in HL</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46906"></span>B73A</td>
 <td class="instruction">LD C,H</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Remember H</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46907"></span>B73B</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">8 lines</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46909"></span>B73D</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get the next line</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46910"></span>B73E</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46911"></span>B73F</td>
 <td class="instruction">INC DE</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next line in data</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46912"></span>B740</td>
 <td class="instruction">INC H</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next line on screen</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46913"></span>B741</td>
 <td class="instruction">DJNZ $B73D</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Loop if more to do</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46915"></span>B743</td>
 <td class="instruction">LD H,C</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Restore H</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46916"></span>B744</td>
 <td class="instruction">INC L</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next UDG position</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46917"></span>B745</td>
 <td class="instruction">POP DE</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Restore</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46918"></span>B746</td>
 <td class="instruction">RET</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">All done</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="4">
@@ -204,7 +204,7 @@ This entry point is used by the routine at <a href="46922.html">B74A</a>.
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46919"></span>B747</td>
 <td class="instruction">CALL $B72D</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Print the character, then carry on to check another one</td>
 </tr>
 </table>
 <table class="asm-navigation">

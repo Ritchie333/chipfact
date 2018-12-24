@@ -4871,30 +4871,30 @@ c$B6F5 PUSH HL       ;
 ; A The character to print
 ; HL The screen address to print
 ; BC Pointer to the character set (when called from B730)
-c$B72D LD BC,$7700   ;
-; This entry point is used by the routine at #R$B203.
-*$B730 PUSH DE       ;
- $B731 EX DE,HL      ;
- $B732 LD L,A        ;
- $B733 LD H,$00      ;
- $B735 ADD HL,HL     ;
+c$B72D LD BC,$7700   ; 100 less than the character set (which is at #R$7800). This allows ASCII text to be stored and easily printed.
+; This entry point is used by the routine at #R$B203, which uses the task button graphics to print "characters" for those instead.
+*$B730 PUSH DE       ; Remember this
+ $B731 EX DE,HL      ; Put address in DE
+ $B732 LD L,A        ; { Get the character to print
+ $B733 LD H,$00      ; }
+ $B735 ADD HL,HL     ; { Shift it to be a pointer to the appropriate character set graphic
  $B736 ADD HL,HL     ;
  $B737 ADD HL,HL     ;
- $B738 ADD HL,BC     ;
- $B739 EX DE,HL      ;
- $B73A LD C,H        ;
- $B73B LD B,$08      ;
-*$B73D LD A,(DE)     ;
- $B73E LD (HL),A     ;
- $B73F INC DE        ;
- $B740 INC H         ;
- $B741 DJNZ $B73D    ;
- $B743 LD H,C        ;
- $B744 INC L         ;
- $B745 POP DE        ;
- $B746 RET           ;
+ $B738 ADD HL,BC     ; }
+ $B739 EX DE,HL      ; Put address back in HL
+ $B73A LD C,H        ; Remember H
+ $B73B LD B,$08      ; 8 lines
+*$B73D LD A,(DE)     ; Get the next line
+ $B73E LD (HL),A     ; Set it
+ $B73F INC DE        ; Next line in data
+ $B740 INC H         ; Next line on screen
+ $B741 DJNZ $B73D    ; Loop if more to do
+ $B743 LD H,C        ; Restore H
+ $B744 INC L         ; Next UDG position
+ $B745 POP DE        ; Restore
+ $B746 RET           ; All done
 ; This entry point is used by the routine at #R$B74A.
-*$B747 CALL $B72D    ;
+*$B747 CALL $B72D    ; Print the character, then carry on to check another one
 
 ; Print a high 7 bit terminated string
 ;
@@ -4902,25 +4902,25 @@ c$B72D LD BC,$7700   ;
 ;
 ; HL The screen address to print
 ; DE Pointer to the string
-c$B74A LD A,(DE)     ;
- $B74B INC DE        ;
- $B74C BIT 7,A       ;
- $B74E JR Z,$B747    ;
- $B750 AND $7F       ;
- $B752 JP $B72D      ;
+c$B74A LD A,(DE)     ; Get first character
+ $B74B INC DE        ; Increment string pointer ready for next one
+ $B74C BIT 7,A       ; Is bit 7 set?
+ $B74E JR Z,$B747    ; If not, print and carry on
+ $B750 AND $7F       ; Strip off the extra bit
+ $B752 JP $B72D      ; Print this character then exit
 
 ; Print spaces
 ;
 ; Used by the routine at #R$B140.
 ;
 ; A Number of spaces to print
-c$B755 LD B,A        ;
-*$B756 PUSH BC       ;
- $B757 LD A,$20      ;
- $B759 CALL $B72D    ;
- $B75C POP BC        ;
- $B75D DJNZ $B756    ;
- $B75F RET           ;
+c$B755 LD B,A        ; Store number of spaces in B
+*$B756 PUSH BC       ; Remember this
+ $B757 LD A,$20      ; ASCII for space
+ $B759 CALL $B72D    ; Print it
+ $B75C POP BC        ; Restore
+ $B75D DJNZ $B756    ; Loop back if there's more to do
+ $B75F RET           ; All done
 
 ; Copy a UDG
 ;
@@ -4952,66 +4952,66 @@ c$B770 LD (HL),A     ;
 ; Print the current time
 ;
 ; Used by the routine at #R$B140.
-c$B774 LD HL,$50FB   ;
- $B777 LD DE,$A425   ;
- $B77A LD A,$05      ;
-*$B77C EX AF,AF'     ;
- $B77D LD A,(DE)     ;
- $B77E CALL $B72D    ;
- $B781 INC DE        ;
- $B782 EX AF,AF'     ;
- $B783 DEC A         ;
- $B784 JR NZ,$B77C   ;
+c$B774 LD HL,$50FB   ; Where to print it
+ $B777 LD DE,$A425   ; Pointer to current time buffer
+ $B77A LD A,$05      ; Number of characters
+*$B77C EX AF,AF'     ; Remember A
+ $B77D LD A,(DE)     ; Get character from buffer
+ $B77E CALL $B72D    ; Print it
+ $B781 INC DE        ; Next character
+ $B782 EX AF,AF'     ; Restore A
+ $B783 DEC A         ; { Loop back if there are more characteres
+ $B784 JR NZ,$B77C   ; }
  $B786 RET           ;
 
 ; Advance the timer by one minute
 ;
 ; Used by the routine at #R$B770.
-c$B787 LD HL,$A429   ;
- $B78A LD B,$04      ;
-*$B78C LD A,(HL)     ;
- $B78D INC A         ;
- $B78E LD (HL),A     ;
- $B78F BIT 0,B       ;
- $B791 JR Z,$B795    ;
- $B793 ADD A,$04     ;
-*$B795 CP $3A        ;
- $B797 JR C,$B7A3    ;
- $B799 LD (HL),$30   ;
- $B79B DEC HL        ;
- $B79C BIT 0,B       ;
- $B79E JR Z,$B7A1    ;
- $B7A0 DEC HL        ;
-*$B7A1 DJNZ $B78C    ;
+c$B787 LD HL,$A429   ; Last digit of timer
+ $B78A LD B,$04      ; Number of digits to update
+*$B78C LD A,(HL)     ; Get next digit
+ $B78D INC A         ; Increment it
+ $B78E LD (HL),A     ; Set it
+ $B78F BIT 0,B       ; Are we handling the minutes digit?
+ $B791 JR Z,$B795    ; Move on if not
+ $B793 ADD A,$04     ; Adjust 60 -> 00 for minutes in the hour 
+*$B795 CP $3A        ; Have we overflowed past 9?
+ $B797 JR C,$B7A3    ; Jump forward if we haven't
+ $B799 LD (HL),$30   ; Put '0' in this column
+ $B79B DEC HL        ; Move to next column
+ $B79C BIT 0,B       ; Are we handling minutes?
+ $B79E JR Z,$B7A1    ; Move on if not
+ $B7A0 DEC HL        ; After minutes, skip one column for hours
+*$B7A1 DJNZ $B78C    ; Loop back for next digit
 
 ; Check if we've run out of time
 ;
 ; Used by the routines at #R$B140 and #R$B787.
-c$B7A3 LD HL,$A425   ;
- $B7A6 LD DE,$A8BC   ;
- $B7A9 LD B,$05      ;
-*$B7AB LD A,(DE)     ;
- $B7AC CP (HL)       ;
- $B7AD RET NZ        ;
- $B7AE INC HL        ;
- $B7AF INC DE        ;
- $B7B0 DJNZ $B7AB    ;
- $B7B2 XOR A         ;
- $B7B3 POP HL        ;
- $B7B4 POP HL        ;
- $B7B5 LD A,$80      ;
- $B7B7 RET           ;
+c$B7A3 LD HL,$A425   ; Get time
+ $B7A6 LD DE,$A8BC   ; Get "end of day" time
+ $B7A9 LD B,$05      ; Five character to check
+*$B7AB LD A,(DE)     ; Get next character
+ $B7AC CP (HL)       ; Is there a match?
+ $B7AD RET NZ        ; Return if not
+ $B7AE INC HL        ; Next time character
+ $B7AF INC DE        ; Next check character
+ $B7B0 DJNZ $B7AB    ; Loop to check more
+ $B7B2 XOR A         ; Set zero flag
+ $B7B3 POP HL        ; { "Throw exception" and bypass stack calls
+ $B7B4 POP HL        ; }
+ $B7B5 LD A,$80      ; Signal "out of time"
+ $B7B7 RET           ; Bail out
 
 ; Print "You have run out of time"
-c$B7B8 LD HL,$5080   ;
- $B7BB LD DE,$A88F   ;
- $B7BE CALL $B74A    ;
- $B7C1 LD HL,$5A80   ;
- $B7C4 LD B,$20      ;
-*$B7C6 LD (HL),$C7   ;
- $B7C8 INC L         ;
- $B7C9 DJNZ $B7C6    ;
- $B7CB RET           ;
+c$B7B8 LD HL,$5080   ; Where to print it
+ $B7BB LD DE,$A88F   ; String for "You have run out of time"
+ $B7BE CALL $B74A    ; Print it
+ $B7C1 LD HL,$5A80   ; Point to attributes of message
+ $B7C4 LD B,$20      ; Number of attributes to set
+*$B7C6 LD (HL),$C7   ; Flash, bright, white paper, black ink
+ $B7C8 INC L         ; Next attribute
+ $B7C9 DJNZ $B7C6    ; Jump if there's more to do
+ $B7CB RET           ; All done
 
 ; Put a frame of a graphic on screen
 ;
