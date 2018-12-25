@@ -218,9 +218,21 @@
 <td class="map-page-1">164</td>
 <td class="map-byte-1">0</td>
 <td class="map-g"><span id="41984"></span><a href="../asm/41984.html">A400</a></td>
-<td class="map-length-0">2</td>
+<td class="map-length-0">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41984.html">Game status buffer entry at A400</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41984.html">Height of the current sprite being drawn</a></div>
+<div class="map-entry-desc-0">
+
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-page-1">164</td>
+<td class="map-byte-1">1</td>
+<td class="map-g"><span id="41985"></span><a href="../asm/41985.html">A401</a></td>
+<td class="map-length-0">1</td>
+<td class="map-g-desc">
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41985.html">Width of the current sprite being drawn</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -232,7 +244,7 @@
 <td class="map-g"><span id="41986"></span><a href="../asm/41986.html">A402</a></td>
 <td class="map-length-0">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41986.html">Game status buffer entry at A402</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41986.html">Current background colour</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -280,7 +292,7 @@
 <td class="map-g"><span id="41992"></span><a href="../asm/41992.html">A408</a></td>
 <td class="map-length-0">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41992.html">Pointer to graphic buffer containing Ted's current frame</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41992.html">Pointer to graphic buffer containing Ted's graphic set (<a href="../asm/42107.html">A47B</a> or <a href="../asm/42363.html">A57B</a>)</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -290,9 +302,21 @@
 <td class="map-page-1">164</td>
 <td class="map-byte-1">10</td>
 <td class="map-g"><span id="41994"></span><a href="../asm/41994.html">A40A</a></td>
-<td class="map-length-0">4</td>
+<td class="map-length-0">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41994.html">Game status buffer entry at A40A</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41994.html">Offset from (<a href="../asm/41992.html">A408</a>) to the current graphic data for Ted's position</a></div>
+<div class="map-entry-desc-0">
+
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-page-1">164</td>
+<td class="map-byte-1">12</td>
+<td class="map-g"><span id="41996"></span><a href="../asm/41996.html">A40C</a></td>
+<td class="map-length-0">2</td>
+<td class="map-g-desc">
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41996.html">Current sound (length and frequency) to play while Ted is moving through the air</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -326,45 +350,45 @@
 <td class="map-page-1">164</td>
 <td class="map-byte-1">16</td>
 <td class="map-g"><span id="42000"></span><a href="../asm/42000.html">A410</a></td>
-<td class="map-length-0">2</td>
-<td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42000.html">Pointer to movement table when room was entered</a></div>
-<div class="map-entry-desc-0">
-
-</div>
-</td>
-</tr>
-<tr>
-<td class="map-page-1">164</td>
-<td class="map-byte-1">18</td>
-<td class="map-g"><span id="42002"></span><a href="../asm/42002.html">A412</a></td>
-<td class="map-length-0">2</td>
-<td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42002.html">Screen address of Ted when entering the room</a></div>
-<div class="map-entry-desc-0">
-
-</div>
-</td>
-</tr>
-<tr>
-<td class="map-page-1">164</td>
-<td class="map-byte-1">20</td>
-<td class="map-g"><span id="42004"></span><a href="../asm/42004.html">A414</a></td>
-<td class="map-length-0">2</td>
-<td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42004.html">Pointer to graphic buffer of Ted when entered the room</a></div>
-<div class="map-entry-desc-0">
-
-</div>
-</td>
-</tr>
-<tr>
-<td class="map-page-1">164</td>
-<td class="map-byte-1">22</td>
-<td class="map-g"><span id="42006"></span><a href="../asm/42006.html">A416</a></td>
 <td class="map-length-0">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42006.html">Height Ted had fallen when entering the room</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42000.html">Pointer to flags when entering the room</a></div>
+<div class="map-entry-desc-0">
+
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-page-1">164</td>
+<td class="map-byte-1">17</td>
+<td class="map-g"><span id="42001"></span><a href="../asm/42001.html">A411</a></td>
+<td class="map-length-0">2</td>
+<td class="map-g-desc">
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42001.html">Pointer to movement table when room was entered</a></div>
+<div class="map-entry-desc-0">
+
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-page-1">164</td>
+<td class="map-byte-1">19</td>
+<td class="map-g"><span id="42003"></span><a href="../asm/42003.html">A413</a></td>
+<td class="map-length-0">2</td>
+<td class="map-g-desc">
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42003.html">Screen address of Ted when entering the room</a></div>
+<div class="map-entry-desc-0">
+
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-page-1">164</td>
+<td class="map-byte-1">21</td>
+<td class="map-g"><span id="42005"></span><a href="../asm/42005.html">A415</a></td>
+<td class="map-length-0">2</td>
+<td class="map-g-desc">
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42005.html">Pointer to graphic set of Ted when entered the room</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -374,9 +398,9 @@
 <td class="map-page-1">164</td>
 <td class="map-byte-1">23</td>
 <td class="map-g"><span id="42007"></span><a href="../asm/42007.html">A417</a></td>
-<td class="map-length-0">1</td>
+<td class="map-length-0">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42007.html">Game status buffer entry at A417</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42007.html">Offset from (<a href="../asm/42005.html">A415</a>) to the current graphic data for Ted's position</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -384,11 +408,35 @@
 </tr>
 <tr>
 <td class="map-page-1">164</td>
-<td class="map-byte-1">24</td>
-<td class="map-g"><span id="42008"></span><a href="../asm/42008.html">A418</a></td>
-<td class="map-length-0">5</td>
+<td class="map-byte-1">25</td>
+<td class="map-g"><span id="42009"></span><a href="../asm/42009.html">A419</a></td>
+<td class="map-length-0">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42008.html">Game status buffer entry at A418</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42009.html">Sound playing if Ted entered the room in mid-air</a></div>
+<div class="map-entry-desc-0">
+
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-page-1">164</td>
+<td class="map-byte-1">27</td>
+<td class="map-g"><span id="42011"></span><a href="../asm/42011.html">A41B</a></td>
+<td class="map-length-0">1</td>
+<td class="map-g-desc">
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42011.html">Height Ted fell by from the previous room</a></div>
+<div class="map-entry-desc-0">
+
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-page-1">164</td>
+<td class="map-byte-1">28</td>
+<td class="map-g"><span id="42012"></span><a href="../asm/42012.html">A41C</a></td>
+<td class="map-length-0">1</td>
+<td class="map-g-desc">
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42012.html">Game status buffer entry at A41C</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -1228,7 +1276,7 @@
 <td class="map-b"><span id="43076"></span><a href="../asm/43076.html">A844</a></td>
 <td class="map-length-0">16</td>
 <td class="map-b-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/43076.html">Data block at A844</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/43076.html">Happy Ted (sprite)</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -1360,7 +1408,7 @@
 <td class="map-b"><span id="43209"></span><a href="../asm/43209.html">A8C9</a></td>
 <td class="map-length-0">144</td>
 <td class="map-b-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/43209.html">Data block at A8C9</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/43209.html">Positions for the graphics on the title screen to fall into</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -1372,7 +1420,7 @@
 <td class="map-b"><span id="43353"></span><a href="../asm/43353.html">A959</a></td>
 <td class="map-length-0">1</td>
 <td class="map-b-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/43353.html">Data block at A959</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/43353.html">"Terminate interrupts" command</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -1393,10 +1441,10 @@
 <tr>
 <td class="map-page-1">170</td>
 <td class="map-byte-1">11</td>
-<td class="map-b"><span id="43531"></span><a href="../asm/43531.html">AA0B</a></td>
+<td class="map-u"><span id="43531"></span><a href="../asm/43531.html">AA0B</a></td>
 <td class="map-length-0">6</td>
-<td class="map-b-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/43531.html">Data block at AA0B</a></div>
+<td class="map-u-desc">
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/43531.html">Unused</a></div>
 <div class="map-entry-desc-0">
 
 </div>

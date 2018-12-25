@@ -2380,10 +2380,13 @@ g$A200 DEFB $06,$7C,$06,$06,$7C,$00,$0C,$1C
  $A3F0 DEFB $C4,$C4,$7C,$04,$06,$00,$00,$00
  $A3F8 DEFB $3C,$62,$60,$60,$60,$00,$00,$3C
 
-; Game status buffer entry at A400
-g$A400 DEFB $02,$3C
+; Height of the current sprite being drawn
+g$A400 DEFB $02
 
-; Game status buffer entry at A402
+; Width of the current sprite being drawn
+g$A401 DEFB $3C
+
+; Current background colour
 g$A402 DEFB $06
 
 ; Various flags
@@ -2399,11 +2402,14 @@ g$A404 DEFB $3C,$00
 ; Current screen address of Ted
 g$A406 DEFB $00,$30
 
-; Pointer to graphic buffer containing Ted's current frame
+; Pointer to graphic buffer containing Ted's graphic set (#R$A47B or #R$A57B)
 g$A408 DEFB $78,$30
 
-; Game status buffer entry at A40A
-g$A40A DEFB $30,$32,$1C,$00
+; Offset from (#R$A408) to the current graphic data for Ted's position
+g$A40A DEFB $30,$32
+
+; Current sound (length and frequency) to play while Ted is moving through the air
+g$A40C DEFB $1C,$00
 
 ; Height Ted has fallen by
 g$A40E DEFB $00
@@ -2411,23 +2417,29 @@ g$A40E DEFB $00
 ; Game status buffer entry at A40F
 g$A40F DEFB $00
 
+; Pointer to flags when entering the room
+g$A410 DEFB $62
+
 ; Pointer to movement table when room was entered
-g$A410 DEFB $62,$62
+g$A411 DEFB $62,$62
 
 ; Screen address of Ted when entering the room
-g$A412 DEFB $62,$62
+g$A413 DEFB $62,$3C
 
-; Pointer to graphic buffer of Ted when entered the room
-g$A414 DEFB $3C,$00
+; Pointer to graphic set of Ted when entered the room
+g$A415 DEFB $00,$00
 
-; Height Ted had fallen when entering the room
-g$A416 DEFB $00
+; Offset from (#R$A415) to the current graphic data for Ted's position
+g$A417 DEFB $00,$62
 
-; Game status buffer entry at A417
-g$A417 DEFB $00
+; Sound playing if Ted entered the room in mid-air
+g$A419 DEFB $62,$34
 
-; Game status buffer entry at A418
-g$A418 DEFB $62,$62,$34,$34,$18
+; Height Ted fell by from the previous room
+g$A41B DEFB $34
+
+; Game status buffer entry at A41C
+g$A41C DEFB $18
 
 ; Pointer to current static object collision table
 g$A41D DEFB $00,$00
@@ -2626,84 +2638,72 @@ w$A477 DEFW $74E1
 w$A479 DEFW $76C6
 
 ; Ted left
-;
-; #UDG$A47B,7,,2#UDG$A47C,7,,2 #UDG$A49B,7,,2#UDG$A49C,7,,2
-; #UDG$A4BB,7,,2#UDG$A4BC,7,,2 #UDG$A4DB,7,,2#UDG$A4DC,7,,2 
-; .
-; #UDG$A48B,7,,2#UDG$A48C,7,,2 #UDG$A4AB,7,,2#UDG$A4AC,7,,2 
-; #UDG$A4CB,7,,2#UDG$A4CC,7,,2 #UDG$A4EB,7,,2#UDG$A4EC,7,,2
-b$A47B DEFB $1C,$00,$2E,$00,$1E,$00,$1C,$00
- $A483 DEFB $0C,$00,$12,$00,$33,$00,$39,$00
- $A48B DEFB $31,$00,$27,$00,$3F,$00,$3F,$00
- $A493 DEFB $3F,$00,$0C,$00,$0C,$00,$1C,$00
- $A49B DEFB $0E,$00,$17,$00,$0F,$00,$0E,$00
- $A4A3 DEFB $06,$00,$09,$00,$1C,$80,$1E,$40
- $A4AB DEFB $1E,$40,$3C,$80,$3D,$80,$1F,$80
- $A4B3 DEFB $1F,$80,$0C,$C0,$0D,$80,$1C,$00
- $A4BB DEFB $07,$00,$0B,$80,$07,$80,$07,$00
- $A4C3 DEFB $03,$00,$04,$80,$1C,$40,$12,$40
- $A4CB DEFB $08,$20,$0E,$40,$0F,$C0,$0F,$C0
- $A4D3 DEFB $0F,$C0,$0C,$E0,$0C,$40,$1C,$00
- $A4DB DEFB $03,$80,$05,$C0,$03,$C0,$03,$80
- $A4E3 DEFB $01,$80,$02,$40,$06,$60,$18,$70
- $A4EB DEFB $10,$F0,$0F,$E0,$07,$E0,$07,$E0
- $A4F3 DEFB $07,$E0,$06,$78,$1C,$18,$0C,$10
- $A4FB DEFB $01,$C0,$02,$E0,$01,$E0,$01,$C0
- $A503 DEFB $00,$C0,$01,$20,$02,$30,$04,$78
- $A50B DEFB $08,$F4,$0F,$F8,$03,$F0,$03,$F0
- $A513 DEFB $03,$F0,$03,$38,$0E,$0C,$04,$18
- $A51B DEFB $00,$E0,$01,$70,$00,$F0,$00,$E0
- $A523 DEFB $00,$60,$00,$90,$01,$18,$02,$3C
- $A52B DEFB $02,$78,$01,$F8,$01,$F8,$01,$F8
- $A533 DEFB $01,$F8,$03,$98,$00,$0C,$00,$1C
- $A53B DEFB $00,$70,$00,$B8,$00,$78,$00,$70
- $A543 DEFB $00,$30,$00,$48,$00,$CC,$01,$8C
- $A54B DEFB $01,$1C,$00,$FC,$00,$FC,$00,$FC
- $A553 DEFB $00,$FC,$01,$D8,$00,$CC,$00,$1C
- $A55B DEFB $00,$38,$00,$5C,$00,$3C,$00,$38
- $A563 DEFB $00,$18,$00,$24,$00,$66,$00,$46
- $A56B DEFB $00,$46,$00,$1E,$00,$7E,$00,$7E
- $A573 DEFB $00,$7E,$00,$3C,$00,$4C,$00,$1C
+b$A47B DEFB $1C,$00,$2E,$00,$1E,$00,$1C,$00 ; {#UDG$A47B,7,,2#UDG$A47C,7,,2
+ $A483 DEFB $0C,$00,$12,$00,$33,$00,$39,$00 ; }
+ $A48B DEFB $31,$00,$27,$00,$3F,$00,$3F,$00 ; {#UDG$A48B,7,,2#UDG$A48C,7,,2 
+ $A493 DEFB $3F,$00,$0C,$00,$0C,$00,$1C,$00 ; }
+ $A49B DEFB $0E,$00,$17,$00,$0F,$00,$0E,$00 ; {#UDG$A49B,7,,2#UDG$A49C,7,,2
+ $A4A3 DEFB $06,$00,$09,$00,$1C,$80,$1E,$40 ; }
+ $A4AB DEFB $1E,$40,$3C,$80,$3D,$80,$1F,$80 ; {#UDG$A4AB,7,,2#UDG$A4AC,7,,2
+ $A4B3 DEFB $1F,$80,$0C,$C0,$0D,$80,$1C,$00 ; }
+ $A4BB DEFB $07,$00,$0B,$80,$07,$80,$07,$00 ; {#UDG$A4BB,7,,2#UDG$A4BC,7,,2
+ $A4C3 DEFB $03,$00,$04,$80,$1C,$40,$12,$40 ; }
+ $A4CB DEFB $08,$20,$0E,$40,$0F,$C0,$0F,$C0 ; {#UDG$A4CB,7,,2#UDG$A4CC,7,,2
+ $A4D3 DEFB $0F,$C0,$0C,$E0,$0C,$40,$1C,$00 ; }
+ $A4DB DEFB $03,$80,$05,$C0,$03,$C0,$03,$80 ; {#UDG$A4DB,7,,2#UDG$A4DC,7,,2
+ $A4E3 DEFB $01,$80,$02,$40,$06,$60,$18,$70 ; }
+ $A4EB DEFB $10,$F0,$0F,$E0,$07,$E0,$07,$E0 ; {#UDG$A4EB,7,,2#UDG$A4EC,7,,2
+ $A4F3 DEFB $07,$E0,$06,$78,$1C,$18,$0C,$10 ; }
+ $A4FB DEFB $01,$C0,$02,$E0,$01,$E0,$01,$C0 ; {#UDG$A4FB,7,,2#UDG$A4FC,7,,2
+ $A503 DEFB $00,$C0,$01,$20,$02,$30,$04,$78 ; }
+ $A50B DEFB $08,$F4,$0F,$F8,$03,$F0,$03,$F0 ; {#UDG$A50B,7,,2#UDG$A50C,7,,2
+ $A513 DEFB $03,$F0,$03,$38,$0E,$0C,$04,$18 ; }
+ $A51B DEFB $00,$E0,$01,$70,$00,$F0,$00,$E0 ; {#UDG$A51B,7,,2#UDG$A51C,7,,2
+ $A523 DEFB $00,$60,$00,$90,$01,$18,$02,$3C ; }
+ $A52B DEFB $02,$78,$01,$F8,$01,$F8,$01,$F8 ; {#UDG$A52B,7,,2#UDG$A52C,7,,2
+ $A533 DEFB $01,$F8,$03,$98,$00,$0C,$00,$1C ; }
+ $A53B DEFB $00,$70,$00,$B8,$00,$78,$00,$70 ; {#UDG$A53B,7,,2#UDG$A53C,7,,2
+ $A543 DEFB $00,$30,$00,$48,$00,$CC,$01,$8C ; }
+ $A54B DEFB $01,$1C,$00,$FC,$00,$FC,$00,$FC ; {#UDG$A54B,7,,2#UDG$A54C,7,,2
+ $A553 DEFB $00,$FC,$01,$D8,$00,$CC,$00,$1C ; }
+ $A55B DEFB $00,$38,$00,$5C,$00,$3C,$00,$38 ; {#UDG$A55B,7,,2#UDG$A55C,7,,2
+ $A563 DEFB $00,$18,$00,$24,$00,$66,$00,$46 ; }
+ $A56B DEFB $00,$46,$00,$1E,$00,$7E,$00,$7E ; {#UDG$A56B,7,,2#UDG$A56C,7,,2
+ $A573 DEFB $00,$7E,$00,$3C,$00,$4C,$00,$1C ; }
 
 ; Ted right
-;
-; #UDG$A57B,7,,2#UDG$A57C,7,,2 #UDG$A59B,7,,2#UDG$A59C,7,,2
-; #UDG$A5BB,7,,2#UDG$A5BC,7,,2 #UDG$A5DB,7,,2#UDG$A5DC,7,,2
-; .
-; #UDG$A58B,7,,2#UDG$A58C,7,,2 #UDG$A5AB,7,,2#UDG$A5AC,7,,2
-; #UDG$A5CB,7,,2#UDG$A5CC,7,,2 #UDG$A5EB,7,,2#UDG$A5EC,7,,2
-b$A57B DEFB $0E,$00,$1D,$00,$1E,$00,$0E,$00
- $A583 DEFB $0C,$00,$12,$00,$33,$00,$31,$00
- $A58B DEFB $31,$00,$3C,$00,$3F,$00,$3F,$00
- $A593 DEFB $3F,$00,$1E,$00,$19,$00,$1C,$00
- $A59B DEFB $07,$00,$0E,$80,$0F,$00,$07,$00
- $A5A3 DEFB $06,$00,$09,$00,$19,$80,$18,$C0
- $A5AB DEFB $1C,$40,$1F,$80,$1F,$80,$1F,$80
- $A5B3 DEFB $1F,$80,$0D,$C0,$19,$80,$1C,$00
- $A5BB DEFB $03,$80,$07,$40,$07,$80,$03,$80
- $A5C3 DEFB $03,$00,$04,$80,$0C,$40,$1E,$20
- $A5CB DEFB $0F,$20,$0F,$C0,$0F,$C0,$0F,$C0
- $A5D3 DEFB $0F,$C0,$0C,$E0,$18,$00,$1C,$00
- $A5DB DEFB $01,$C0,$03,$A0,$03,$C0,$01,$C0
- $A5E3 DEFB $01,$80,$02,$40,$06,$20,$0F,$10
- $A5EB DEFB $17,$88,$0F,$F8,$07,$E0,$07,$E0
- $A5F3 DEFB $07,$E0,$0E,$60,$18,$38,$0C,$10
- $A5FB DEFB $00,$E0,$01,$D0,$01,$E0,$00,$E0
- $A603 DEFB $00,$C0,$01,$20,$03,$30,$07,$0C
- $A60B DEFB $07,$84,$03,$F8,$03,$F0,$03,$F0
- $A613 DEFB $03,$F0,$0F,$30,$0C,$1C,$04,$18
- $A61B DEFB $00,$70,$00,$E8,$00,$F0,$00,$70
- $A623 DEFB $00,$60,$00,$90,$01,$1C,$01,$24
- $A62B DEFB $02,$08,$01,$38,$01,$F8,$01,$F8
- $A633 DEFB $01,$F8,$03,$98,$01,$18,$00,$1C
- $A63B DEFB $00,$38,$00,$74,$00,$78,$00,$38
- $A643 DEFB $00,$30,$00,$48,$00,$9C,$01,$3C
- $A64B DEFB $01,$3C,$00,$9E,$00,$DE,$00,$FC
- $A653 DEFB $00,$FC,$01,$98,$00,$D8,$00,$1C
- $A65B DEFB $00,$1C,$00,$3A,$00,$3C,$00,$1C
- $A663 DEFB $00,$18,$00,$24,$00,$66,$00,$4E
- $A66B DEFB $00,$46,$00,$72,$00,$7E,$00,$7E
- $A673 DEFB $00,$7E,$00,$18,$00,$18,$00,$1C
+b$A57B DEFB $0E,$00,$1D,$00,$1E,$00,$0E,$00 ; { #UDG$A57B,7,,2#UDG$A57C,7,,2
+ $A583 DEFB $0C,$00,$12,$00,$33,$00,$31,$00 ; }
+ $A58B DEFB $31,$00,$3C,$00,$3F,$00,$3F,$00 ; { #UDG$A58B,7,,2#UDG$A58C,7,,2
+ $A593 DEFB $3F,$00,$1E,$00,$19,$00,$1C,$00 ; }
+ $A59B DEFB $07,$00,$0E,$80,$0F,$00,$07,$00 ; { #UDG$A59B,7,,2#UDG$A59C,7,,2
+ $A5A3 DEFB $06,$00,$09,$00,$19,$80,$18,$C0 ; }
+ $A5AB DEFB $1C,$40,$1F,$80,$1F,$80,$1F,$80 ; { #UDG$A5AB,7,,2#UDG$A5AC,7,,2
+ $A5B3 DEFB $1F,$80,$0D,$C0,$19,$80,$1C,$00 ; }
+ $A5BB DEFB $03,$80,$07,$40,$07,$80,$03,$80 ; { #UDG$A5BB,7,,2#UDG$A5BC,7,,2
+ $A5C3 DEFB $03,$00,$04,$80,$0C,$40,$1E,$20 ; }
+ $A5CB DEFB $0F,$20,$0F,$C0,$0F,$C0,$0F,$C0 ; { #UDG$A5CB,7,,2#UDG$A5CC,7,,2
+ $A5D3 DEFB $0F,$C0,$0C,$E0,$18,$00,$1C,$00 ; }
+ $A5DB DEFB $01,$C0,$03,$A0,$03,$C0,$01,$C0 ; { #UDG$A5DB,7,,2#UDG$A5DC,7,,2
+ $A5E3 DEFB $01,$80,$02,$40,$06,$20,$0F,$10 ; }
+ $A5EB DEFB $17,$88,$0F,$F8,$07,$E0,$07,$E0 ; { #UDG$A5EB,7,,2#UDG$A5EC,7,,2
+ $A5F3 DEFB $07,$E0,$0E,$60,$18,$38,$0C,$10 ; }
+ $A5FB DEFB $00,$E0,$01,$D0,$01,$E0,$00,$E0 ; { #UDG$A5FB,7,,2#UDG$A5FC,7,,2
+ $A603 DEFB $00,$C0,$01,$20,$03,$30,$07,$0C ; }
+ $A60B DEFB $07,$84,$03,$F8,$03,$F0,$03,$F0 ; { #UDG$A60B,7,,2#UDG$A60C,7,,2
+ $A613 DEFB $03,$F0,$0F,$30,$0C,$1C,$04,$18 ; }
+ $A61B DEFB $00,$70,$00,$E8,$00,$F0,$00,$70 ; { #UDG$A61B,7,,2#UDG$A61C,7,,2
+ $A623 DEFB $00,$60,$00,$90,$01,$1C,$01,$24 ; }
+ $A62B DEFB $02,$08,$01,$38,$01,$F8,$01,$F8 ; { #UDG$A62B,7,,2#UDG$A62C,7,,2
+ $A633 DEFB $01,$F8,$03,$98,$01,$18,$00,$1C ; }
+ $A63B DEFB $00,$38,$00,$74,$00,$78,$00,$38 ; { #UDG$A63B,7,,2#UDG$A63C,7,,2
+ $A643 DEFB $00,$30,$00,$48,$00,$9C,$01,$3C ; }
+ $A64B DEFB $01,$3C,$00,$9E,$00,$DE,$00,$FC ; { #UDG$A64B,7,,2#UDG$A64C,7,,2
+ $A653 DEFB $00,$FC,$01,$98,$00,$D8,$00,$1C ; }
+ $A65B DEFB $00,$1C,$00,$3A,$00,$3C,$00,$1C ; { #UDG$A65B,7,,2#UDG$A65C,7,,2
+ $A663 DEFB $00,$18,$00,$24,$00,$66,$00,$4E ; }
+ $A66B DEFB $00,$46,$00,$72,$00,$7E,$00,$7E ; { #UDG$A66B,7,,2#UDG$A66C,7,,2
+ $A673 DEFB $00,$7E,$00,$18,$00,$18,$00,$1C ; }
 
 ; List of musical note pitches for theme tune
 ;
@@ -2886,7 +2886,9 @@ b$A813 DEFB $40,$00,$0F,$27,$00,$01,$40,$00
  $A83B DEFB $86,$40,$6C,$00,$D0,$6C,$00,$D0
  $A843 DEFB $FF
 
-; Data block at A844
+; Happy Ted (sprite)
+;
+; The bytes here are decrypted by XORing against AA4F - AA5E
 b$A844 DEFB $40,$97,$DF,$3F,$DE,$8B,$5E,$0E
  $A84C DEFB $7E,$4A,$DC,$D4,$8A,$D4,$AF,$7D
 
@@ -2929,7 +2931,7 @@ t$A8BC DEFM "17:00"
 ; Sound data for "lose a life" effect
 b$A8C1 DEFB $38,$10,$28,$80,$70,$68,$40,$48
 
-; Data block at A8C9
+; Positions for the graphics on the title screen to fall into
 b$A8C9 DEFB $01,$41,$30,$20,$10,$00,$01,$42
  $A8D1 DEFB $30,$20,$10,$00,$21,$41,$30,$20
  $A8D9 DEFB $10,$00,$42,$30,$20,$10,$00,$41
@@ -2949,7 +2951,7 @@ b$A8C9 DEFB $01,$41,$30,$20,$10,$00,$01,$42
  $A949 DEFB $61,$62,$61,$61,$61,$61,$61,$61
  $A951 DEFB $61,$61,$61,$61,$62,$61,$61,$61
 
-; Data block at A959
+; "Terminate interrupts" command
 b$A959 DEFB $FF
 
 ; Text for instructions
@@ -2996,8 +2998,8 @@ t$A95A DEFB $A0
  $AA09 DEFB $B4
  $AA0A DEFB $00
 
-; Data block at AA0B
-b$AA0B DEFB $0F,$22,$0E,$1D,$06,$0B
+; Unused
+u$AA0B DEFB $0F,$22,$0E,$1D,$06,$0B
 
 ; Directives for interrupt states
 ;
@@ -3213,10 +3215,10 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $ABA0 LD ($A422),A  ; Move to The Factory Gates
  $ABA3 LD HL,$88AC   ; { Put Ted at the starting position
  $ABA6 LD ($A406),HL ; }
- $ABA9 LD HL,$A57B   ;
- $ABAC LD ($A408),HL ;
- $ABAF LD HL,$00E0   ;
- $ABB2 LD ($A40A),HL ;
+ $ABA9 LD HL,$A57B   ; { Put Ted facing right
+ $ABAC LD ($A408),HL ; }
+ $ABAF LD HL,$00E0   ; { Set the default frame
+ $ABB2 LD ($A40A),HL ; }
  $ABB5 LD HL,$010D   ;
  $ABB8 LD ($A40C),HL ;
  $ABBB LD A,$01      ;
@@ -3347,9 +3349,9 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $ACCA POP BC        ;
  $ACCB AND A         ;
  $ACCC LD HL,$AD51   ;
- $ACCF PUSH HL       ;
- $ACD0 CALL $B0DC    ;
- $ACD3 POP HL        ;
+ $ACCF PUSH HL       ; Remember HL as the next call uses it
+ $ACD0 CALL $B0DC    ; Flash the screen
+ $ACD3 POP HL        ; Restore it
  $ACD4 INC IX        ;
  $ACD6 LD A,($A42D)  ;
  $ACD9 CP C          ;
@@ -3411,15 +3413,15 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
 ; Run out of lives
  $AD51 LD A,$20      ;
  $AD53 LD ($A42C),A  ;
-*$AD56 CALL $AE4E    ;
- $AD59 LD HL,$887D   ;
- $AD5C LD DE,$A7BD   ;
- $AD5F LD BC,$00AD   ;
- $AD62 LD IX,$A7FD   ;
-*$AD66 LD ($A406),HL ;
- $AD69 LD ($A404),DE ;
- $AD6D LD ($A40C),BC ;
- $AD71 LD ($A43D),IX ;
+*$AD56 CALL $AE4E    ; Set up movement data for the final sequence and put Ted in position
+ $AD59 LD HL,$887D   ; New screen address of Ted
+ $AD5C LD DE,$A7BD   ; Point DE to the "game over" automatic movement table
+ $AD5F LD BC,$00AD   ; Sound to play while Ted is in mid-air
+ $AD62 LD IX,$A7FD   ; 
+*$AD66 LD ($A406),HL ; Set new screen address
+ $AD69 LD ($A404),DE ; Set new movement table
+ $AD6D LD ($A40C),BC ; Set moving sound
+ $AD71 LD ($A43D),IX ; 
  $AD75 LD HL,$0000   ;
  $AD78 LD ($A40A),HL ;
  $AD7B LD HL,$A47B   ;
@@ -3437,7 +3439,7 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $AD9C XOR A         ;
  $AD9D LD ($A42F),A  ;
  $ADA0 LD ($A440),A  ;
- $ADA3 LD ($5C78),A  ;
+ $ADA3 LD ($5C78),A  ; Set FRAMES to 0
  $ADA6 LD ($A43F),A  ;
  $ADA9 LD ($A403),A  ;
  $ADAC LD HL,$A439   ;
@@ -3575,14 +3577,14 @@ c$AE4E CALL $ADDB    ;
 ; Enter a new room
 ;
 ; Used by the routine at #R$AA65.
-c$AE77 LD HL,($A422)   ;
- $AE7A LD H,$00        ;
- $AE7C PUSH HL         ;
+c$AE77 LD HL,($A422)   ; { Get current room number in L
+ $AE7A LD H,$00        ; }
+ $AE7C PUSH HL         ; Remember this
 ; Get the room flags, to work out what we should draw
- $AE7D LD DE,$7DC0     ;
- $AE80 ADD HL,DE       ;
- $AE81 LD A,(HL)       ;
- $AE82 LD L,A          ;
+ $AE7D LD DE,$7DC0     ; Get the base address of the room flags
+ $AE80 ADD HL,DE       ; Advance to the current room's one
+ $AE81 LD A,(HL)       ; { Put it in A and L
+ $AE82 LD L,A          ; }
  $AE83 LD ($A457),A    ;
  $AE86 AND $03         ;
  $AE88 LD ($A461),A    ;
@@ -3600,17 +3602,17 @@ c$AE77 LD HL,($A422)   ;
  $AE9C LD D,(HL)       ;
  $AE9D LD HL,($A473)   ;
  $AEA0 ADD HL,DE       ;
- $AEA1 LD DE,$A421     ;
- $AEA4 LD A,(DE)       ;
- $AEA5 AND $F8         ;
+ $AEA1 LD DE,$A421     ; { Get current border colour variable in A
+ $AEA4 LD A,(DE)       ; }
+ $AEA5 AND $F8         ; Strip out ink flags
  $AEA7 OR (HL)         ;
  $AEA8 LD (DE),A       ;
- $AEA9 INC HL          ;
- $AEAA LD A,(HL)       ;
- $AEAB LD ($A402),A    ;
- $AEAE INC HL          ;
+ $AEA9 INC HL          ; { Get background colour in A
+ $AEAA LD A,(HL)       ; }
+ $AEAB LD ($A402),A    ; Store it
+ $AEAE INC HL          ; { Put pointer to UDG store in IX
  $AEAF PUSH HL         ;
- $AEB0 POP IX          ;
+ $AEB0 POP IX          ; }
 ; Clear the screen
  $AEB2 LD HL,$9000     ;
  $AEB5 LD DE,$9001     ;
@@ -3778,8 +3780,8 @@ c$AF5D LD HL,$A45B   ;
  $AFFE CPL           ;
  $AFFF AND $1F       ;
  $B001 JR Z,$AFF3    ;
- $B003 XOR A         ;
- $B004 LD ($5C78),A  ;
+ $B003 XOR A         ; { Set FRAMES to 0
+ $B004 LD ($5C78),A  ; }
  $B007 JR $AFEA      ;
 *$B009 LD A,$40      ;
  $B00B LD ($A441),A  ;
@@ -3830,7 +3832,7 @@ c$AF5D LD HL,$A45B   ;
  $B06E RET C         ;
  $B06F LD A,$10      ;
  $B071 LD ($A441),A  ;
-*$B074 LD A,($5C78)  ;
+*$B074 LD A,($5C78)  ; Get FRAMES variable
  $B077 AND A         ;
  $B078 JR Z,$B074    ;
  $B07A CALL $B440    ;
@@ -4191,30 +4193,30 @@ c$B2C9 ADD HL,DE     ;
 ; Perform an action after hitting a button
 ;
 ; Used by the routine at #R$BA3B.
-c$B2D2 EX AF,AF'     ;
+c$B2D2 EX AF,AF'     ; { Remember these
  $B2D3 PUSH AF       ;
  $B2D4 PUSH BC       ;
- $B2D5 PUSH DE       ;
- $B2D6 LD A,$18      ;
+ $B2D5 PUSH DE       ; }
+ $B2D6 LD A,$18      ; { Play a "hit box" sound
  $B2D8 LD BC,$0678   ;
  $B2DB LD HL,$2080   ;
- $B2DE CALL $BF1B    ;
- $B2E1 LD HL,$A45B   ;
+ $B2DE CALL $BF1B    ; }
+ $B2E1 LD HL,$A45B   ; 
  $B2E4 LD A,(HL)     ;
  $B2E5 XOR $08       ;
  $B2E7 LD (HL),A     ;
  $B2E8 BIT 3,A       ;
  $B2EA JR Z,$B319    ;
- $B2EC LD DE,($A422) ;
- $B2F0 LD D,$00      ;
+ $B2EC LD DE,($A422) ; Get current room number
+ $B2F0 LD D,$00      ; { Get flags for this room in D
  $B2F2 LD HL,$7DC0   ;
  $B2F5 ADD HL,DE     ;
- $B2F6 LD D,(HL)     ;
- $B2F7 LD ($A463),DE ;
- $B2FB LD HL,($A45F) ;
- $B2FE LD A,H        ;
- $B2FF OR L          ;
- $B300 CALL NZ,$BAAA ;
+ $B2F6 LD D,(HL)     ; }
+ $B2F7 LD ($A463),DE ; Store them
+ $B2FB LD HL,($A45F) ; Get the task box character
+ $B2FE LD A,H        ; { Have we got one?
+ $B2FF OR L          ; }
+ $B300 CALL NZ,$BAAA ; See if this task box triggers anything else
  $B303 LD A,($A430)  ;
  $B306 LD HL,($A431) ;
  $B309 CALL $B2B6    ;
@@ -5031,6 +5033,7 @@ c$B7B8 LD HL,$5080   ; Where to print it
 ;
 ; HL Address to draw on screen
 ; DE Pointer to the graphic buffer
+; C Bitmask to apply to each byte
 c$B7CC LD A,($A400)  ;
  $B7CF LD B,A        ;
 *$B7D0 PUSH BC       ;
@@ -5116,9 +5119,9 @@ c$B803 LD C,L        ;
 ; Set next position for moving objects
 ;
 ; Used by the routine at #R$AF5D.
-c$B82E LD L,(IX+$07)  ;
- $B831 LD H,(IX+$08)  ;
- $B834 LD ($A400),HL  ;
+c$B82E LD L,(IX+$07)  ; UDG height
+ $B831 LD H,(IX+$08)  ; UDG width
+ $B834 LD ($A400),HL  ; Remember this
  $B837 LD C,(IX+$06)  ;
  $B83A BIT 6,C        ;
  $B83C CALL NZ,$B99C  ;
@@ -8606,119 +8609,130 @@ b$E071 DEFB $00,$2B,$00,$D5,$03,$EB,$1F,$FF
 ; when the game starts, and then modified as tasks are completed.
 ; .
 ; Used in conjunction with the offset table at #R$AA49
-b$E0F1 DEFB $D7,$CF,$C0,$D3,$C0,$2A,$70,$4E
- $E0F9 DEFB $6C,$4B,$C0,$1B,$43,$64,$6F,$49
- $E101 DEFB $4B,$64,$8A,$C2,$93,$43,$6C,$CB
- $E109 DEFB $40,$87,$DF,$DF,$D7,$CB,$50,$4C
- $E111 DEFB $40,$A7,$E8,$CE,$EC,$CF,$40,$9B
- $E119 DEFB $C3,$E4,$E7,$C8,$CB,$DC,$FF,$40
- $E121 DEFB $88
+b$E0F1 DEFB $D7,$CF,$C0,$D3,$C0,$2A,$70,$4E ; $00, $04, $80, $87, $80, $83, $88, $83
+ $E0F9 DEFB $6C,$4B,$C0,$1B,$43,$64,$6F,$49 ; $80, $80, $80, $80, $80, $80, $88, $81
+ $E101 DEFB $4B,$64,$8A,$C2,$93,$43,$6C,$CB ; $80, $88, $8B, $82, $0B, $80, $80, $00
+ $E109 DEFB $40,$87,$DF,$DF,$D7,$CB,$50,$4C ; $00, $00, $00, $00, $00, $00, $10, $00
+ $E111 DEFB $40,$A7,$E8,$CE,$EC,$CF,$40,$9B ; $00, $00, $00, $03, $00, $04, $00, $00
+ $E119 DEFB $C3,$E4,$E7,$C8,$CB,$DC,$FF,$40 ; $00, $00, $00, $00, $00, $00, $00, $00
+ $E121 DEFB $88                             ; $00
 
 ; Next room table
 ;
 ; Each entry contains left, up, right, down
 ; .
 ; Used in conjunction with the offset table at #R$AA49
-b$E122 DEFB $DE,$94,$3E,$18
- $E126 DEFB $C0,$8D,$5C,$1E
- $E12A DEFB $D5,$8A,$45,$33
- $E12E DEFB $DF,$80,$4E,$35
- $E132 DEFB $98,$3D,$1E,$58
- $E136 DEFB $84,$50,$1A,$3C
- $E13A DEFB $7D,$48,$3E,$52
- $E13E DEFB $80,$42,$31,$46
- $E142 DEFB $3F,$20,$3C,$C3
- $E146 DEFB $47,$33,$56,$E4
- $E14A DEFB $41,$15,$3E,$D0
- $E14E DEFB $50,$3B,$5F,$C6
- $E152 DEFB $26,$4B,$C5,$81
- $E156 DEFB $35,$46,$E2,$9F
- $E15A DEFB $25,$52,$EA,$9B
- $E15E DEFB $3A,$57,$EA,$A2
- $E162 DEFB $58,$CA,$9D,$4D
- $E166 DEFB $38,$C7,$87,$2E
- $E16A DEFB $4F,$D7,$85,$23
- $E16E DEFB $4B,$E7,$84,$26
- $E172 DEFB $E7,$A0,$39,$3A
- $E176 DEFB $DC,$93,$23,$22
- $E17A DEFB $D7,$A0,$34,$2D
- $E17E DEFB $D8,$A6,$37,$33
- $E182 DEFB $8D,$48,$38,$43
- $E186 DEFB $A0,$35,$3B,$45
- $E18A DEFB $92,$39,$33,$3E
- $E18E DEFB $A0,$48,$3D,$47
- $E192 DEFB $3C,$3A,$3E,$35
- $E196 DEFB $28,$27,$53,$43
- $E19A DEFB $50,$3C,$29,$55
- $E19E DEFB $22,$23,$2C,$3E
- $E1A2 DEFB $4F,$47,$39,$E7
- $E1A6 DEFB $2A,$2C,$42,$E5
- $E1AA DEFB $2E,$37,$5F,$CF
- $E1AE DEFB $48,$2D,$45,$E7
- $E1B2 DEFB $39,$3E,$E5,$DB
- $E1B6 DEFB $4D,$56,$E6,$DB
- $E1BA DEFB $4E,$42,$CF,$DC
- $E1BE DEFB $50,$5C,$E7,$DB
- $E1C2 DEFB $5C,$E6,$DD,$E7
- $E1C6 DEFB $5D,$CF,$DF,$E7
- $E1CA DEFB $44,$EA,$DE,$EA
- $E1CE DEFB $5E,$EA,$DF,$E7
- $E1D2 DEFB $E7,$C4,$E7,$80
- $E1D6 DEFB $ED,$DB,$ED,$70
- $E1DA DEFB $E7,$DB,$E0,$80
- $E1DE DEFB $F0,$DB,$DE,$80
- $E1E2 DEFB $DB,$E7,$80,$3F
+b$E122 DEFB $DE,$94,$3E,$18 ; 00 = 1E, 1C, 01, 04
+ $E126 DEFB $C0,$8D,$5C,$1E ; 01 = 00, 15, 1F, 0A
+ $E12A DEFB $D5,$8A,$45,$33 ; 02 = 15, 12, 08, 1F
+ $E12E DEFB $DF,$80,$4E,$35 ; 03 = 1F, 08, 11, 21
+;
+ $E132 DEFB $98,$3D,$1E,$58 ; 04 = 20, 00, 0A, 23
+ $E136 DEFB $84,$50,$1A,$3C ; 05 = 0C, 13, 06, 07
+ $E13A DEFB $7D,$48,$3E,$52 ; 06 = 05, 0B, 2A, 1D
+ $E13E DEFB $80,$42,$31,$46 ; 07 = 08, 05, 1D, 11
+;
+ $E142 DEFB $3F,$20,$3C,$C3 ; 08 = 02, 0C, 28, 03
+ $E146 DEFB $47,$33,$56,$E4 ; 09 = 0A, 1F, 21, 24
+ $E14A DEFB $41,$15,$3E,$D0 ; 0A = 04, 01, 09, 10
+ $E14E DEFB $50,$3B,$5F,$C6 ; 0B = 13, 27, 2A, 06
+;
+ $E152 DEFB $26,$4B,$C5,$81 ; 0C = 12, 16, 05, 08
+ $E156 DEFB $35,$46,$E2,$9F ; 0D = 21, 11, 22, 26
+ $E15A DEFB $25,$52,$EA,$9B ; 0E = 11, 1D, 2A, 22
+ $E15E DEFB $3A,$57,$EA,$A2 ; 0F = 26, 22, 2A, 29
+;
+ $E162 DEFB $58,$CA,$9D,$4D ; 10 = 23, 0A, 24, 2C
+ $E166 DEFB $38,$C7,$87,$2E ; 11 = 03, 07, 0E, 0D
+ $E16A DEFB $4F,$D7,$85,$23 ; 12 = 1A, 17, 0C, 02
+ $E16E DEFB $4B,$E7,$84,$26 ; 13 = 16, 27, 0B, 05
+;
+ $E172 DEFB $E7,$A0,$39,$3A ; 14 = 27, 27, 18, 19
+ $E176 DEFB $DC,$93,$23,$22 ; 15 = 1C, 1A, 02, 01
+ $E17A DEFB $D7,$A0,$34,$2D ; 16 = 1F, 27, 13, 0C
+ $E17E DEFB $D8,$A6,$37,$33 ; 17 = 18, 2D, 16, 12
+;
+ $E182 DEFB $8D,$48,$38,$43 ; 18 = 14, 27, 17, 1A
+ $E186 DEFB $A0,$35,$3B,$45 ; 19 = 27, 14, 1A, 1C
+ $E18A DEFB $92,$39,$33,$3E ; 1A = 19, 18, 12, 15
+ $E18E DEFB $A0,$48,$3D,$47 ; 1B = 27, 27, 1C, 1E
+;
+ $E192 DEFB $3C,$3A,$3E,$35 ; 1C = 1B, 19, 1D, 0C
+ $E196 DEFB $28,$27,$53,$43 ; 1D = 07, 06, 2A, 0E
+ $E19A DEFB $50,$3C,$29,$55 ; 1E = 2F, 1B, 00, 20
+ $E19E DEFB $22,$23,$2C,$3E ; 1F = 01, 02, 03, 09
+;
+ $E1A2 DEFB $4F,$47,$39,$E7 ; 20 = 2E, 1E, 04, 27
+ $E1A6 DEFB $2A,$2C,$42,$E5 ; 21 = 09, 03, 0D, 25
+ $E1AA DEFB $2E,$37,$5F,$CF ; 22 = 0D, 0E, 2A, 25
+ $E1AE DEFB $48,$2D,$45,$E7 ; 23 = 27, 04, 10, 27
+;
+ $E1B2 DEFB $39,$3E,$E5,$DB ; 24 = 10, 09, 25, 27
+ $E1B6 DEFB $4D,$56,$E6,$DB ; 25 = 24, 21, 26, 27
+ $E1BA DEFB $4E,$42,$CF,$DC ; 26 = 25, 0D, 0F, 28
+ $E1BE DEFB $50,$5C,$E7,$DB ; 27 = 27, 27, 27, 27
+;
+ $E1C2 DEFB $5C,$E6,$DD,$E7 ; 28 = 27, 26, 29, 27
+ $E1C6 DEFB $5D,$CF,$DF,$E7 ; 29 = 28, 0F, 2B, 27
+ $E1CA DEFB $44,$EA,$DE,$EA ; 2A = 0F, 2A, 2B, 2A
+ $E1CE DEFB $5E,$EA,$DF,$E7 ; 2B = 29, 2A, 2B, 27
+;
+ $E1D2 DEFB $E7,$C4,$E7,$80 ; 2C = 27, 10, 33, 27
+ $E1D6 DEFB $ED,$DB,$ED,$70 ; 2D = 2D, 27, 2D, 17
+ $E1DA DEFB $E7,$DB,$E0,$80 ; 2E = 27, 27, 20, 27
+ $E1DE DEFB $F0,$DB,$DE,$80 ; 2F = 30, 27, 1E, 27
+ $E1E2 DEFB $DB,$E7,$80,$3F ; 30 = 27, 27, 27, 27
 
 ; Offsets to room data
-w$E1E6 DEFW $0000
- $E1E8 DEFW $0076
- $E1EA DEFW $0100
- $E1EC DEFW $0198
- $E1EE DEFW $022A
- $E1F0 DEFW $02C5
- $E1F2 DEFW $0376
- $E1F4 DEFW $0420
- $E1F6 DEFW $04C7
- $E1F8 DEFW $05CA
- $E1FA DEFW $0685
- $E1FC DEFW $073F
- $E1FE DEFW $07D2
- $E200 DEFW $0883
- $E202 DEFW $0932
- $E204 DEFW $09DD
- $E206 DEFW $0A7D
- $E208 DEFW $0B0E
- $E20A DEFW $0BCE
- $E20C DEFW $0C62
- $E20E DEFW $0D10
- $E210 DEFW $0DA1
- $E212 DEFW $0E5C
- $E214 DEFW $0F0D
- $E216 DEFW $0F82
- $E218 DEFW $0FF7
- $E21A DEFW $1066
- $E21C DEFW $10F9
- $E21E DEFW $118E
- $E220 DEFW $11D6
- $E222 DEFW $12A5
- $E224 DEFW $1359
- $E226 DEFW $13F7
- $E228 DEFW $1483
- $E22A DEFW $150E
- $E22C DEFW $1582
- $E22E DEFW $1619
- $E230 DEFW $168D
- $E232 DEFW $16E1
- $E234 DEFW $176B
- $E236 DEFW $17D7
- $E238 DEFW $185E
- $E23A DEFW $18F9
- $E23C DEFW $19A9
- $E23E DEFW $1A1B
- $E240 DEFW $1AAC
- $E242 DEFW $1B33
- $E244 DEFW $1BCB
- $E246 DEFW $1C43
+w$E1E6 DEFW $0000 ; #R$E248
+ $E1E8 DEFW $0076 ; #R$E2BE
+ $E1EA DEFW $0100 ; #R$E348
+ $E1EC DEFW $0198 ; #R$E3E0
+ $E1EE DEFW $022A ; #R$E472
+ $E1F0 DEFW $02C5 ; #R$E50D
+ $E1F2 DEFW $0376 ; #R$E5BE
+ $E1F4 DEFW $0420 ; #R$E668
+ $E1F6 DEFW $04C7 ; #R$E70F
+ $E1F8 DEFW $05CA ; #R$E812
+ $E1FA DEFW $0685 ; #R$E8CD
+ $E1FC DEFW $073F ; #R$E987
+ $E1FE DEFW $07D2 ; #R$EA1A
+ $E200 DEFW $0883 ; #R$EACB
+ $E202 DEFW $0932 ; #R$EB7A
+ $E204 DEFW $09DD ; #R$EC25
+ $E206 DEFW $0A7D ; #R$ECC5
+ $E208 DEFW $0B0E ; #R$ED56
+ $E20A DEFW $0BCE ; #R$EE16
+ $E20C DEFW $0C62 ; #R$EEAA
+ $E20E DEFW $0D10 ; #R$EF58
+ $E210 DEFW $0DA1 ; #R$EFE9
+ $E212 DEFW $0E5C ; #R$F0A4
+ $E214 DEFW $0F0D ; #R$F155
+ $E216 DEFW $0F82 ; #R$F1CA
+ $E218 DEFW $0FF7 ; #R$F23F
+ $E21A DEFW $1066 ; #R$F2AE
+ $E21C DEFW $10F9 ; #R$F341
+ $E21E DEFW $118E ; #R$F3D6
+ $E220 DEFW $11D6 ; #R$F41E
+ $E222 DEFW $12A5 ; #R$F4ED
+ $E224 DEFW $1359 ; #R$F5A1
+ $E226 DEFW $13F7 ; #R$F63F
+ $E228 DEFW $1483 ; #R$F6CB
+ $E22A DEFW $150E ; #R$F756
+ $E22C DEFW $1582 ; #R$F7CA
+ $E22E DEFW $1619 ; #R$F861
+ $E230 DEFW $168D ; #R$F8D5
+ $E232 DEFW $16E1 ; #R$F929
+ $E234 DEFW $176B ; #R$F9B3
+ $E236 DEFW $17D7 ; #R$FA1F
+ $E238 DEFW $185E ; #R$FAA6
+ $E23A DEFW $18F9 ; #R$FB41
+ $E23C DEFW $19A9 ; #R$FBF1
+ $E23E DEFW $1A1B ; #R$FC63
+ $E240 DEFW $1AAC ; #R$FCF4
+ $E242 DEFW $1B33 ; #R$FD7B
+ $E244 DEFW $1BCB ; #R$FE13
+ $E246 DEFW $1C43 ; #R$FE8B
 
 ; Room 00 - The Factory Gates
 ;

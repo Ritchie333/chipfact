@@ -1021,25 +1021,25 @@ Initialize game flags
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="43945"></span>ABA9</td>
 <td class="instruction">LD HL,$A57B</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Put Ted facing right</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="43948"></span>ABAC</td>
 <td class="instruction">LD ($A408),HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="43951"></span>ABAF</td>
 <td class="instruction">LD HL,$00E0</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Set the default frame</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="43954"></span>ABB2</td>
 <td class="instruction">LD ($A40A),HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1837,19 +1837,19 @@ Lost a life - flash the screen and restart the room
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44239"></span>ACCF</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Remember HL as the next call uses it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44240"></span>ACD0</td>
 <td class="instruction">CALL <a href="45276.html">$B0DC</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Flash the screen</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44243"></span>ACD3</td>
 <td class="instruction">POP HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Restore it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -2225,25 +2225,25 @@ Run out of lives
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="44374"></span>AD56</td>
 <td class="instruction">CALL <a href="44622.html">$AE4E</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set up movement data for the final sequence and put Ted in position</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44377"></span>AD59</td>
 <td class="instruction">LD HL,$887D</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">New screen address of Ted</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44380"></span>AD5C</td>
 <td class="instruction">LD DE,$A7BD</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Point DE to the "game over" automatic movement table</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44383"></span>AD5F</td>
 <td class="instruction">LD BC,$00AD</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Sound to play while Ted is in mid-air</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -2255,19 +2255,19 @@ Run out of lives
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="44390"></span>AD66</td>
 <td class="instruction">LD ($A406),HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set new screen address</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44393"></span>AD69</td>
 <td class="instruction">LD ($A404),DE</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set new movement table</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44397"></span>AD6D</td>
 <td class="instruction">LD ($A40C),BC</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set moving sound</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -2381,7 +2381,7 @@ Run out of lives
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44451"></span>ADA3</td>
 <td class="instruction">LD ($5C78),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set FRAMES to 0</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
