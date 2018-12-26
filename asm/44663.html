@@ -99,7 +99,7 @@ Get the room flags, to work out what we should draw
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44675"></span>AE83</td>
 <td class="instruction">LD ($A457),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">And store it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -111,91 +111,91 @@ Get the room flags, to work out what we should draw
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44680"></span>AE88</td>
 <td class="instruction">LD ($A461),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Put just the moving object flags here</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44683"></span>AE8B</td>
 <td class="instruction">LD A,L</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="4">Get the static object part of the flags</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44684"></span>AE8C</td>
 <td class="instruction">RRCA</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44685"></span>AE8D</td>
 <td class="instruction">RRCA</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44686"></span>AE8E</td>
 <td class="instruction">AND $1F</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44688"></span>AE90</td>
 <td class="instruction">LD ($A462),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Store it here</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44691"></span>AE93</td>
 <td class="instruction">POP HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Restore HL</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44692"></span>AE94</td>
 <td class="instruction">ADD HL,HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Convert room number to 16-bit pointer</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44693"></span>AE95</td>
 <td class="instruction">LD DE,($A471)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get pointer to room offset data</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44697"></span>AE99</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get the pointer to the room</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44698"></span>AE9A</td>
 <td class="instruction">LD E,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="3">Store it in DE</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44699"></span>AE9B</td>
 <td class="instruction">INC HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44700"></span>AE9C</td>
 <td class="instruction">LD D,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44701"></span>AE9D</td>
 <td class="instruction">LD HL,($A473)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get the pointer to base room data</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44704"></span>AEA0</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Add our offset - HL now points to the room data</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -219,13 +219,13 @@ Get the room flags, to work out what we should draw
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44711"></span>AEA7</td>
 <td class="instruction">OR (HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Preserve border colour</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44712"></span>AEA8</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Store it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -277,61 +277,61 @@ Clear the screen
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44722"></span>AEB2</td>
 <td class="instruction">LD HL,$9000</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="5">Blank screen 2 store</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44725"></span>AEB5</td>
 <td class="instruction">LD DE,$9001</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44728"></span>AEB8</td>
 <td class="instruction">LD BC,$0FFF</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44731"></span>AEBB</td>
 <td class="instruction">LD (HL),$00</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44733"></span>AEBD</td>
 <td class="instruction">LDIR</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44735"></span>AEBF</td>
 <td class="instruction">LD HL,$A200</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="5">Blank screen 2 attributes</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44738"></span>AEC2</td>
 <td class="instruction">LD DE,$A201</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44741"></span>AEC5</td>
 <td class="instruction">LD BC,$01FF</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44744"></span>AEC8</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44745"></span>AEC9</td>
 <td class="instruction">LDIR</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="4">
@@ -347,43 +347,43 @@ Put objects on the screen
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44747"></span>AECB</td>
 <td class="instruction">LD HL,$C2C1</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Store pointer to static UDGs here</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44750"></span>AECE</td>
 <td class="instruction">LD ($A423),HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44753"></span>AED1</td>
 <td class="instruction">LD HL,$7FD0</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Store pointer to conveyor belt data here</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44756"></span>AED4</td>
 <td class="instruction">LD ($A455),HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44759"></span>AED7</td>
 <td class="instruction">XOR A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="3">Set first frame of conveyor belts</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44760"></span>AED8</td>
 <td class="instruction">LD ($A444),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44763"></span>AEDB</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -401,13 +401,13 @@ Put objects on the screen
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44769"></span>AEE1</td>
 <td class="instruction">LD DE,$A200</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Read static UDG information into attributes 2</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44772"></span>AEE4</td>
 <td class="instruction">CALL <a href="46586.html#46589">$B5FD</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>

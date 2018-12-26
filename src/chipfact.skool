@@ -2459,11 +2459,8 @@ g$A423 DEFB $6A,$34
 ; Current time
 g$A425 DEFB $05,$00,$90,$62,$34
 
-; Game status buffer entry at A42A
-g$A42A DEFB $18
-
-; Game status buffer entry at A42B
-g$A42B DEFB $34
+; Current frame of conveyor belt graphic to draw
+g$A42A DEFB $18, $34
 
 ; Next location on screen to erase a life from
 ;
@@ -2489,7 +2486,10 @@ g$A433 DEFB $06
 g$A434 DEFB $7C,$00
 
 ; Game status buffer entry at A436
-g$A436 DEFB $00,$00
+g$A436 DEFB $00
+
+; Game status buffer entry at A437
+g$A437 DEFB $00
 
 ; Tick counter
 g$A438 DEFB $7E
@@ -2562,7 +2562,9 @@ g$A453 DEFB $00,$80
 g$A455 DEFB $FB,$A8
 
 ; Current room flags
-g$A457 DEFB $59,$58
+g$A457 DEFB $59
+
+g$A458 DEFB $58
 
 ; Game status buffer entry at A459
 g$A459 DEFB $11,$AA
@@ -2598,8 +2600,11 @@ g$A460 DEFB $A1
 ; Game status buffer entry at A461
 g$A461 DEFB $A1
 
-; Game status buffer entry at A462
-g$A462 DEFB $99,$42
+; Current room flags for static objects
+g$A462 DEFB $99
+
+; Game status buffer entry at A463
+g$A463 DEFB $42
 
 ; Game status buffer entry at A464
 g$A464 DEFB $3C
@@ -3039,7 +3044,7 @@ w$AA2D DEFW $C0B8
  $AA45 DEFW $BFB9
  $AA47 DEFW $BFDD
 
-; Offset flags
+; Decryption table
 ;
 ; When moving to a new room, take the value in the table at (#R$A46F), divide
 ; the current room number by 4, add the direction (0 - left, 1 - up, 2 - right,
@@ -3244,7 +3249,7 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $ABED INC IX        ; }
  $ABEF CP $DC        ; Have we reached the end of the offset table?
  $ABF1 JR NZ,$ABF7   ; No, skip this
- $ABF3 LD IX,$AA49   ; If we reached the end of the offset table, loop back to the beginning
+ $ABF3 LD IX,$AA49   ; If we reached the end of the decryption table, loop back to the beginning
 *$ABF7 DJNZ $ABE3    ; Loop back if more to do
 ; Main game loop starts here
 *$ABF9 XOR A         ;
@@ -3254,8 +3259,8 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $AC03 BIT 3,A       ;
  $AC05 LD A,$00      ;
  $AC07 JR NZ,$AC0F   ;
- $AC09 LD ($A42E),A  ;
- $AC0C LD ($A42F),A  ;
+ $AC09 LD ($A42E),A  ; { First frame of conveyor belt graphics
+ $AC0C LD ($A42F),A  ; }
 *$AC0F LD ($5C78),A  ; Set the FRAMES system variable
  $AC12 LD HL,$A403   ; { Copy current flags over to the "last visited" copy
  $AC15 LD DE,$A410   ;
@@ -3585,28 +3590,28 @@ c$AE77 LD HL,($A422)   ; { Get current room number in L
  $AE80 ADD HL,DE       ; Advance to the current room's one
  $AE81 LD A,(HL)       ; { Put it in A and L
  $AE82 LD L,A          ; }
- $AE83 LD ($A457),A    ;
+ $AE83 LD ($A457),A    ; And store it
  $AE86 AND $03         ;
- $AE88 LD ($A461),A    ;
- $AE8B LD A,L          ;
+ $AE88 LD ($A461),A    ; Put just the moving object flags here
+ $AE8B LD A,L          ; { Get the static object part of the flags
  $AE8C RRCA            ;
  $AE8D RRCA            ;
- $AE8E AND $1F         ;
- $AE90 LD ($A462),A    ;
- $AE93 POP HL          ;
- $AE94 ADD HL,HL       ;
- $AE95 LD DE,($A471)   ;
- $AE99 ADD HL,DE       ;
- $AE9A LD E,(HL)       ;
+ $AE8E AND $1F         ; }
+ $AE90 LD ($A462),A    ; Store it here
+ $AE93 POP HL          ; Restore HL
+ $AE94 ADD HL,HL       ; Convert room number to 16-bit pointer
+ $AE95 LD DE,($A471)   ; Get pointer to room offset data
+ $AE99 ADD HL,DE       ; Get the pointer to the room
+ $AE9A LD E,(HL)       ; { Store it in DE
  $AE9B INC HL          ;
- $AE9C LD D,(HL)       ;
- $AE9D LD HL,($A473)   ;
- $AEA0 ADD HL,DE       ;
+ $AE9C LD D,(HL)       ; }
+ $AE9D LD HL,($A473)   ; Get the pointer to base room data
+ $AEA0 ADD HL,DE       ; Add our offset - HL now points to the room data
  $AEA1 LD DE,$A421     ; { Get current border colour variable in A
  $AEA4 LD A,(DE)       ; }
  $AEA5 AND $F8         ; Strip out ink flags
- $AEA7 OR (HL)         ;
- $AEA8 LD (DE),A       ;
+ $AEA7 OR (HL)         ; Preserve border colour
+ $AEA8 LD (DE),A       ; Store it
  $AEA9 INC HL          ; { Get background colour in A
  $AEAA LD A,(HL)       ; }
  $AEAB LD ($A402),A    ; Store it
@@ -3614,28 +3619,28 @@ c$AE77 LD HL,($A422)   ; { Get current room number in L
  $AEAF PUSH HL         ;
  $AEB0 POP IX          ; }
 ; Clear the screen
- $AEB2 LD HL,$9000     ;
+ $AEB2 LD HL,$9000     ; { Blank screen 2 store
  $AEB5 LD DE,$9001     ;
  $AEB8 LD BC,$0FFF     ;
  $AEBB LD (HL),$00     ;
- $AEBD LDIR            ;
- $AEBF LD HL,$A200     ;
+ $AEBD LDIR            ; }
+ $AEBF LD HL,$A200     ; { Blank screen 2 attributes
  $AEC2 LD DE,$A201     ;
  $AEC5 LD BC,$01FF     ;
  $AEC8 LD (HL),A       ;
- $AEC9 LDIR            ;
+ $AEC9 LDIR            ; }
 ; Put objects on the screen
- $AECB LD HL,$C2C1     ;
- $AECE LD ($A423),HL   ;
- $AED1 LD HL,$7FD0     ;
- $AED4 LD ($A455),HL   ;
- $AED7 XOR A           ;
- $AED8 LD ($A444),A    ;
- $AEDB LD (HL),A       ;
+ $AECB LD HL,$C2C1     ; { Store pointer to static UDGs here
+ $AECE LD ($A423),HL   ; }
+ $AED1 LD HL,$7FD0     ; { Store pointer to conveyor belt data here
+ $AED4 LD ($A455),HL   ; }
+ $AED7 XOR A           ; { Set first frame of conveyor belts
+ $AED8 LD ($A444),A    ; 
+ $AEDB LD (HL),A       ; }
  $AEDC LD A,$90        ;
  $AEDE LD ($A45C),A    ;
- $AEE1 LD DE,$A200     ;
- $AEE4 CALL $B5FD      ;
+ $AEE1 LD DE,$A200     ; { Read static UDG information into attributes 2
+ $AEE4 CALL $B5FD      ; }
  $AEE7 LD A,$80        ;
  $AEE9 LD ($A45C),A    ;
  $AEEC LD A,$FF        ;
@@ -4293,6 +4298,9 @@ c$B2D2 EX AF,AF'     ; { Remember these
 ; Draw a conveyor belt
 ;
 ; Used by the routine at #R$AF5D.
+;
+; IX Pointer to conveyor belt working buffer
+; DE Offset (from the start of the conveyor belt graphics) for the frame to draw
 c$B398 LD HL,($A465) ;
  $B39B ADD HL,DE     ;
 *$B39C LD A,(IX+$00) ;
@@ -4679,26 +4687,26 @@ c$B5E6 LD A,$10      ;
 ; Used by the routine at #R$AE77.
 ;
 ; IX Pointer to UDG information
-c$B5FA LD DE,$A000   ;
+c$B5FA LD DE,$A000   ; Attributes 1
 ; This entry point is used by the routine at #R$AE77.
-*$B5FD LD A,(IX+$00) ;
- $B600 INC IX        ;
- $B602 CP $10        ;
- $B604 RRA           ;
- $B605 LD C,A        ;
- $B606 LD A,$01      ;
- $B608 JR NC,$B60C   ;
- $B60A LD A,$20      ;
-*$B60C LD H,$00      ;
- $B60E SRL C         ;
- $B610 JR NC,$B615   ;
- $B612 NEG           ;
- $B614 DEC H         ;
-*$B615 LD L,A        ;
- $B616 LD ($A445),HL ;
- $B619 LD A,C        ;
- $B61A SRL A         ;
- $B61C JR NC,$B670   ;
+*$B5FD LD A,(IX+$00) ; Get next command
+ $B600 INC IX        ; Move forward ready for the next one
+ $B602 CP $10        ; Set carry flag if this command sets bits 0-3
+ $B604 RRA           ; Put direction in carry flag
+ $B605 LD C,A        ; Store the remainder of the bits in C
+ $B606 LD A,$01      ; Offset $01 for left / right
+ $B608 JR NC,$B60C   ; Move forward if left / right
+ $B60A LD A,$20      ; Offset $20 for up / down
+*$B60C LD H,$00      ; Store for offset in HL later
+ $B60E SRL C         ; Get positive / negative movement flag
+ $B610 JR NC,$B615   ; Move forward if positive
+ $B612 NEG           ; Moving negative distance (left or up), convert to negative value
+ $B614 DEC H         ; Start from previous line
+*$B615 LD L,A        ; Put offset in L
+ $B616 LD ($A445),HL ; Store this
+ $B619 LD A,C        ; Get bits 2-7 in A
+ $B61A SRL A         ; Get MOVE or DRAW command
+ $B61C JR NC,$B670   ; Jump forward if MOVE
 ; Draw the current sprite here
  $B61E SRL A         ;
  $B620 LD C,A        ;
@@ -4755,14 +4763,15 @@ c$B5FA LD DE,$A000   ;
  $B66B DEC A         ;
  $B66C JR NZ,$B634   ;
  $B66E JR $B6A0      ;
-*$B670 SRL A         ;
- $B672 LD B,A        ;
- $B673 EX AF,AF'     ;
- $B674 LD HL,($A445) ;
- $B677 EX DE,HL      ;
-*$B678 ADD HL,DE     ;
- $B679 DJNZ $B678    ;
- $B67B EX DE,HL      ;
+; Move in the direction specified
+*$B670 SRL A         ; Put bit 3 in the carry flag. A now contains direction to move in
+ $B672 LD B,A        ; Put the remainder in B
+ $B673 EX AF,AF'     ; Remember flags
+ $B674 LD HL,($A445) ; Get offset
+ $B677 EX DE,HL      ; { Convert to an offset inside the attribute buffer
+*$B678 ADD HL,DE     ; }
+ $B679 DJNZ $B678    ; Keep moving while there is more to do
+ $B67B EX DE,HL      ; Remember current location in DE
  $B67C LD A,($A444)  ;
  $B67F INC A         ;
  $B680 JR NZ,$B69F   ;
@@ -4787,8 +4796,8 @@ c$B5FA LD DE,$A000   ;
  $B69C LD (HL),E     ;
  $B69D INC HL        ;
  $B69E LD (HL),A     ;
-*$B69F EX AF,AF'     ;
-*$B6A0 JP NC,$B5FD   ;
+*$B69F EX AF,AF'     ; Restore carry flag
+*$B6A0 JP NC,$B5FD   ; Jump back if not changing sprite
 ; Change the current sprite, or end logic
  $B6A3 LD L,(IX+$00) ;
  $B6A6 INC IX        ;
@@ -8608,7 +8617,7 @@ b$E071 DEFB $00,$2B,$00,$D5,$03,$EB,$1F,$FF
 ; Each entry holds default flags for each room. These are copied to #R$7DC0
 ; when the game starts, and then modified as tasks are completed.
 ; .
-; Used in conjunction with the offset table at #R$AA49
+; Used in conjunction with the decryption table at #R$AA49
 b$E0F1 DEFB $D7,$CF,$C0,$D3,$C0,$2A,$70,$4E ; $00, $04, $80, $87, $80, $83, $88, $83
  $E0F9 DEFB $6C,$4B,$C0,$1B,$43,$64,$6F,$49 ; $80, $80, $80, $80, $80, $80, $88, $81
  $E101 DEFB $4B,$64,$8A,$C2,$93,$43,$6C,$CB ; $80, $88, $8B, $82, $0B, $80, $80, $00
@@ -8621,7 +8630,7 @@ b$E0F1 DEFB $D7,$CF,$C0,$D3,$C0,$2A,$70,$4E ; $00, $04, $80, $87, $80, $83, $88,
 ;
 ; Each entry contains left, up, right, down
 ; .
-; Used in conjunction with the offset table at #R$AA49
+; Used in conjunction with the decryption table at #R$AA49
 b$E122 DEFB $DE,$94,$3E,$18 ; 00 = 1E, 1C, 01, 04
  $E126 DEFB $C0,$8D,$5C,$1E ; 01 = 00, 15, 1F, 0A
  $E12A DEFB $D5,$8A,$45,$33 ; 02 = 15, 12, 08, 1F
