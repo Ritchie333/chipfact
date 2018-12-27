@@ -737,37 +737,37 @@ Check for JUMP
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="48112"></span>BBF0</td>
 <td class="instruction">LD C,$00</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">No movement</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="48114"></span>BBF2</td>
 <td class="instruction">CALL <a href="42799.html#42809">$A739</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Was "jump" pressed?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48117"></span>BBF5</td>
 <td class="instruction">JR Z,$BC04</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move on if not</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48119"></span>BBF7</td>
 <td class="instruction">SET 0,C</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set bit 0 to denote "mid jump"</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48121"></span>BBF9</td>
 <td class="instruction">LD HL,$A76C</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Set automatic movement table</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48124"></span>BBFC</td>
 <td class="instruction">LD ($A404),HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1068,106 +1068,116 @@ Check for conveyor belts
 <td class="comment-11" rowspan="1"></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="4">
+<span id="48217"></span>
+<div class="comments">
+<div class="paragraph">
+Ted is jumping (or otherwise moving automatically), handle the movement
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="48217"></span>BC59</td>
 <td class="instruction">LD HL,($A404)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Point to next jump table entry</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48220"></span>BC5C</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get the first byte</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48221"></span>BC5D</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Copy into C</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48222"></span>BC5E</td>
 <td class="instruction">RLA</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="3">Convert to note to play in BC</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48223"></span>BC5F</td>
 <td class="instruction">SBC A,A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48224"></span>BC60</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48225"></span>BC61</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Remember this</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48226"></span>BC62</td>
 <td class="instruction">LD HL,($A40C)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get current sound to play</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48229"></span>BC65</td>
 <td class="instruction">ADD HL,BC</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Add (or subtract) offset</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48230"></span>BC66</td>
 <td class="instruction">LD ($A40C),HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Store new sound</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48233"></span>BC69</td>
 <td class="instruction">POP HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Restore HL</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48234"></span>BC6A</td>
 <td class="instruction">INC HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Put the second byte in B</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48235"></span>BC6B</td>
 <td class="instruction">LD B,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48236"></span>BC6C</td>
 <td class="instruction">INC HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Move to next entry and set it as active</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48237"></span>BC6D</td>
 <td class="instruction">LD ($A404),HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48240"></span>BC70</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get the entry</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48241"></span>BC71</td>
 <td class="instruction">LD HL,$A403</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get jump flags</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1179,25 +1189,25 @@ Check for conveyor belts
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48246"></span>BC76</td>
 <td class="instruction">CP $80</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Is it the "end of table byte?"</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48248"></span>BC78</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Put jump distance in A</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48249"></span>BC79</td>
 <td class="instruction">JR NZ,$BC7D</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Loop back if it isn't</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48251"></span>BC7B</td>
 <td class="instruction">RES 0,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Reset "Ted jumping" flag if the movement table has finished</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>

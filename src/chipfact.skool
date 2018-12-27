@@ -2860,16 +2860,52 @@ b$A764 DEFB $03      ; Count of entries
  $A76B DEFB $10      ; Kempston
 
 ; Movement table - jumping
-b$A76C DEFB $E8,$FE,$ED,$FE,$F1,$FE,$F3,$FE
- $A774 DEFB $F5,$FF,$F7,$FF,$F9,$FE,$F9,$FF
- $A77C DEFB $FB,$FF,$FB,$FF,$FC,$FF,$FC,$FF
- $A784 DEFB $FD,$FF,$FE,$00,$FE,$FF,$FE,$00
- $A78C DEFB $FF,$FF,$FF,$00,$00,$00,$00,$00
- $A794 DEFB $00,$00,$00,$00,$01,$00,$01,$01
- $A79C DEFB $02,$00,$02,$01,$02,$00,$03,$01
- $A7A4 DEFB $04,$01,$04,$01,$05,$01,$05,$01
- $A7AC DEFB $07,$01,$07,$02,$09,$01,$0B,$01
- $A7B4 DEFB $0D,$02,$0F,$02,$13,$02,$18,$02
+;
+;.
+; Move up
+b$A76C DEFB $E8,$FE
+ $A76E DEFB $ED,$FE
+ $A770 DEFB $F1,$FE
+ $A772 DEFB $F3,$FE
+ $A774 DEFB $F5,$FF
+ $A776 DEFB $F7,$FF
+ $A778 DEFB $F9,$FE
+ $A77A DEFB $F9,$FF
+ $A77C DEFB $FB,$FF
+ $A77E DEFB $FB,$FF
+ $A780 DEFB $FC,$FF
+ $A782 DEFB $FC,$FF
+ $A784 DEFB $FD,$FF
+ $A786 DEFB $FE,$00
+ $A788 DEFB $FE,$FF
+ $A78A DEFB $FE,$00
+ $A78C DEFB $FF,$FF
+ $A78E DEFB $FF,$00
+; Stationary
+ $A790 DEFB $00,$00
+ $A792 DEFB $00,$00
+ $A794 DEFB $00,$00
+ $A796 DEFB $00,$00
+; Move down
+ $A798 DEFB $01,$00
+ $A79A DEFB $01,$01
+ $A79C DEFB $02,$00
+ $A79E DEFB $02,$01
+ $A7A0 DEFB $02,$00
+ $A7A2 DEFB $03,$01
+ $A7A4 DEFB $04,$01
+ $A7A6 DEFB $04,$01
+ $A7A8 DEFB $05,$01
+ $A7AA DEFB $05,$01
+ $A7AC DEFB $07,$01
+ $A7AE DEFB $07,$02
+ $A7B0 DEFB $09,$01
+ $A7B2 DEFB $0B,$01
+ $A7B4 DEFB $0D,$02
+ $A7B6 DEFB $0F,$02
+ $A7B8 DEFB $13,$02
+ $A7BA DEFB $18,$02
+; End of table
  $A7BC DEFB $80
 
 ; Movement table - game over
@@ -3681,24 +3717,24 @@ c$AE77 LD HL,($A422)   ; { Get current room number in L
 ; Draw the title and status area
  $AF2B CALL $B140      ;
 ; Make the copy of the screen live
- $AF2E LD HL,$9000     ;
+ $AF2E LD HL,$9000     ; { Copy screen 2 to screen 1
  $AF31 LD DE,$8000     ;
  $AF34 LD BC,$1000     ;
- $AF37 LDIR            ;
- $AF39 LD HL,$A200     ;
+ $AF37 LDIR            ; }
+ $AF39 LD HL,$A200     ; { Copy attributes 2 to attributes 1
  $AF3C LD DE,$A000     ;
  $AF3F LD B,$02        ;
- $AF41 LDIR            ;
- $AF43 LD HL,$8000     ;
+ $AF41 LDIR            ; }
+ $AF43 LD HL,$8000     ; { Make screen 1 live
  $AF46 LD DE,$4000     ;
  $AF49 LD B,$10        ;
- $AF4B LDIR            ;
- $AF4D LD HL,$A000     ;
+ $AF4B LDIR            ; }
+ $AF4D LD HL,$A000     ; { Make attributes 1 live
  $AF50 LD DE,$5800     ;
  $AF53 LD B,$02        ;
- $AF55 LDIR            ;
- $AF57 LD A,($A421)    ;
- $AF5A OUT ($FE),A     ;
+ $AF55 LDIR            ; }
+ $AF57 LD A,($A421)    ; { Set the border colour
+ $AF5A OUT ($FE),A     ; }
  $AF5C RET             ;
 
 ; Play the game until we exit the room or lose a life
@@ -5716,12 +5752,12 @@ c$BB17 LD HL,($A408) ;
  $BBEC BIT 6,A       ;
  $BBEE JR Z,$BBF2    ;
 ; Check for JUMP
-*$BBF0 LD C,$00      ;
-*$BBF2 CALL $A739    ;
- $BBF5 JR Z,$BC04    ;
- $BBF7 SET 0,C       ;
- $BBF9 LD HL,$A76C   ;
- $BBFC LD ($A404),HL ;
+*$BBF0 LD C,$00      ; No movement
+*$BBF2 CALL $A739    ; Was "jump" pressed?
+ $BBF5 JR Z,$BC04    ; Move on if not
+ $BBF7 SET 0,C       ; Set bit 0 to denote "mid jump"
+ $BBF9 LD HL,$A76C   ; { Set automatic movement table
+ $BBFC LD ($A404),HL ; }
  $BBFF LD HL,$A443   ;
  $BC02 SET 0,(HL)    ;
 ; Check for conveyor belts
@@ -5771,28 +5807,29 @@ c$BB17 LD HL,($A408) ;
  $BC52 JR NZ,$BC59   ;
  $BC54 LD HL,($A406) ;
  $BC57 JR $BCD6      ;
-*$BC59 LD HL,($A404) ;
- $BC5C LD A,(HL)     ;
- $BC5D LD C,A        ;
- $BC5E RLA           ;
+; Ted is jumping (or otherwise moving automatically), handle the movement
+*$BC59 LD HL,($A404) ; Point to next jump table entry
+ $BC5C LD A,(HL)     ; Get the first byte
+ $BC5D LD C,A        ; Copy into C
+ $BC5E RLA           ; { Convert to note to play in BC
  $BC5F SBC A,A       ;
- $BC60 LD B,A        ;
- $BC61 PUSH HL       ;
- $BC62 LD HL,($A40C) ;
- $BC65 ADD HL,BC     ;
- $BC66 LD ($A40C),HL ;
- $BC69 POP HL        ;
- $BC6A INC HL        ;
- $BC6B LD B,(HL)     ;
- $BC6C INC HL        ;
- $BC6D LD ($A404),HL ;
- $BC70 LD A,(HL)     ;
- $BC71 LD HL,$A403   ;
+ $BC60 LD B,A        ; }
+ $BC61 PUSH HL       ; Remember this
+ $BC62 LD HL,($A40C) ; Get current sound to play
+ $BC65 ADD HL,BC     ; Add (or subtract) offset
+ $BC66 LD ($A40C),HL ; Store new sound
+ $BC69 POP HL        ; Restore HL
+ $BC6A INC HL        ; { Put the second byte in B
+ $BC6B LD B,(HL)     ; }
+ $BC6C INC HL        ; { Move to next entry and set it as active
+ $BC6D LD ($A404),HL ; }
+ $BC70 LD A,(HL)     ; Get the entry
+ $BC71 LD HL,$A403   ; Get jump flags
  $BC74 SET 5,(HL)    ;
- $BC76 CP $80        ;
- $BC78 LD A,B        ;
- $BC79 JR NZ,$BC7D   ;
- $BC7B RES 0,(HL)    ;
+ $BC76 CP $80        ; Is it the "end of table byte?"
+ $BC78 LD A,B        ; Put jump distance in A
+ $BC79 JR NZ,$BC7D   ; Loop back if it isn't
+ $BC7B RES 0,(HL)    ; Reset "Ted jumping" flag if the movement table has finished
 *$BC7D LD HL,($A406) ;
  $BC80 AND A         ;
  $BC81 JR Z,$BCD6    ;
