@@ -29,11 +29,18 @@
 Used by the routine at <a href="47895.html">BB17</a>.
 </div>
 </div>
-<table class="input-0">
+<table class="input-1">
 <tr class="asm-input-header">
 <th colspan="2">Input</th>
 </tr>
-
+<tr>
+<td class="register">HL</td>
+<td class="register-desc">Current screen address to check</td>
+</tr>
+<tr>
+<td class="register">DE</td>
+<td class="register-desc">Current graphic address of Ted to check</td>
+</tr>
 </table>
 <table class="output-0">
 <tr class="asm-output-header">
@@ -47,31 +54,31 @@ Used by the routine at <a href="47895.html">BB17</a>.
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="47668"></span>BA34</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Remember HL</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47669"></span>BA35</td>
 <td class="instruction">AND A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Clear A</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47670"></span>BA36</td>
 <td class="instruction">CALL <a href="47675.html">$BA3B</a></td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Do the collision detection</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47673"></span>BA39</td>
 <td class="instruction">POP HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Restore HL</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="47674"></span>BA3A</td>
 <td class="instruction">RET</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1"></td>
 </tr>
 </table>
 <table class="asm-navigation">

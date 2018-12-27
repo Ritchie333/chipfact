@@ -64,79 +64,79 @@ The tick counter is decremented by the value pointed to by IX. If it overflows t
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="49244"></span>C05C</td>
 <td class="instruction">LD C,(IX+$00)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Put the amount to subtract in BC</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49247"></span>C05F</td>
 <td class="instruction">LD B,(IX+$01)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49250"></span>C062</td>
 <td class="instruction">LD H,D</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Copy DE to HL</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49251"></span>C063</td>
 <td class="instruction">LD L,E</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49252"></span>C064</td>
 <td class="instruction">AND A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">A = 0</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49253"></span>C065</td>
 <td class="instruction">SBC HL,BC</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Subtract the amount from the tick counter and put it back in DE</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49255"></span>C067</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49256"></span>C068</td>
 <td class="instruction">JR C,<a href="49302.html">$C096</a></td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Call the interrupt routine if counter overflows</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49258"></span>C06A</td>
 <td class="instruction">LD L,(IX+$1C)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Put normal address to jump to in HL</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49261"></span>C06D</td>
 <td class="instruction">LD H,(IX+$1D)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49264"></span>C070</td>
 <td class="instruction">INC IX</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Next action table entry</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49266"></span>C072</td>
 <td class="instruction">INC IX</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="49268"></span>C074</td>
 <td class="instruction">JP (HL)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move on to normal routine</td>
 </tr>
 </table>
 <table class="asm-navigation">

@@ -2414,7 +2414,7 @@ g$A40C DEFB $1C,$00
 ; Height Ted has fallen by
 g$A40E DEFB $00
 
-; Game status buffer entry at A40F
+; Next bitmask to consider when considering pixel-accurate collision detection
 g$A40F DEFB $00
 
 ; Pointer to flags when entering the room
@@ -2438,7 +2438,7 @@ g$A419 DEFB $62,$34
 ; Height Ted fell by from the previous room
 g$A41B DEFB $34
 
-; Game status buffer entry at A41C
+; Collision detection mask when Ted entered the room
 g$A41C DEFB $18
 
 ; Pointer to current static object collision table
@@ -2471,7 +2471,10 @@ g$A42C DEFB $62
 ;
 ; Bits 4-8 hold the number of "misses" : 00 - 1F
 g$A42D DEFB $00
- $A42E DEFB $00,$46
+ $A42E DEFB $00
+
+; Time available for a "megaquickly" task
+g$A42F DEFB $46
 
 ; Attribute of first task button being drawn
 g$A430 DEFB $46
@@ -2485,10 +2488,10 @@ g$A433 DEFB $06
 ; Character offset of current task button being drawn
 g$A434 DEFB $7C,$00
 
-; Game status buffer entry at A436
+; Holds the "megaquickly task" flag in bit 5
 g$A436 DEFB $00
 
-; Game status buffer entry at A437
+; Room that the last task was completed in
 g$A437 DEFB $00
 
 ; Tick counter
@@ -2499,6 +2502,11 @@ g$A438 DEFB $7E
 ; Set bit 0 to mark Ted has entered a room and is safe
 ; .
 ; Set bit 1 to mark "repeated death" - instant game over
+; .
+; Set bit 2 to mark Ted is in "automatic movement" mode (eg: game has ended)
+; .
+; Set bit 3 to mark Ted is free to move (normally set, but if he falls into a room against a bit of wall eg: Fire Escape, this can be reset)
+
 g$A439 DEFB $0C
 
 ; Last room visited before this one
@@ -2562,11 +2570,9 @@ g$A453 DEFB $00,$80
 g$A455 DEFB $FB,$A8
 
 ; Current room flags
-g$A457 DEFB $59
+g$A457 DEFB $59, $58
 
-g$A458 DEFB $58
-
-; Game status buffer entry at A459
+; Pointer to current interruptable command table
 g$A459 DEFB $11,$AA
 
 ; Various flags
@@ -2592,18 +2598,15 @@ g$A45D DEFB $3C
 g$A45E DEFB $42
 
 ; Character of task button being drawn
-g$A45F DEFB $99
-
-; Game status buffer entry at A460
-g$A460 DEFB $A1
+g$A45F DEFB $99, $A1
 
 ; Game status buffer entry at A461
 g$A461 DEFB $A1
 
-; Current room flags for static objects
+; Working bitset for static objects
 g$A462 DEFB $99
 
-; Game status buffer entry at A463
+; Working bitset for moving objects
 g$A463 DEFB $42
 
 ; Game status buffer entry at A464
@@ -2856,7 +2859,7 @@ b$A764 DEFB $03      ; Count of entries
  $A769 DEFB $EF,$03  ; 0 (Sinclair and Cursor)
  $A76B DEFB $10      ; Kempston
 
-; Movement table
+; Movement table - jumping
 b$A76C DEFB $E8,$FE,$ED,$FE,$F1,$FE,$F3,$FE
  $A774 DEFB $F5,$FF,$F7,$FF,$F9,$FE,$F9,$FF
  $A77C DEFB $FB,$FF,$FB,$FF,$FC,$FF,$FC,$FF
@@ -3188,8 +3191,8 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $AB5B LD ($A42B),A  ;
  $AB5E XOR A         ;
  $AB5F LD ($A42C),A  ; Full set of lives
- $AB62 LD ($A45E),A  ; No tasks completed
- $AB65 LD ($A437),A  ;
+ $AB62 LD ($A45E),A  ; { No tasks completed
+ $AB65 LD ($A437),A  ; }
  $AB68 LD ($A439),A  ; Not dead
  $AB6B LD ($A43A),A  ; Not visited any previous room
  $AB6E LD ($A43B),A  ;
@@ -3266,15 +3269,15 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $AC15 LD DE,$A410   ;
  $AC18 LD BC,$000D   ;
  $AC1B LDIR          ; }
- $AC1D LD HL,$A439   ;
- $AC20 LD A,(HL)     ;
- $AC21 AND $E6       ;
- $AC23 LD (HL),A     ;
- $AC24 LD HL,($A40A) ;
- $AC27 LD DE,($A408) ;
- $AC2B ADD HL,DE     ;
- $AC2C EX DE,HL      ;
- $AC2D LD HL,($A406) ;
+ $AC1D LD HL,$A439   ; { Get game flags
+ $AC20 LD A,(HL)     ; }
+ $AC21 AND $E6       ; Turn off bits 0, 3 and 4
+ $AC23 LD (HL),A     ; Store this
+ $AC24 LD HL,($A40A) ; Get Ted's graphic offset
+ $AC27 LD DE,($A408) ; Get graphic set
+ $AC2B ADD HL,DE     ; Combine to get graphic frame
+ $AC2C EX DE,HL      ; Put this in DE
+ $AC2D LD HL,($A406) ; Put current screen address for Ted in HL
  $AC30 LD A,($A40F)  ;
  $AC33 LD C,A        ;
  $AC34 CALL $B9EF    ; Set up moving objects and check collision detection
@@ -3447,8 +3450,8 @@ c$AA65 LD SP,$5BFF   ; Put the stack somewhere safe
  $ADA3 LD ($5C78),A  ; Set FRAMES to 0
  $ADA6 LD ($A43F),A  ;
  $ADA9 LD ($A403),A  ;
- $ADAC LD HL,$A439   ;
- $ADAF SET 2,(HL)    ;
+ $ADAC LD HL,$A439   ; Get flags
+ $ADAF SET 2,(HL)    ; Turn on "automatic movement" mode
  $ADB1 CALL $AF5D    ; Enter the room and run the final sequence
  $ADB4 LD HL,($7ED0) ;
  $ADB7 LD A,H        ;
@@ -3747,10 +3750,10 @@ c$AF5D LD HL,$A45B   ;
 *$AFB2 LD DE,$0021   ;
  $AFB5 ADD IX,DE     ;
  $AFB7 JR $AF9D      ;
-*$AFB9 LD A,($A439)  ;
- $AFBC BIT 2,A       ;
- $AFBE JR Z,$AFC7    ;
- $AFC0 CALL $BD9E    ;
+*$AFB9 LD A,($A439)  ; Get game flags
+ $AFBC BIT 2,A       ; Are we moving automatically?
+ $AFBE JR Z,$AFC7    ; Move on if so
+ $AFC0 CALL $BD9E    ; Update automatic movement by one frame
  $AFC3 AND A         ;
  $AFC4 PUSH AF       ;
  $AFC5 JR $B009      ;
@@ -4224,7 +4227,7 @@ c$B2D2 EX AF,AF'     ; { Remember these
  $B300 CALL NZ,$BAAA ; See if this task box triggers anything else
  $B303 LD A,($A430)  ;
  $B306 LD HL,($A431) ;
- $B309 CALL $B2B6    ;
+ $B309 CALL $B2B6    ; Copy the attributes to the screen buffer
  $B30C LD C,$80      ;
  $B30E LD A,($A422)  ;
  $B311 LD ($A43B),A  ;
@@ -4491,36 +4494,38 @@ c$B440 LD HL,$A450   ;
 ;
 ; IX Pointer to the moving object buffer
 ; HL Pointer to data from the room
-c$B4A5 LD E,(HL)       ;
+c$B4A5 LD E,(HL)       ; { Put the initial offset value in DE
  $B4A6 INC HL          ;
- $B4A7 LD D,(HL)       ;
- $B4A8 LD A,D          ;
- $B4A9 OR E            ;
- $B4AA RET Z           ;
- $B4AB LD A,D          ;
+ $B4A7 LD D,(HL)       ; }
+ $B4A8 LD A,D          ; { Is it zero?
+ $B4A9 OR E            ; }
+ $B4AA RET Z           ; All done with moving objects, nothing else to do
+; Store moving object flags
+ $B4AB LD A,D          ; { Keep bit 7 in place and right shift all other bits
  $B4AC RRA             ;
  $B4AD XOR D           ;
  $B4AE AND $0F         ;
  $B4B0 XOR D           ;
- $B4B1 AND $AF         ;
- $B4B3 LD (IX+$06),A   ;
- $B4B6 LD A,D          ;
+ $B4B1 AND $AF         ; }
+ $B4B3 LD (IX+$06),A   ; Store flags
+; Store position
+ $B4B6 LD A,D          ; { Get bit 0 of D
  $B4B7 AND $01         ;
- $B4B9 LD D,A          ;
- $B4BA RLC A           ;
+ $B4B9 LD D,A          ; }
+ $B4BA RLC A           ; { Convert to graphic offset
  $B4BC RLC A           ;
  $B4BE RLC A           ;
- $B4C0 ADD A,$80       ;
- $B4C2 LD (IX+$01),A   ;
- $B4C5 LD (IX+$00),E   ;
- $B4C8 LD B,$02        ;
-*$B4CA INC HL          ;
- $B4CB PUSH HL         ;
- $B4CC LD A,(HL)       ;
- $B4CD AND $1F         ;
- $B4CF BIT 7,(IX+$06)  ;
- $B4D3 JR Z,$B4E3      ;
- $B4D5 ADD A,A         ;
+ $B4C0 ADD A,$80       ; }
+ $B4C2 LD (IX+$01),A   ; { Store it
+ $B4C5 LD (IX+$00),E   ; }
+ $B4C8 LD B,$02        ; Two entries
+*$B4CA INC HL          ; Move to next entry
+ $B4CB PUSH HL         ; Remember this
+ $B4CC LD A,(HL)       ; Get the value
+ $B4CD AND $1F         ; Extract bits 0-4
+ $B4CF BIT 7,(IX+$06)  ; { Move ahead if this left / right movement
+ $B4D3 JR Z,$B4E3      ; }
+ $B4D5 ADD A,A         ; { Change the displacement value to reflect up / down
  $B4D6 ADD A,A         ;
  $B4D7 ADD A,A         ;
  $B4D8 ADD A,A         ;
@@ -4529,66 +4534,66 @@ c$B4A5 LD E,(HL)       ;
  $B4DC RL D            ;
  $B4DE XOR E           ;
  $B4DF AND $E0         ;
- $B4E1 JR $B4E6        ;
-*$B4E3 XOR E           ;
+ $B4E1 JR $B4E6        ; }
+*$B4E3 XOR E           ; 
  $B4E4 AND $1F         ;
 *$B4E6 XOR E           ;
  $B4E7 LD E,A          ;
- $B4E8 LD HL,$A000     ;
- $B4EB ADD HL,DE       ;
- $B4EC EX (SP),HL      ;
- $B4ED DJNZ $B4CA      ;
- $B4EF POP BC          ;
- $B4F0 LD (IX+$04),C   ;
- $B4F3 LD (IX+$05),B   ;
- $B4F6 POP BC          ;
- $B4F7 LD (IX+$02),C   ;
- $B4FA LD (IX+$03),B   ;
- $B4FD DEC HL          ;
- $B4FE LD A,(HL)       ;
- $B4FF RRCA            ;
+ $B4E8 LD HL,$A000     ; Point to attributes buffer
+ $B4EB ADD HL,DE       ; Add offset
+ $B4EC EX (SP),HL      ; Put the offset on stack and restore pointer to next room data byte
+ $B4ED DJNZ $B4CA      ; Loop back if more to do
+ $B4EF POP BC          ; Get first value
+ $B4F0 LD (IX+$04),C   ; { Set first screen bounds
+ $B4F3 LD (IX+$05),B   ; }
+ $B4F6 POP BC          ; Get second value
+ $B4F7 LD (IX+$02),C   ; { Set second screen bounds
+ $B4FA LD (IX+$03),B   ; }
+ $B4FD DEC HL          ; Move back to get the attribute 
+ $B4FE LD A,(HL)       ; Get next value
+ $B4FF RRCA            ; { Extract height
  $B500 RRCA            ;
  $B501 AND $38         ;
- $B503 ADD A,$08       ;
- $B505 LD (IX+$07),A   ;
- $B508 INC HL          ;
- $B509 LD A,(HL)       ;
- $B50A RLCA            ;
+ $B503 ADD A,$08       ; }
+ $B505 LD (IX+$07),A   ; Store it
+ $B508 INC HL          ; Next value
+ $B509 LD A,(HL)       ; Get value
+ $B50A RLCA            ; { Extract width
  $B50B RLCA            ;
  $B50C RLCA            ;
  $B50D AND $03         ;
- $B50F INC A           ;
- $B510 LD (IX+$08),A   ;
- $B513 INC HL          ;
- $B514 LD A,(HL)       ;
- $B515 LD (IX+$09),A   ;
- $B518 INC HL          ;
- $B519 PUSH HL         ;
- $B51A LD L,(HL)       ;
+ $B50F INC A           ; } 
+ $B510 LD (IX+$08),A   ; Store it
+ $B513 INC HL          ; Next value
+ $B514 LD A,(HL)       ; Get attribute
+ $B515 LD (IX+$09),A   ; Store it
+ $B518 INC HL          ; Next value
+ $B519 PUSH HL         ; Remember this
+ $B51A LD L,(HL)       ; Convert from graphic offset to word
  $B51B LD H,$00        ;
  $B51D ADD HL,HL       ;
- $B51E LD BC,($A469)   ;
- $B522 ADD HL,BC       ;
- $B523 LD C,(HL)       ;
+ $B51E LD BC,($A469)   ; Get base pointer to moving graphic offsets
+ $B522 ADD HL,BC       ; Get the appropriate value for this graphic 
+ $B523 LD C,(HL)       ; { Put the offsest in BC
  $B524 INC HL          ;
- $B525 LD B,(HL)       ;
- $B526 LD HL,($A46B)   ;
- $B529 ADD HL,BC       ;
- $B52A LD (IX+$0A),L   ;
+ $B525 LD B,(HL)       ; }
+ $B526 LD HL,($A46B)   ; Get base pointer to moving graphics
+ $B529 ADD HL,BC       ; Add the offset
+ $B52A LD (IX+$0A),L   ; { Store the value
  $B52D LD (IX+$0C),L   ;
  $B530 LD (IX+$0B),H   ;
- $B533 LD (IX+$0D),H   ;
- $B536 POP HL          ;
+ $B533 LD (IX+$0D),H   ; }
+ $B536 POP HL          ; Restore HL
  $B537 LD A,$01        ;
- $B539 INC HL          ;
- $B53A BIT 2,(IX+$06)  ;
- $B53E JR Z,$B542      ;
- $B540 LD A,(HL)       ;
- $B541 INC HL          ;
-*$B542 LD (IX+$0E),A   ;
- $B545 LD (IX+$0F),A   ;
+ $B539 INC HL          ; Move to next value
+ $B53A BIT 2,(IX+$06)  ; { Skip if bit 2 of the flags set
+ $B53E JR Z,$B542      ; }
+ $B540 LD A,(HL)       ; Get next value
+ $B541 INC HL          ; Point to next entry
+*$B542 LD (IX+$0E),A   ; { Store offset between frames
+ $B545 LD (IX+$0F),A   ; 
  $B548 LD (IX+$10),$00 ;
- $B54C LD (IX+$11),$00 ;
+ $B54C LD (IX+$11),$00 ; }
  $B550 LD A,(HL)       ;
  $B551 PUSH AF         ;
  $B552 AND $07         ;
@@ -4615,13 +4620,14 @@ c$B4A5 LD E,(HL)       ;
  $B576 INC HL          ;
 *$B577 LD (IX+$18),A   ;
  $B57A LD (IX+$19),A   ;
- $B57D LD A,$01        ;
- $B57F BIT 1,(IX+$06)  ;
- $B583 JR Z,$B587      ;
- $B585 LD A,(HL)       ;
- $B586 INC HL          ;
-*$B587 LD (IX+$1A),A   ;
- $B58A LD (IX+$1B),A   ;
+; Store the speed
+ $B57D LD A,$01        ; Default value
+ $B57F BIT 1,(IX+$06)  ; Is the "default speed" flag set?
+ $B583 JR Z,$B587      ; Move on if so
+ $B585 LD A,(HL)       ; Get next value
+ $B586 INC HL          ; Move to point to next entry in the room data
+*$B587 LD (IX+$1A),A   ; { Store speed
+ $B58A LD (IX+$1B),A   ; }
  $B58D PUSH HL         ;
  $B58E LD D,B          ;
  $B58F LD C,(IX+$07)   ;
@@ -4669,17 +4675,21 @@ c$B4A5 LD E,(HL)       ;
 ; Calculate space for a graphic
 ;
 ; Used by the routine at #R$B4A5.
-c$B5E6 LD A,$10      ;
- $B5E8 LD HL,$0000   ;
-*$B5EB ADD HL,HL     ;
- $B5EC SLA C         ;
- $B5EE RL B          ;
- $B5F0 JR NC,$B5F6   ;
- $B5F2 ADD HL,DE     ;
- $B5F3 JR NC,$B5F6   ;
- $B5F5 INC BC        ;
-*$B5F6 DEC A         ;
- $B5F7 JR NZ,$B5EB   ;
+;
+; BC Height in lines
+; DE Width in UDGs
+; HL On return, holds the required space
+c$B5E6 LD A,$10      ; Amount to increment for each unit
+ $B5E8 LD HL,$0000   ; Default offset
+*$B5EB ADD HL,HL     ; Shift left
+ $B5EC SLA C         ; { Is there any more to check?
+ $B5EE RL B          ; }
+ $B5F0 JR NC,$B5F6   ; No, so move on
+ $B5F2 ADD HL,DE     ; Add more width
+ $B5F3 JR NC,$B5F6   ; Skip next bit if no more width to add
+ $B5F5 INC BC        ; Add next line
+*$B5F6 DEC A         ; { Loop back if more to do
+ $B5F7 JR NZ,$B5EB   ; }
  $B5F9 RET           ;
 
 ; Read static UDG information and store it in a screen buffer
@@ -4707,7 +4717,7 @@ c$B5FA LD DE,$A000   ; Attributes 1
  $B619 LD A,C        ; Get bits 2-7 in A
  $B61A SRL A         ; Get MOVE or DRAW command
  $B61C JR NC,$B670   ; Jump forward if MOVE
-; Draw the current sprite here
+; Draw the current UDG here
  $B61E SRL A         ;
  $B620 LD C,A        ;
  $B621 EX AF,AF'     ;
@@ -4744,23 +4754,23 @@ c$B5FA LD DE,$A000   ; Attributes 1
  $B652 LD (HL),E     ;
  $B653 INC HL        ;
  $B654 LD (HL),D     ;
-; Copy the sprite data onto screen
-*$B655 LD HL,($A441) ;
- $B658 LD B,$08      ;
-*$B65A LD A,(HL)     ;
- $B65B LD (DE),A     ;
- $B65C INC HL        ;
- $B65D INC D         ;
- $B65E DJNZ $B65A    ;
+; Copy the UDG data onto screen
+*$B655 LD HL,($A441) ; Get current UDG
+ $B658 LD B,$08      ; 8 lines
+*$B65A LD A,(HL)     ; Get next line
+ $B65B LD (DE),A     ; Set it
+ $B65C INC HL        ; Next line in data
+ $B65D INC D         ; Next line on screen
+ $B65E DJNZ $B65A    ; Loop back if more to do
 ; Put the attribute on screen
- $B660 LD D,C        ;
- $B661 LD A,($A443)  ;
- $B664 LD (DE),A     ;
- $B665 LD HL,($A445) ;
- $B668 ADD HL,DE     ;
- $B669 EX DE,HL      ;
- $B66A EX AF,AF'     ;
- $B66B DEC A         ;
+ $B660 LD D,C        ; Point DE to the attributes buffer
+ $B661 LD A,($A443)  ; Get current attribute
+ $B664 LD (DE),A     ; Set it on screen
+ $B665 LD HL,($A445) ; Get current size and direction
+ $B668 ADD HL,DE     ; { Set it to here and put it in HL
+ $B669 EX DE,HL      ; }
+ $B66A EX AF,AF'     ; Restore A
+ $B66B DEC A         ; Loop back to next iteration
  $B66C JR NZ,$B634   ;
  $B66E JR $B6A0      ;
 ; Move in the direction specified
@@ -4798,18 +4808,18 @@ c$B5FA LD DE,$A000   ; Attributes 1
  $B69E LD (HL),A     ;
 *$B69F EX AF,AF'     ; Restore carry flag
 *$B6A0 JP NC,$B5FD   ; Jump back if not changing sprite
-; Change the current sprite, or end logic
- $B6A3 LD L,(IX+$00) ;
- $B6A6 INC IX        ;
- $B6A8 BIT 0,L       ;
- $B6AA JR Z,$B6B6    ;
- $B6AC LD A,(IX+$00) ;
- $B6AF INC IX        ;
- $B6B1 LD ($A443),A  ;
- $B6B4 RES 0,L       ;
-*$B6B6 LD A,L        ;
- $B6B7 CP $FE        ;
- $B6B9 JR NZ,$B6D2   ;
+; Change the current UDG, or end logic
+ $B6A3 LD L,(IX+$00) ; Put UDG ID in L
+ $B6A6 INC IX        ; Move to next entry in the room data
+ $B6A8 BIT 0,L       ; Is there an attribute change?
+ $B6AA JR Z,$B6B6    ; Move forward if not
+ $B6AC LD A,(IX+$00) ; Get the attribute
+ $B6AF INC IX        ; Move to next entry in the room data
+ $B6B1 LD ($A443),A  ; Set this as the current attribute
+ $B6B4 RES 0,L       ; Turn off the attribute flag
+*$B6B6 LD A,L        ; Restore in A
+ $B6B7 CP $FE        ; Is this an "end of data" command?
+ $B6B9 JR NZ,$B6D2   ; No, so move forward and select the UDG
  $B6BB LD A,($A444)  ;
  $B6BE INC A         ;
  $B6BF RET NZ        ;
@@ -4825,67 +4835,68 @@ c$B5FA LD DE,$A000   ; Attributes 1
 *$B6CD INC HL        ;
  $B6CE LD ($A455),HL ;
  $B6D1 RET           ;
-; Set a new current sprite
-*$B6D2 LD H,$00      ;
+; Set a new current UDG
+*$B6D2 LD H,$00      ; { Convert UDG number (in L) to an offset
  $B6D4 ADD HL,HL     ;
- $B6D5 ADD HL,HL     ;
- $B6D6 LD BC,($A423) ;
- $B6DA ADD HL,BC     ;
- $B6DB LD ($A441),HL ;
- $B6DE LD HL,$A462   ;
- $B6E1 SRL (HL)      ;
- $B6E3 JP NC,$B5FD   ;
- $B6E6 LD HL,$5000   ;
- $B6E9 LD ($A441),HL ;
- $B6EC LD A,($A402)  ;
+ $B6D5 ADD HL,HL     ; }
+ $B6D6 LD BC,($A423) ; { Add this to the base pointer for static UDGs
+ $B6DA ADD HL,BC     ; }
+ $B6DB LD ($A441),HL ; Set this as the current value
+ $B6DE LD HL,$A462   ; Get the flags for this room
+ $B6E1 SRL (HL)      ; Extract out the next bit
+ $B6E3 JP NC,$B5FD   ; If the bit is not set, this UDG should be printed
+ $B6E6 LD HL,$5000   ; { Select main screen. This will be overwritten by the main
+ $B6E9 LD ($A441),HL ; } room drawing process, and hence the UDG will not be displayed
+ $B6EC LD A,($A402)  ; { Select new current attribute }
  $B6EF LD ($A443),A  ;
- $B6F2 JP $B5FD      ;
+ $B6F2 JP $B5FD      ; Back to parsing
 
 ; Print a number
 ;
 ; Used by the routines at #R$B140 and #R$B2D2.
 ;
 ; HL The screen address to print
-; The number to print
-c$B6F5 PUSH HL       ;
- $B6F6 LD B,$08      ;
- $B6F8 LD HL,$0001   ;
- $B6FB LD DE,$0000   ;
- $B6FE LD C,A        ;
-*$B6FF SRL C         ;
- $B701 JR NC,$B70B   ;
- $B703 LD A,L        ;
- $B704 ADD A,E       ;
- $B705 DAA           ;
- $B706 LD E,A        ;
- $B707 LD A,H        ;
- $B708 ADC A,D       ;
- $B709 DAA           ;
- $B70A LD D,A        ;
-*$B70B LD A,L        ;
- $B70C ADD A,L       ;
- $B70D DAA           ;
- $B70E LD L,A        ;
- $B70F LD A,H        ;
- $B710 ADC A,H       ;
- $B711 DAA           ;
- $B712 LD H,A        ;
- $B713 DJNZ $B6FF    ;
- $B715 POP HL        ;
- $B716 LD A,D        ;
- $B717 AND A         ;
- $B718 CALL NZ,$B72B ;
- $B71B LD A,E        ;
- $B71C AND $F0       ;
- $B71E CALL NZ,$B727 ;
- $B721 LD A,E        ;
- $B722 AND $0F       ;
- $B724 JP $B72B      ;
-*$B727 RRCA          ;
+; A The number to print
+c$B6F5 PUSH HL       ; Remember this
+ $B6F6 LD B,$08      ; 8 bits to check
+ $B6F8 LD HL,$0001   ; Set value to increment next bit to 1
+ $B6FB LD DE,$0000   ; Set evaluated value to 0
+ $B6FE LD C,A        ; Put working copy of number in C
+*$B6FF SRL C         ; Get the next bit
+ $B701 JR NC,$B70B   ; Move on if it is not set
+ $B703 LD A,L        ; Get low value to increment by
+ $B704 ADD A,E       ; Add this to the current value
+ $B705 DAA           ; Adjust for base 10
+ $B706 LD E,A        ; Set it
+ $B707 LD A,H        ; Get high value to increment by
+ $B708 ADC A,D       ; Add this to the current value (including carry)
+ $B709 DAA           ; Adjust for base 10
+ $B70A LD D,A        ; Set it
+*$B70B LD A,L        ; Get low value to increment
+ $B70C ADD A,L       ; Double it so that next bit gets the appropriate value added
+ $B70D DAA           ; Adjust to base 10
+ $B70E LD L,A        ; Set it
+ $B70F LD A,H        ; Get low value to increment
+ $B710 ADC A,H       ; Double it (including carry)
+ $B711 DAA           ; Adjust to base 10
+ $B712 LD H,A        ; Set it
+ $B713 DJNZ $B6FF    ; Loop if there are more bits to do
+ $B715 POP HL        ; Restore HL
+; At this point, DE contains three digits of an 8-bit number in D, bits 4-7 of E and bits 0-3 of E
+ $B716 LD A,D        ; Get the high value
+ $B717 AND A         ; Is it > 0?
+ $B718 CALL NZ,$B72B ; If it isn't, print digit
+ $B71B LD A,E        ; Get the low value
+ $B71C AND $F0       ; Get the top bits
+ $B71E CALL NZ,$B727 ; If any are set, print digit
+ $B721 LD A,E        ; Get the low value
+ $B722 AND $0F       ; Get the bottom bits
+ $B724 JP $B72B      ; This always needs printing, so do it
+*$B727 RRCA          ; { Shift the top bits in the low value to match a printable number
  $B728 RRCA          ;
  $B729 RRCA          ;
- $B72A RRCA          ;
-*$B72B ADD A,$30     ;
+ $B72A RRCA          ; }
+*$B72B ADD A,$30     ; Convert number to ASCII - control then continues to #R$B72D
 
 ; Print a character from the main character set
 ;
@@ -4949,22 +4960,22 @@ c$B755 LD B,A        ; Store number of spaces in B
 ;
 ; Used by the routine at #R$B140.
 ;
-; HL Screen address to copy to
+; HL Screen address to copy to. On return contains the next address to the right, to allow quick copying of multiple UDGs
 ; DE Address of UDG graphic data
 ; C Bitmask to apply to all cells (or FF for none)
-c$B760 LD DE,$A854   ;
+c$B760 LD DE,$A854   ; #R$A854 is the UDG for "megaquickly" tasks
 ; This entry point is used by the routines at #R$AA65 and #R$B140.
-*$B763 PUSH HL       ;
- $B764 LD B,$08      ;
-*$B766 LD A,(DE)     ;
- $B767 AND C         ;
- $B768 LD (HL),A     ;
- $B769 INC DE        ;
- $B76A INC H         ;
- $B76B DJNZ $B766    ;
- $B76D POP HL        ;
- $B76E INC L         ;
- $B76F RET           ;
+*$B763 PUSH HL       ; Remember this
+ $B764 LD B,$08      ; 8 lines to copy
+*$B766 LD A,(DE)     ; Get the next line
+ $B767 AND C         ; Apply the bitmask
+ $B768 LD (HL),A     ; Set it
+ $B769 INC DE        ; Next line in data
+ $B76A INC H         ; Next line on screen
+ $B76B DJNZ $B766    ; Loop back if more to do
+ $B76D POP HL        ; Restore HL
+ $B76E INC L         ; Point to next character
+ $B76F RET           ; All done
 
 ; Advance the time and print it
 ;
@@ -5346,121 +5357,136 @@ c$B99C SET 1,C         ;
  $B9EB LD (IX+$1B),A   ;
  $B9EE RET             ;
 
-; Set up movement area for the room
+; See if Ted is touching anything, and if so call the collision detection routine on attributes
 ;
 ; Used by the routines at #R$AA65 and #R$BB17.
-c$B9EF LD A,($A439)  ;
- $B9F2 AND $EF       ;
- $B9F4 LD ($A439),A  ;
- $B9F7 LD B,$10      ;
-*$B9F9 LD A,(DE)     ;
- $B9FA AND C         ;
- $B9FB AND (HL)      ;
- $B9FC PUSH HL       ;
- $B9FD CALL NZ,$BA3B ;
- $BA00 INC L         ;
- $BA01 LD A,(DE)     ;
- $BA02 CPL           ;
- $BA03 OR C          ;
- $BA04 CPL           ;
- $BA05 EX AF,AF'     ;
- $BA06 INC DE        ;
- $BA07 LD A,(DE)     ;
- $BA08 AND (HL)      ;
- $BA09 CALL NZ,$BA3B ;
- $BA0C INC L         ;
- $BA0D EX AF,AF'     ;
- $BA0E AND (HL)      ;
- $BA0F CALL NZ,$BA3B ;
- $BA12 INC DE        ;
- $BA13 POP HL        ;
- $BA14 INC H         ;
- $BA15 LD A,H        ;
- $BA16 AND $07       ;
- $BA18 JR NZ,$BA24   ;
- $BA1A LD A,L        ;
- $BA1B ADD A,$20     ;
- $BA1D LD L,A        ;
- $BA1E JR C,$BA24    ;
- $BA20 LD A,H        ;
+;
+; HL Current screen address of Ted
+; DE Current graphic frame for Ted
+; C A mask denoting which bits should be considered in a clash
+c$B9EF LD A,($A439)  ; Get flags
+ $B9F2 AND $EF       ; Turn off bit 4
+ $B9F4 LD ($A439),A  ; Set it
+ $B9F7 LD B,$10      ; 16 lines to check
+*$B9F9 LD A,(DE)     ; Get the graphic
+ $B9FA AND C         ; Turn off bits we don't want
+ $B9FB AND (HL)      ; Turn off bits on screen not set to anything
+ $B9FC PUSH HL       ; Remember HL
+ $B9FD CALL NZ,$BA3B ; If we have clashing pixels, do collision detection
+ $BA00 INC L         ; Next character
+ $BA01 LD A,(DE)     ; Get the graphic
+ $BA02 CPL           ; { Turn off bits we don't want and are not in empty space
+ $BA03 OR C          ; 
+ $BA04 CPL           ; }
+ $BA05 EX AF,AF'     ; Remember A
+ $BA06 INC DE        ; Next frame pixels
+ $BA07 LD A,(DE)     ; Get the pixels
+ $BA08 AND (HL)      ; Is there a clash?
+ $BA09 CALL NZ,$BA3B ; Call collision detection if so
+ $BA0C INC L         ; Next character
+ $BA0D EX AF,AF'     ; Restore A
+ $BA0E AND (HL)      ; Is there a clash?
+ $BA0F CALL NZ,$BA3B ; Call collision detection if so
+ $BA12 INC DE        ; Next frame line
+ $BA13 POP HL        ; Restore HL
+ $BA14 INC H         ; Next line
+ $BA15 LD A,H        ; { Have we done 8 lines?
+ $BA16 AND $07       ; }
+ $BA18 JR NZ,$BA24   ; Move on if so
+ $BA1A LD A,L        ; Get first line
+ $BA1B ADD A,$20     ; Add offset to get second line
+ $BA1D LD L,A        ; Set it
+ $BA1E JR C,$BA24    ; Move on if this is on the right of the screen 
+ $BA20 LD A,H        ; { Move back to leftmost character
  $BA21 SUB $08       ;
- $BA23 LD H,A        ;
-*$BA24 DJNZ $B9F9    ;
- $BA26 LD A,($A439)  ;
- $BA29 BIT 4,A       ;
- $BA2B JR NZ,$BA32   ;
- $BA2D OR $08        ;
- $BA2F LD ($A439),A  ;
-*$BA32 XOR A         ;
+ $BA23 LD H,A        ; }
+*$BA24 DJNZ $B9F9    ; Loop round to next line
+ $BA26 LD A,($A439)  ; Get flags
+ $BA29 BIT 4,A       ; Is bit 4 still set?
+ $BA2B JR NZ,$BA32   ; Move on if not
+ $BA2D OR $08        ; { Set bit 3 and store it
+ $BA2F LD ($A439),A  ; }
+*$BA32 XOR A         ; 
  $BA33 RET           ;
 
 ; Collision detection (preserving HL)
 ;
 ; Used by the routine at #R$BB17.
-c$BA34 PUSH HL       ;
- $BA35 AND A         ;
- $BA36 CALL $BA3B    ;
- $BA39 POP HL        ;
+;
+; HL Current screen address to check
+; DE Current graphic address of Ted to check
+c$BA34 PUSH HL       ; Remember HL
+ $BA35 AND A         ; Clear A
+ $BA36 CALL $BA3B    ; Do the collision detection
+ $BA39 POP HL        ; Restore HL
  $BA3A RET           ;
 
-; Collision detection
+; Collision detection based on attributes
 ;
 ; Used by the routines at #R$B9EF and #R$BA34.
-c$BA3B PUSH HL       ;
+;
+; HL Current screen address to check
+; DE Current graphic address of Ted to check
+; A Combination of the two pixels of each address
+;
+; Returns the attribute found if the collision was "safe"
+; If the carry flag is set, the collision was "hostile"
+c$BA3B PUSH HL       ; { Remember base values
  $BA3C PUSH BC       ;
- $BA3D PUSH AF       ;
- $BA3E LD A,H        ;
- $BA3F RRA           ;
+ $BA3D PUSH AF       ; }
+ $BA3E LD A,H        ; Get screen address
+ $BA3F RRA           ; { Convert to offset from attribute buffer at A000
  $BA40 RRA           ;
  $BA41 RRA           ;
  $BA42 AND $03       ;
- $BA44 ADD A,$A0     ;
- $BA46 LD H,A        ;
- $BA47 LD B,(HL)     ;
- $BA48 BIT 6,B       ;
- $BA4A JR Z,$BA54    ;
- $BA4C LD A,($A422)  ;
- $BA4F CP $2A        ;
- $BA51 CALL Z,$BABD  ;
-*$BA54 BIT 7,B       ;
- $BA56 CALL NZ,$B2D2 ;
- $BA59 LD HL,($A41D) ;
-*$BA5C LD A,(HL)     ;
- $BA5D AND A         ;
- $BA5E JR Z,$BA69    ;
- $BA60 XOR B         ;
- $BA61 INC HL        ;
- $BA62 JR NZ,$BA5C   ;
- $BA64 POP AF        ;
-*$BA65 LD A,B        ;
- $BA66 POP BC        ;
- $BA67 POP HL        ;
- $BA68 RET           ;
-*$BA69 POP AF        ;
- $BA6A EX AF,AF'     ;
- $BA6B LD C,A        ;
-*$BA6C INC HL        ;
- $BA6D LD A,(HL)     ;
- $BA6E AND A         ;
- $BA6F JR Z,$BA84    ;
- $BA71 XOR B         ;
- $BA72 JR NZ,$BA6C   ;
- $BA74 LD A,($A439)  ;
- $BA77 BIT 3,A       ;
- $BA79 JR NZ,$BA85   ;
- $BA7B OR $10        ;
- $BA7D LD ($A439),A  ;
- $BA80 LD A,C        ;
- $BA81 EX AF,AF'     ;
- $BA82 JR $BA65      ;
-; Ted has hit something unpleasant :-(
-*$BA84 SCF           ;
-*$BA85 LD A,B        ;
- $BA86 POP BC        ;
+ $BA44 ADD A,$A0     ; }
+ $BA46 LD H,A        ; Store this so HL now points to attributes
+ $BA47 LD B,(HL)     ; Get the attribute
+ $BA48 BIT 6,B       ; Is the attribute bright?
+ $BA4A JR Z,$BA54    ; Move on if so
+ $BA4C LD A,($A422)  ; { Are we in the lift?
+ $BA4F CP $2A        ; }
+ $BA51 CALL Z,$BABD  ; Check lift button logic if we are
+*$BA54 BIT 7,B       ; Is the attribute flashing?
+ $BA56 CALL NZ,$B2D2 ; Yes, Ted hit a task button - check what to do next
+ $BA59 LD HL,($A41D) ; Get the static object collision table
+; Check if Ted is standing in a "safe" spot
+*$BA5C LD A,(HL)     ; Get the next attribute to check
+ $BA5D AND A         ; Is it zero?
+ $BA5E JR Z,$BA69    ; If so, that's the end of the list - move forward
+ $BA60 XOR B         ; Does this attribute match the current one? 
+ $BA61 INC HL        ; { Move to next attribute if there is not a match
+ $BA62 JR NZ,$BA5C   ; }
+ $BA64 POP AF        ; Restore flags
+*$BA65 LD A,B        ; Return found attribute
+ $BA66 POP BC        ; { Restore base values stored earlier
+ $BA67 POP HL        ; }
+ $BA68 RET           ; Return that Ted has matched a safe attribute
+*$BA69 POP AF        ; { Restore bitmask / flags and swap them out
+ $BA6A EX AF,AF'     ; }
+ $BA6B LD C,A        ; Put it in C
+*$BA6C INC HL        ; { Move to next attribute
+ $BA6D LD A,(HL)     ; }
+ $BA6E AND A         ; Is it zero?
+ $BA6F JR Z,$BA84    ; If so, that's the end of the list - move forward
+ $BA71 XOR B         ; Does this attribute match the current one?
+ $BA72 JR NZ,$BA6C   ; Move to the next attribute if there's not a match
+ $BA74 LD A,($A439)  ; Get flags
+ $BA77 BIT 3,A       ; Is bit 3 (Ted suck in wall) set?
+ $BA79 JR NZ,$BA85   ; Move forward if not
+ $BA7B OR $10        ; { Set bit 5 (Ted touched a wall) and write it back
+ $BA7D LD ($A439),A  ; }
+ $BA80 LD A,C        ; { Restore A
+ $BA81 EX AF,AF'     ; }
+ $BA82 JR $BA65      ; Signal this is a safe attribute and return it
+; This attribute is not in the list of water or earth - it must be fatal
+*$BA84 SCF           ; Set the carry flag - Ted has hit something unpleasant :-(
+*$BA85 LD A,B        ; Put the attribute found in A
+ $BA86 POP BC        ; { Restore registers
  $BA87 POP HL        ;
  $BA88 POP DE        ;
- $BA89 POP DE        ;
- $BA8A RET           ;
+ $BA89 POP DE        ; }
+ $BA8A RET           ; Return marking Ted hit something hostile
 
 ; Hit both task boxes, change the state of the game
 ;
@@ -6393,19 +6419,19 @@ c$C00D NOP           ;
 ; The tick counter is decremented by the value pointed to by IX. If it
 ; overflows to 0, control goes to #R$C096, otherwise the command from #R$AA2D -
 ; #R$AA47 is executed instead.
-c$C05C LD C,(IX+$00) ;
- $C05F LD B,(IX+$01) ;
- $C062 LD H,D        ;
- $C063 LD L,E        ;
- $C064 AND A         ;
- $C065 SBC HL,BC     ;
- $C067 EX DE,HL      ;
- $C068 JR C,$C096    ;
- $C06A LD L,(IX+$1C) ;
- $C06D LD H,(IX+$1D) ;
- $C070 INC IX        ;
- $C072 INC IX        ;
- $C074 JP (HL)       ;
+c$C05C LD C,(IX+$00) ; { Put the amount to subtract in BC
+ $C05F LD B,(IX+$01) ; }
+ $C062 LD H,D        ; { Copy DE to HL
+ $C063 LD L,E        ; }
+ $C064 AND A         ; A = 0
+ $C065 SBC HL,BC     ; { Subtract the amount from the tick counter and put it back in DE
+ $C067 EX DE,HL      ; }
+ $C068 JR C,$C096    ; Call the interrupt routine if counter overflows
+ $C06A LD L,(IX+$1C) ; { Put normal address to jump to in HL
+ $C06D LD H,(IX+$1D) ; }
+ $C070 INC IX        ; { Next action table entry
+ $C072 INC IX        ; }
+ $C074 JP (HL)       ; Move on to normal routine
 
 ; Reset the interruptable tick counter
 ;

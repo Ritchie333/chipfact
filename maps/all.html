@@ -340,7 +340,7 @@
 <td class="map-g"><span id="41999"></span><a href="../asm/41999.html">A40F</a></td>
 <td class="map-length-0">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41999.html">Game status buffer entry at A40F</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/41999.html">Next bitmask to consider when considering pixel-accurate collision detection</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -436,7 +436,7 @@
 <td class="map-g"><span id="42012"></span><a href="../asm/42012.html">A41C</a></td>
 <td class="map-length-0">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42012.html">Game status buffer entry at A41C</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42012.html">Collision detection mask when Ted entered the room</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -542,9 +542,21 @@
 <td class="map-page-1">164</td>
 <td class="map-byte-1">45</td>
 <td class="map-g"><span id="42029"></span><a href="../asm/42029.html">A42D</a></td>
-<td class="map-length-0">3</td>
+<td class="map-length-0">2</td>
 <td class="map-g-desc">
 <div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42029.html">Number of lives</a></div>
+<div class="map-entry-desc-0">
+
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-page-1">164</td>
+<td class="map-byte-1">47</td>
+<td class="map-g"><span id="42031"></span><a href="../asm/42031.html">A42F</a></td>
+<td class="map-length-0">1</td>
+<td class="map-g-desc">
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42031.html">Time available for a "megaquickly" task</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -604,7 +616,7 @@
 <td class="map-g"><span id="42038"></span><a href="../asm/42038.html">A436</a></td>
 <td class="map-length-0">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42038.html">Game status buffer entry at A436</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42038.html">Holds the "megaquickly task" flag in bit 5</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -616,7 +628,7 @@
 <td class="map-g"><span id="42039"></span><a href="../asm/42039.html">A437</a></td>
 <td class="map-length-0">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42039.html">Game status buffer entry at A437</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42039.html">Room that the last task was completed in</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -640,7 +652,7 @@
 <td class="map-g"><span id="42041"></span><a href="../asm/42041.html">A439</a></td>
 <td class="map-length-0">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42041.html">Various flags</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42041.html"></a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -890,21 +902,9 @@
 <td class="map-page-1">164</td>
 <td class="map-byte-1">87</td>
 <td class="map-g"><span id="42071"></span><a href="../asm/42071.html">A457</a></td>
-<td class="map-length-0">1</td>
+<td class="map-length-0">2</td>
 <td class="map-g-desc">
 <div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42071.html">Current room flags</a></div>
-<div class="map-entry-desc-0">
-
-</div>
-</td>
-</tr>
-<tr>
-<td class="map-page-1">164</td>
-<td class="map-byte-1">88</td>
-<td class="map-g"><span id="42072"></span><a href="../asm/42072.html">A458</a></td>
-<td class="map-length-0">1</td>
-<td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42072.html"></a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -916,7 +916,7 @@
 <td class="map-g"><span id="42073"></span><a href="../asm/42073.html">A459</a></td>
 <td class="map-length-0">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42073.html">Game status buffer entry at A459</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42073.html">Pointer to current interruptable command table</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -974,21 +974,9 @@
 <td class="map-page-1">164</td>
 <td class="map-byte-1">95</td>
 <td class="map-g"><span id="42079"></span><a href="../asm/42079.html">A45F</a></td>
-<td class="map-length-0">1</td>
+<td class="map-length-0">2</td>
 <td class="map-g-desc">
 <div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42079.html">Character of task button being drawn</a></div>
-<div class="map-entry-desc-0">
-
-</div>
-</td>
-</tr>
-<tr>
-<td class="map-page-1">164</td>
-<td class="map-byte-1">96</td>
-<td class="map-g"><span id="42080"></span><a href="../asm/42080.html">A460</a></td>
-<td class="map-length-0">1</td>
-<td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42080.html">Game status buffer entry at A460</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -1012,7 +1000,7 @@
 <td class="map-g"><span id="42082"></span><a href="../asm/42082.html">A462</a></td>
 <td class="map-length-0">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42082.html">Current room flags for static objects</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42082.html">Working bitset for static objects</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -1024,7 +1012,7 @@
 <td class="map-g"><span id="42083"></span><a href="../asm/42083.html">A463</a></td>
 <td class="map-length-0">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42083.html">Game status buffer entry at A463</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42083.html">Working bitset for moving objects</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -1264,7 +1252,7 @@
 <td class="map-b"><span id="42860"></span><a href="../asm/42860.html">A76C</a></td>
 <td class="map-length-0">81</td>
 <td class="map-b-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42860.html">Movement table</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/42860.html">Movement table - jumping</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -1924,7 +1912,7 @@
 <td class="map-c"><span id="47599"></span><a href="../asm/47599.html">B9EF</a></td>
 <td class="map-length-0">69</td>
 <td class="map-c-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/47599.html">Set up movement area for the room</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/47599.html">See if Ted is touching anything, and if so call the collision detection routine on attributes</a></div>
 <div class="map-entry-desc-0">
 
 </div>
@@ -1948,7 +1936,7 @@
 <td class="map-c"><span id="47675"></span><a href="../asm/47675.html">BA3B</a></td>
 <td class="map-length-0">80</td>
 <td class="map-c-desc">
-<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/47675.html">Collision detection</a></div>
+<div class="map-entry-title-10"><a class="map-entry-title" href="../asm/47675.html">Collision detection based on attributes</a></div>
 <div class="map-entry-desc-0">
 
 </div>

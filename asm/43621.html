@@ -821,13 +821,13 @@ Start a new game
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="43874"></span>AB62</td>
 <td class="instruction">LD ($A45E),A</td>
-<td class="comment-11" rowspan="1">No tasks completed</td>
+<td class="comment-11" rowspan="2">No tasks completed</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="43877"></span>AB65</td>
 <td class="instruction">LD ($A437),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1301,55 +1301,55 @@ Main game loop starts here
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44061"></span>AC1D</td>
 <td class="instruction">LD HL,$A439</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Get game flags</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44064"></span>AC20</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44065"></span>AC21</td>
 <td class="instruction">AND $E6</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Turn off bits 0, 3 and 4</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44067"></span>AC23</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Store this</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44068"></span>AC24</td>
 <td class="instruction">LD HL,($A40A)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get Ted's graphic offset</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44071"></span>AC27</td>
 <td class="instruction">LD DE,($A408)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get graphic set</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44075"></span>AC2B</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Combine to get graphic frame</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44076"></span>AC2C</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Put this in DE</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44077"></span>AC2D</td>
 <td class="instruction">LD HL,($A406)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Put current screen address for Ted in HL</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -2399,13 +2399,13 @@ Run out of lives
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44460"></span>ADAC</td>
 <td class="instruction">LD HL,$A439</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get flags</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44463"></span>ADAF</td>
 <td class="instruction">SET 2,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Turn on "automatic movement" mode</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>

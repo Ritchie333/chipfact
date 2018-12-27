@@ -175,7 +175,7 @@ This entry point is used by the routine at <a href="44663.html">AE77</a>.
 <span id="46622"></span>
 <div class="comments">
 <div class="paragraph">
-Draw the current sprite here
+Draw the current UDG here
 </div>
 </div>
 </td>
@@ -401,7 +401,7 @@ Draw the current sprite here
 <span id="46677"></span>
 <div class="comments">
 <div class="paragraph">
-Copy the sprite data onto screen
+Copy the UDG data onto screen
 </div>
 </div>
 </td>
@@ -410,43 +410,43 @@ Copy the sprite data onto screen
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46677"></span>B655</td>
 <td class="instruction">LD HL,($A441)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get current UDG</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46680"></span>B658</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">8 lines</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46682"></span>B65A</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get next line</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46683"></span>B65B</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46684"></span>B65C</td>
 <td class="instruction">INC HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next line in data</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46685"></span>B65D</td>
 <td class="instruction">INC D</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next line on screen</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46686"></span>B65E</td>
 <td class="instruction">DJNZ $B65A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Loop back if more to do</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="4">
@@ -462,49 +462,49 @@ Put the attribute on screen
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46688"></span>B660</td>
 <td class="instruction">LD D,C</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Point DE to the attributes buffer</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46689"></span>B661</td>
 <td class="instruction">LD A,($A443)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get current attribute</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46692"></span>B664</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set it on screen</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46693"></span>B665</td>
 <td class="instruction">LD HL,($A445)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get current size and direction</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46696"></span>B668</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Set it to here and put it in HL</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46697"></span>B669</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46698"></span>B66A</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Restore A</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46699"></span>B66B</td>
 <td class="instruction">DEC A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Loop back to next iteration</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -737,7 +737,7 @@ Move in the direction specified
 <span id="46755"></span>
 <div class="comments">
 <div class="paragraph">
-Change the current sprite, or end logic
+Change the current UDG, or end logic
 </div>
 </div>
 </td>
@@ -746,67 +746,67 @@ Change the current sprite, or end logic
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46755"></span>B6A3</td>
 <td class="instruction">LD L,(IX+$00)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Put UDG ID in L</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46758"></span>B6A6</td>
 <td class="instruction">INC IX</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move to next entry in the room data</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46760"></span>B6A8</td>
 <td class="instruction">BIT 0,L</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Is there an attribute change?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46762"></span>B6AA</td>
 <td class="instruction">JR Z,$B6B6</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move forward if not</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46764"></span>B6AC</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get the attribute</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46767"></span>B6AF</td>
 <td class="instruction">INC IX</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move to next entry in the room data</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46769"></span>B6B1</td>
 <td class="instruction">LD ($A443),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set this as the current attribute</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46772"></span>B6B4</td>
 <td class="instruction">RES 0,L</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Turn off the attribute flag</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46774"></span>B6B6</td>
 <td class="instruction">LD A,L</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Restore in A</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46775"></span>B6B7</td>
 <td class="instruction">CP $FE</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Is this an "end of data" command?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46777"></span>B6B9</td>
 <td class="instruction">JR NZ,$B6D2</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">No, so move forward and select the UDG</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -903,7 +903,7 @@ Change the current sprite, or end logic
 <span id="46802"></span>
 <div class="comments">
 <div class="paragraph">
-Set a new current sprite
+Set a new current UDG
 </div>
 </div>
 </td>
@@ -912,73 +912,73 @@ Set a new current sprite
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46802"></span>B6D2</td>
 <td class="instruction">LD H,$00</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="3">Convert UDG number (in L) to an offset</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46804"></span>B6D4</td>
 <td class="instruction">ADD HL,HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46805"></span>B6D5</td>
 <td class="instruction">ADD HL,HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46806"></span>B6D6</td>
 <td class="instruction">LD BC,($A423)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Add this to the base pointer for static UDGs</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46810"></span>B6DA</td>
 <td class="instruction">ADD HL,BC</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46811"></span>B6DB</td>
 <td class="instruction">LD ($A441),HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set this as the current value</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46814"></span>B6DE</td>
 <td class="instruction">LD HL,$A462</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get the flags for this room</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46817"></span>B6E1</td>
 <td class="instruction">SRL (HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Extract out the next bit</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46819"></span>B6E3</td>
 <td class="instruction">JP NC,$B5FD</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">If the bit is not set, this UDG should be printed</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46822"></span>B6E6</td>
 <td class="instruction">LD HL,$5000</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Select main screen. This will be overwritten by the main } room drawing process, and hence the UDG will not be displayed</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46825"></span>B6E9</td>
 <td class="instruction">LD ($A441),HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46828"></span>B6EC</td>
 <td class="instruction">LD A,($A402)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Select new current attribute</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -990,7 +990,7 @@ Set a new current sprite
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46834"></span>B6F2</td>
 <td class="instruction">JP $B5FD</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Back to parsing</td>
 </tr>
 </table>
 <table class="asm-navigation">

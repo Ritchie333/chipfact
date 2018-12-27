@@ -35,7 +35,7 @@ Used by the routine at <a href="45376.html">B140</a>.
 </tr>
 <tr>
 <td class="register">HL</td>
-<td class="register-desc">Screen address to copy to</td>
+<td class="register-desc">Screen address to copy to. On return contains the next address to the right, to allow quick copying of multiple UDGs</td>
 </tr>
 <tr>
 <td class="register">DE</td>
@@ -58,7 +58,7 @@ Used by the routine at <a href="45376.html">B140</a>.
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46944"></span>B760</td>
 <td class="instruction">LD DE,$A854</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1"><a href="43092.html">A854</a> is the UDG for "megaquickly" tasks</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="4">
@@ -74,67 +74,67 @@ This entry point is used by the routines at <a href="43621.html">AA65</a> and <a
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46947"></span>B763</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Remember this</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46948"></span>B764</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">8 lines to copy</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="46950"></span>B766</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get the next line</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46951"></span>B767</td>
 <td class="instruction">AND C</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Apply the bitmask</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46952"></span>B768</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Set it</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46953"></span>B769</td>
 <td class="instruction">INC DE</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next line in data</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46954"></span>B76A</td>
 <td class="instruction">INC H</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Next line on screen</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46955"></span>B76B</td>
 <td class="instruction">DJNZ $B766</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Loop back if more to do</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46957"></span>B76D</td>
 <td class="instruction">POP HL</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Restore HL</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46958"></span>B76E</td>
 <td class="instruction">INC L</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Point to next character</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="46959"></span>B76F</td>
 <td class="instruction">RET</td>
-<td class="comment-10" rowspan="1"></td>
+<td class="comment-11" rowspan="1">All done</td>
 </tr>
 </table>
 <table class="asm-navigation">

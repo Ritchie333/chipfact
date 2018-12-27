@@ -335,25 +335,25 @@ Advance all moving objects on by one frame
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="44985"></span>AFB9</td>
 <td class="instruction">LD A,($A439)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get game flags</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44988"></span>AFBC</td>
 <td class="instruction">BIT 2,A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Are we moving automatically?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44990"></span>AFBE</td>
 <td class="instruction">JR Z,$AFC7</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move on if so</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44992"></span>AFC0</td>
 <td class="instruction">CALL <a href="48542.html">$BD9E</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Update automatic movement by one frame</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
