@@ -2862,6 +2862,10 @@ b$A764 DEFB $03      ; Count of entries
 ; Movement table - jumping
 ;
 ;.
+; Each entry has two bytes; the first contains the sound pitch to play, the second is the distance to move (negative - up, positive - down)
+;
+;.
+;
 ; Move up
 b$A76C DEFB $E8,$FE
  $A76E DEFB $ED,$FE
@@ -3691,10 +3695,10 @@ c$AE77 LD HL,($A422)   ; { Get current room number in L
  $AEFC PUSH IX         ;
  $AEFE POP HL          ;
 ; Draw any task buttons
- $AEFF LD A,(HL)       ;
- $AF00 INC HL          ;
- $AF01 AND A           ;
- $AF02 CALL NZ,$B203   ;
+ $AEFF LD A,(HL)       ; Get next value
+ $AF00 INC HL          ; Increment to next pointer in the room data
+ $AF01 AND A           ; Is the next value zero?
+ $AF02 CALL NZ,$B203   ; If not, there are task buttons, so process them
 ; Initialize moving objects
  $AF05 LD ($A41D),HL   ;
  $AF08 XOR A           ;
@@ -4109,62 +4113,62 @@ c$B140 LD A,(HL)     ;
 ;
 ; A Index of the button to draw
 ; HL Pointer to button data
-c$B203 LD B,$02      ;
-*$B205 PUSH BC       ;
- $B206 SRL A         ;
- $B208 LD ($A433),A  ;
- $B20B LD B,$00      ;
+c$B203 LD B,$02      ; Two buttons to draw
+*$B205 PUSH BC       ; Remember this
+ $B206 SRL A         ; Divide index by 2
+ $B208 LD ($A433),A  ; Store it
+ $B20B LD B,$00      ; 
  $B20D RL B          ;
- $B20F LD C,(HL)     ;
- $B210 INC HL        ;
- $B211 LD ($A434),BC ;
- $B215 SLA B         ;
+ $B20F LD C,(HL)     ; Put next value in C
+ $B210 INC HL        ; Point to next entry in the room data
+ $B211 LD ($A434),BC ; Store the character offset
+ $B215 SLA B         ; { Convert to screen offset
  $B217 SLA B         ;
- $B219 SLA B         ;
- $B21B LD A,(HL)     ;
- $B21C LD ($A45F),A  ;
- $B21F INC HL        ;
- $B220 ADD A,A       ;
- $B221 ADD A,A       ;
- $B222 PUSH HL       ;
- $B223 LD HL,$9000   ;
- $B226 ADD HL,BC     ;
- $B227 LD E,A        ;
- $B228 LD D,$04      ;
-*$B22A LD A,E        ;
- $B22B LD BC,($A467) ;
- $B22F CALL $B730    ;
- $B232 BIT 0,D       ;
- $B234 JR Z,$B241    ;
- $B236 DEC L         ;
- $B237 LD A,L        ;
+ $B219 SLA B         ; }
+ $B21B LD A,(HL)     ; Get character
+ $B21C LD ($A45F),A  ; Store it
+ $B21F INC HL        ; Point to next entry in the room data
+ $B220 ADD A,A       ; { Shift characters to become an offset from the task button data
+ $B221 ADD A,A       ; }
+ $B222 PUSH HL       ; Remember this
+ $B223 LD HL,$9000   ; Load base address of screen 2 
+ $B226 ADD HL,BC     ; Add offset
+ $B227 LD E,A        ; Remember this 
+ $B228 LD D,$04      ; Four characters
+*$B22A LD A,E        ; Get next character
+ $B22B LD BC,($A467) ; Get base address of task button UDGs
+ $B22F CALL $B730    ; Print the character
+ $B232 BIT 0,D       ; Is this one of the rightmost characters?
+ $B234 JR Z,$B241    ; Move forward of it isn't
+ $B236 DEC L         ; Move back one character
+ $B237 LD A,L        ; { Move down a line
  $B238 ADD A,$1F     ;
- $B23A LD L,A        ;
- $B23B JR NC,$B241   ;
- $B23D LD A,H        ;
+ $B23A LD L,A        ; }
+ $B23B JR NC,$B241   ; Move forward if we're still on the same third of a screen
+ $B23D LD A,H        ; { Move forward to the next third of a screen
  $B23E XOR $08       ;
- $B240 LD H,A        ;
-*$B241 INC E         ;
- $B242 DEC D         ;
- $B243 JR NZ,$B22A   ;
- $B245 POP HL        ;
- $B246 POP BC        ;
- $B247 DEC B         ;
- $B248 JR Z,$B25C    ;
- $B24A LD A,($A433)  ;
+ $B240 LD H,A        ; }
+*$B241 INC E         ; Next character in store
+ $B242 DEC D         ; { Repeat if there are more characters to print
+ $B243 JR NZ,$B22A   ; }
+ $B245 POP HL        ; { Restore registers clobbered by the above routine
+ $B246 POP BC        ; }
+ $B247 DEC B         ; Next button
+ $B248 JR Z,$B25C    ; Jump forward if both buttons are done
+ $B24A LD A,($A433)  ; 
  $B24D LD ($A430),A  ;
  $B250 LD DE,($A434) ;
  $B254 LD ($A431),DE ;
- $B258 LD A,(HL)     ;
- $B259 INC HL        ;
- $B25A JR $B205      ;
+ $B258 LD A,(HL)     ; Get next button data
+ $B259 INC HL        ; Point to next entry in the room data
+ $B25A JR $B205      ; Do the next button
 ; Draw the task button attributes
-*$B25C LD A,(HL)     ;
- $B25D LD ($A436),A  ;
- $B260 INC HL        ;
- $B261 PUSH HL       ;
- $B262 LD DE,$A200   ;
- $B265 LD BC,$001F   ;
+*$B25C LD A,(HL)     ; Get the attribute
+ $B25D LD ($A436),A  ; Store it
+ $B260 INC HL        ; Point to next entry in the room data
+ $B261 PUSH HL       ; Remember this
+ $B262 LD DE,$A200   ; Point DE to the base address of attributes 2
+ $B265 LD BC,$001F   ; 
  $B268 LD A,($A457)  ;
  $B26B AND $80       ;
  $B26D LD HL,$A45B   ;
@@ -4182,13 +4186,13 @@ c$B203 LD B,$02      ;
 *$B288 OR $80        ;
 *$B28A PUSH AF       ;
  $B28B LD HL,($A431) ;
- $B28E CALL $B2C9    ;
+ $B28E CALL $B2C9    ; Copy the attribute onto screen 2
  $B291 LD HL,($A434) ;
  $B294 POP AF        ;
  $B295 LD A,($A433)  ;
  $B298 RLA           ;
  $B299 RRCA          ;
- $B29A CALL $B2C9    ;
+ $B29A CALL $B2C9    ; Copy the attribute onto screen 2
  $B29D POP HL        ;
  $B29E LD A,($A45F)  ;
  $B2A1 RLA           ;
@@ -4208,13 +4212,15 @@ c$B203 LD B,$02      ;
 ; Copy task box attributes into all the screen buffers
 ;
 ; Used by the routine at #R$B2D2.
-c$B2B6 LD BC,$001F   ;
- $B2B9 EX DE,HL      ;
- $B2BA LD HL,$A200   ;
- $B2BD CALL $B2C9    ;
- $B2C0 LD HL,$A000   ;
- $B2C3 CALL $B2C9    ;
- $B2C6 LD HL,$5800   ;
+;
+; HL Offset of first box
+c$B2B6 LD BC,$001F   ; Offset of second relative to first
+ $B2B9 EX DE,HL      ; Swap DE and HL
+ $B2BA LD HL,$A200   ; Point to attributes 2
+ $B2BD CALL $B2C9    ; Copy attributes
+ $B2C0 LD HL,$A000   ; Point to attributes 1
+ $B2C3 CALL $B2C9    ; Copy attributes
+ $B2C6 LD HL,$5800   ; Point to screen, continue to #R$B2C9
 
 ; Copy task box attributes onto the screen buffer
 ;
@@ -4224,15 +4230,15 @@ c$B2B6 LD BC,$001F   ;
 ; BC Offset of second box relative to first
 ; DE Address of attribute buffer
 ; A Attribute to copy
-c$B2C9 ADD HL,DE     ;
- $B2CA LD (HL),A     ;
- $B2CB INC L         ;
- $B2CC LD (HL),A     ;
- $B2CD ADD HL,BC     ;
- $B2CE LD (HL),A     ;
- $B2CF INC L         ;
- $B2D0 LD (HL),A     ;
- $B2D1 RET           ;
+c$B2C9 ADD HL,DE     ; Add first offset to attribute buffer
+ $B2CA LD (HL),A     ; Set the attribute
+ $B2CB INC L         ; Next character along
+ $B2CC LD (HL),A     ; Set the attribute
+ $B2CD ADD HL,BC     ; Add second offset to this
+ $B2CE LD (HL),A     ; Set the attribute
+ $B2CF INC L         ; Next character
+ $B2D0 LD (HL),A     ; Set the attribute
+ $B2D1 RET           ; All done
 
 ; Perform an action after hitting a button
 ;
@@ -5757,7 +5763,7 @@ c$BB17 LD HL,($A408) ;
  $BBF5 JR Z,$BC04    ; Move on if not
  $BBF7 SET 0,C       ; Set bit 0 to denote "mid jump"
  $BBF9 LD HL,$A76C   ; { Set automatic movement table
- $BBFC LD ($A404),HL ; }
+ $BBFC LD ($A404),HL ; to the "jump" table at #R$A76C}
  $BBFF LD HL,$A443   ;
  $BC02 SET 0,(HL)    ;
 ; Check for conveyor belts
@@ -5836,34 +5842,34 @@ c$BB17 LD HL,($A408) ;
  $BC83 BIT 7,A       ;
  $BC85 JR NZ,$BCB9   ;
  $BC87 LD B,A        ;
- $BC88 LD A,($A403)  ;
+ $BC88 LD A,($A403)  ; { Set bit 3 (Ted falling) in flags
  $BC8B OR $08        ;
- $BC8D LD ($A403),A  ;
- $BC90 LD DE,$A40E   ; { Increase height fallen by
+ $BC8D LD ($A403),A  ; }
+ $BC90 LD DE,$A40E   ; { Increase height fallen, unless it is at maximum already
 *$BC93 LD A,(DE)     ;
- $BC94 INC A         ; }
+ $BC94 INC A         ; 
  $BC95 JR NZ,$BC98   ;
  $BC97 DEC A         ;
-*$BC98 LD (DE),A     ;
- $BC99 INC H         ;
- $BC9A LD A,H        ;
- $BC9B AND $07       ;
- $BC9D JR NZ,$BCB5   ;
- $BC9F LD A,L        ;
+*$BC98 LD (DE),A     ; }
+ $BC99 INC H         ; Move Ted down a line
+ $BC9A LD A,H        ; { Have we reached the end of an 8x8 block?
+ $BC9B AND $07       ; }
+ $BC9D JR NZ,$BCB5   ; No, so move on
+ $BC9F LD A,L        ; { Jump to a new 8x8 block
  $BCA0 ADD A,$20     ;
- $BCA2 LD L,A        ;
- $BCA3 JR C,$BCA9    ;
- $BCA5 LD A,H        ;
+ $BCA2 LD L,A        ; }
+ $BCA3 JR C,$BCA9    ; Move on if we are still on the same third of the screen
+ $BCA5 LD A,H        ; { Move on to the next third of a screen 
  $BCA6 SUB $08       ;
  $BCA8 LD H,A        ;
-*$BCA9 BIT 3,H       ;
- $BCAB JR Z,$BCB5    ;
- $BCAD LD A,L        ;
+*$BCA9 BIT 3,H       ; }
+ $BCAB JR Z,$BCB5    ; Jump forward if more screen to write to
+ $BCAD LD A,L        ; { Check third of screen
  $BCAE AND $E0       ;
- $BCB0 CP $C0        ;
+ $BCB0 CP $C0        ; }
  $BCB2 LD A,$03      ;
- $BCB4 RET Z         ;
-*$BCB5 DJNZ $BC93    ;
+ $BCB4 RET Z         ; Return if Ted has reached the floor
+*$BCB5 DJNZ $BC93    ; Loop back round - still falling
  $BCB7 JR $BCD6      ;
 *$BCB9 NEG           ;
  $BCBB LD B,A        ;
@@ -5884,7 +5890,7 @@ c$BB17 LD HL,($A408) ;
  $BCD1 LD A,$01      ;
  $BCD3 RET           ;
 *$BCD4 DJNZ $BCBC    ;
-*$BCD6 LD A,($A403)  ;
+*$BCD6 LD A,($A403)  ; Get flags
  $BCD9 BIT 1,A       ;
 *$BCDB LD C,A        ;
  $BCDC EX DE,HL      ;

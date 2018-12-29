@@ -761,7 +761,7 @@ Check for JUMP
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48121"></span>BBF9</td>
 <td class="instruction">LD HL,$A76C</td>
-<td class="comment-11" rowspan="2">Set automatic movement table</td>
+<td class="comment-11" rowspan="2">Set automatic movement table to the "jump" table at <a href="42860.html">A76C</a></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1249,25 +1249,25 @@ Ted is jumping (or otherwise moving automatically), handle the movement
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48264"></span>BC88</td>
 <td class="instruction">LD A,($A403)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="3">Set bit 3 (Ted falling) in flags</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48267"></span>BC8B</td>
 <td class="instruction">OR $08</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48269"></span>BC8D</td>
 <td class="instruction">LD ($A403),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48272"></span>BC90</td>
 <td class="instruction">LD DE,$A40E</td>
-<td class="comment-11" rowspan="3">Increase height fallen by</td>
+<td class="comment-11" rowspan="6">Increase height fallen, unless it is at maximum already</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1285,115 +1285,115 @@ Ted is jumping (or otherwise moving automatically), handle the movement
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48277"></span>BC95</td>
 <td class="instruction">JR NZ,$BC98</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48279"></span>BC97</td>
 <td class="instruction">DEC A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="48280"></span>BC98</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48281"></span>BC99</td>
 <td class="instruction">INC H</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move Ted down a line</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48282"></span>BC9A</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="2">Have we reached the end of an 8x8 block?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48283"></span>BC9B</td>
 <td class="instruction">AND $07</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48285"></span>BC9D</td>
 <td class="instruction">JR NZ,$BCB5</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">No, so move on</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48287"></span>BC9F</td>
 <td class="instruction">LD A,L</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="3">Jump to a new 8x8 block</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48288"></span>BCA0</td>
 <td class="instruction">ADD A,$20</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48290"></span>BCA2</td>
 <td class="instruction">LD L,A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48291"></span>BCA3</td>
 <td class="instruction">JR C,$BCA9</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Move on if we are still on the same third of the screen</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48293"></span>BCA5</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="4">Move on to the next third of a screen</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48294"></span>BCA6</td>
 <td class="instruction">SUB $08</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48296"></span>BCA8</td>
 <td class="instruction">LD H,A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="48297"></span>BCA9</td>
 <td class="instruction">BIT 3,H</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48299"></span>BCAB</td>
 <td class="instruction">JR Z,$BCB5</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Jump forward if more screen to write to</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48301"></span>BCAD</td>
 <td class="instruction">LD A,L</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="3">Check third of screen</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48302"></span>BCAE</td>
 <td class="instruction">AND $E0</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48304"></span>BCB0</td>
 <td class="instruction">CP $C0</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1405,13 +1405,13 @@ Ted is jumping (or otherwise moving automatically), handle the movement
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="48308"></span>BCB4</td>
 <td class="instruction">RET Z</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Return if Ted has reached the floor</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="48309"></span>BCB5</td>
 <td class="instruction">DJNZ $BC93</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Loop back round - still falling</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -1537,7 +1537,7 @@ Ted is jumping (or otherwise moving automatically), handle the movement
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="48342"></span>BCD6</td>
 <td class="instruction">LD A,($A403)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get flags</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>

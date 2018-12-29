@@ -483,25 +483,25 @@ Draw any task buttons
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44799"></span>AEFF</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Get next value</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44800"></span>AF00</td>
 <td class="instruction">INC HL</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Increment to next pointer in the room data</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44801"></span>AF01</td>
 <td class="instruction">AND A</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Is the next value zero?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="44802"></span>AF02</td>
 <td class="instruction">CALL NZ,<a href="45571.html">$B203</a></td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">If not, there are task buttons, so process them</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="4">
