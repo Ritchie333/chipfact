@@ -35,7 +35,7 @@ Used by the routine at <a href="33399.html">8277</a>.
 </tr>
 <tr>
 <td class="register">HL</td>
-<td class="register-desc">Current screen address</td>
+<td class="register-desc">Pointer to the sprite being updated, as an entry into the buffer at <a href="32809.html">8029</a></td>
 </tr>
 </table>
 <table class="output-0">
@@ -423,7 +423,7 @@ Put the sprite on screen
 <span id="33568"></span>
 <div class="comments">
 <div class="paragraph">
-At this point we are done with all animation and can move on to retrieve a bit from tape
+At this point we are done with all animation and need to resync the tape signal
 </div>
 </div>
 </td>
@@ -432,37 +432,37 @@ At this point we are done with all animation and can move on to retrieve a bit f
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="33568"></span>8320</td>
 <td class="instruction">POP BC</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="3">Restore flags</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33569"></span>8321</td>
 <td class="instruction">POP DE</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33570"></span>8322</td>
 <td class="instruction">EXX</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33571"></span>8323</td>
 <td class="instruction">LD B,$B0</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Timing constant</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33573"></span>8325</td>
 <td class="instruction">CALL <a href="33601.html#33634">$8362</a></td>
-<td class="comment-11" rowspan="1">Get a bit from tape</td>
+<td class="comment-11" rowspan="1">Get a edge change from tape</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33576"></span>8328</td>
 <td class="instruction">LD A,$16</td>
-<td class="comment-11" rowspan="3">Wait to try again</td>
+<td class="comment-11" rowspan="3">Loop round again</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -480,13 +480,13 @@ At this point we are done with all animation and can move on to retrieve a bit f
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33581"></span>832D</td>
 <td class="instruction">CALL C,<a href="33601.html#33634">$8362</a></td>
-<td class="comment-11" rowspan="1">Get the bit again if we didn't retrieve it</td>
+<td class="comment-11" rowspan="1">If we got an edge change, there shouldn't be another one within this time frame</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33584"></span>8330</td>
 <td class="instruction">JP NC,$0000</td>
-<td class="comment-11" rowspan="1">If we still can't get a bit, there's a loading error. Reset.</td>
+<td class="comment-11" rowspan="1">If there was an edge change, the tape is out of sync. Reset.</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -504,7 +504,7 @@ At this point we are done with all animation and can move on to retrieve a bit f
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33591"></span>8337</td>
 <td class="instruction">EXX</td>
-<td class="comment-11" rowspan="3">Get the encryption byte and increment it</td>
+<td class="comment-11" rowspan="3">Increment the animation change flag to compensate for drawing</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -522,7 +522,7 @@ At this point we are done with all animation and can move on to retrieve a bit f
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33594"></span>833A</td>
 <td class="instruction">INC DE</td>
-<td class="comment-11" rowspan="3">Do we need to draw anything?</td>
+<td class="comment-11" rowspan="3">Is anything else queued?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>

@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Technician Ted: Unused RAM at 806B</title>
+<title>Technician Ted: Data at 806B</title>
 <meta charset="utf-8" />
 <link rel="stylesheet" type="text/css" href="../skoolkit.css" />
 
 </head>
-<body class="Loading system-Asm-s">
+<body class="Loading system-Asm-b">
 <table class="header">
 <tr>
 <td class="logo"><a href="../index.html">Technician Ted</a></td>
-<td class="page-header">Unused</td>
+<td class="page-header">Data</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -20,12 +20,14 @@
 <td class="next"><span class="next-1">Next: <a href="32887.html">8077</a></span></td>
 </tr>
 </table>
-<div class="description">806B: Temporary buffer for storing tape bits</div>
+<div class="description">806B: Animation queue</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="4">
 <div class="details">
-
+<div class="paragraph">
+When a sufficient number of bits have been loaded from tape, the low byte of the character to update is queued here. This occurs for every character that should be updated at this point.
+</div>
 </div>
 <table class="input-0">
 <tr class="asm-input-header">
@@ -44,7 +46,13 @@
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32875"></span>806B</td>
-<td class="instruction">DEFS $0C</td>
+<td class="instruction">DEFB $00,$00,$00,$00,$00,$00,$00,$00</td>
+<td class="comment-10" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="32883"></span>8073</td>
+<td class="instruction">DEFB $00,$00,$00,$00</td>
 <td class="comment-10" rowspan="1"></td>
 </tr>
 </table>

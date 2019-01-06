@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Technician Ted: Routine at 8375</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+
+</head>
+<body class="Loading system-Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html">Technician Ted</a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="33601.html">8341</a></span></td>
+<td class="up">Up: <a href="Loading system.html#33653">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="33731.html">83C3</a></span></td>
+</tr>
+</table>
+<div class="description">8375: Save bytes from tape</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="4">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="33601.html">8341</a>.
+</div>
+</div>
+<table class="input-1">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to current byte to store</td>
+</tr>
+<tr>
+<td class="register">DE</td>
+<td class="register-desc">Remaining length to read</td>
+</tr>
+<tr>
+<td class="register">L</td>
+<td class="register-desc">The byte loaded from tape ready to store to memory</td>
+</tr>
+</table>
+<table class="output-0">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="33653"></span>8375</td>
+<td class="instruction">LD (IX+$00),L</td>
+<td class="comment-11" rowspan="1">Got a byte, so store it</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33656"></span>8378</td>
+<td class="instruction">INC IX</td>
+<td class="comment-11" rowspan="1">Next address</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33658"></span>837A</td>
+<td class="instruction">DEC DE</td>
+<td class="comment-11" rowspan="1">Decrease length</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33659"></span>837B</td>
+<td class="instruction">LD B,$B2</td>
+<td class="comment-11" rowspan="1">Timing constant</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="4">
+<span id="33661"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="32768.html">8000</a>. The timing constant is B1
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="33661"></span>837D</td>
+<td class="instruction">LD L,$01</td>
+<td class="comment-11" rowspan="1">Initialize L to build up a byte from tape</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="33663"></span>837F</td>
+<td class="instruction">CALL <a href="33601.html">$8341</a></td>
+<td class="comment-11" rowspan="1">Get a bit from tape</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33666"></span>8382</td>
+<td class="instruction">JP NC,$0000</td>
+<td class="comment-11" rowspan="1">Reset on error</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33669"></span>8385</td>
+<td class="instruction">LD A,$CB</td>
+<td class="comment-11" rowspan="1">Timing constant</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33671"></span>8387</td>
+<td class="instruction">CP B</td>
+<td class="comment-11" rowspan="1">If an edge change was found quickly enough, reset the carry flag to denote "0" read. If not, set it to denote "1" read</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33672"></span>8388</td>
+<td class="instruction">RLA</td>
+<td class="comment-11" rowspan="1">Put the read bit in bit 0 of A</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33673"></span>8389</td>
+<td class="instruction">EXX</td>
+<td class="comment-11" rowspan="1">Save registers</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33674"></span>838A</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-11" rowspan="1">Remember the saved bit</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33675"></span>838B</td>
+<td class="instruction">AND $01</td>
+<td class="comment-11" rowspan="3">Store the next value to update in the animation buffers to 1 or 2 depending on what bit was read</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33677"></span>838D</td>
+<td class="instruction">INC A</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33678"></span>838E</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33679"></span>838F</td>
+<td class="instruction">LD DE,$806B</td>
+<td class="comment-11" rowspan="1">Point to animation queue</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33682"></span>8392</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-11" rowspan="2">Is some animation required?</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33683"></span>8393</td>
+<td class="instruction">AND A</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33684"></span>8394</td>
+<td class="instruction">CALL NZ,<a href="33399.html">$8277</a></td>
+<td class="comment-11" rowspan="1">Do some if so</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33687"></span>8397</td>
+<td class="instruction">RR B</td>
+<td class="comment-11" rowspan="1">Put the bit found in the carry flag</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33689"></span>8399</td>
+<td class="instruction">EXX</td>
+<td class="comment-11" rowspan="1">Restore registers</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33690"></span>839A</td>
+<td class="instruction">RL L</td>
+<td class="comment-11" rowspan="1">Shift byte being read along ready for next bit</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33692"></span>839C</td>
+<td class="instruction">LD B,$B1</td>
+<td class="comment-11" rowspan="1">Timing constant</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33694"></span>839E</td>
+<td class="instruction">JR NC,$837F</td>
+<td class="comment-11" rowspan="1">Loop back if there are still bits left</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33696"></span>83A0</td>
+<td class="instruction">LD A,H</td>
+<td class="comment-11" rowspan="3">Get the parity byte and save it</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33697"></span>83A1</td>
+<td class="instruction">XOR L</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33698"></span>83A2</td>
+<td class="instruction">LD H,A</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33699"></span>83A3</td>
+<td class="instruction">LD A,D</td>
+<td class="comment-11" rowspan="2">Reached the end of the block?</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33700"></span>83A4</td>
+<td class="instruction">OR E</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33701"></span>83A5</td>
+<td class="instruction">JR NZ,$8375</td>
+<td class="comment-11" rowspan="1">No, more work to do</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="4">
+<span id="33703"></span>
+<div class="comments">
+<div class="paragraph">
+At this point, the game has been read into memory. There are still some bits on the tape, so retrieve those to check everything is still in sync properly.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33703"></span>83A7</td>
+<td class="instruction">LD A,H</td>
+<td class="comment-11" rowspan="2">Test the parity byte</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33704"></span>83A8</td>
+<td class="instruction">AND A</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33705"></span>83A9</td>
+<td class="instruction">JP NZ,$0000</td>
+<td class="comment-11" rowspan="1">Reset if it doesn't match</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33708"></span>83AC</td>
+<td class="instruction">LD DE,$EC2F</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33711"></span>83AF</td>
+<td class="instruction">LD B,$EB</td>
+<td class="comment-11" rowspan="1">Timing constant</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-2"><span id="33713"></span>83B1</td>
+<td class="instruction">CALL <a href="33601.html">$8341</a></td>
+<td class="comment-11" rowspan="1">Read a bit from tape</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33716"></span>83B4</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33717"></span>83B5</td>
+<td class="instruction">NOP</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33718"></span>83B6</td>
+<td class="instruction">INC D</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33719"></span>83B7</td>
+<td class="instruction">LD A,$EA</td>
+<td class="comment-11" rowspan="2">Did we find an edge quickly enough?</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33721"></span>83B9</td>
+<td class="instruction">CP B</td>
+<td class="comment-01" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33722"></span>83BA</td>
+<td class="instruction">JP NC,$0000</td>
+<td class="comment-11" rowspan="1">If so, something's gone wrong, so reset</td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33725"></span>83BD</td>
+<td class="instruction">LD B,D</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33726"></span>83BE</td>
+<td class="instruction">DEC D</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33727"></span>83BF</td>
+<td class="instruction">DEC E</td>
+<td class="comment-11" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label-0"></td>
+<td class="address-1"><span id="33728"></span>83C0</td>
+<td class="instruction">JP NZ,$83B1</td>
+<td class="comment-11" rowspan="1">Loop back if there are more bytes to be read</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev"><span class="prev-1">Prev: <a href="33601.html">8341</a></span></td>
+<td class="up">Up: <a href="Loading system.html#33653">Map</a></td>
+<td class="next"><span class="next-1">Next: <a href="33731.html">83C3</a></span></td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">Copyright Steve Marsden and David Cooke 1984. This dissassembly by Ritchie Swann 2018.</div>
+<div class="created">Created using <a href="http://skoolkit.ca/">SkoolKit</a> 7.0.</div>
+</footer>
+</body>
+</html>

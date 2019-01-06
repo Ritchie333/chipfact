@@ -35,7 +35,7 @@ This routine is called between tape signals. It loads the buffer contents into m
 </tr>
 <tr>
 <td class="register">DE</td>
-<td class="register-desc">Pointer to the tape buffer</td>
+<td class="register-desc">Pointer to the animation queue</td>
 </tr>
 <tr>
 <td class="register">A</td>
@@ -54,7 +54,7 @@ This routine is called between tape signals. It loads the buffer contents into m
 <td class="asm-label-0"></td>
 <td class="address-2"><span id="33399"></span>8277</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-11" rowspan="1">Store the base of the tape buffer for later</td>
+<td class="comment-11" rowspan="1">Store the base of the animation queue for later</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -72,7 +72,7 @@ This routine is called between tape signals. It loads the buffer contents into m
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33402"></span>827A</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-11" rowspan="1">Clear the start of the tape buffer</td>
+<td class="comment-11" rowspan="1">Clear this value as it is being dealt with</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -132,7 +132,7 @@ This routine is called between tape signals. It loads the buffer contents into m
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33413"></span>8285</td>
 <td class="instruction">LD A,L</td>
-<td class="comment-11" rowspan="2">Is it time to animate a sprite?</td>
+<td class="comment-11" rowspan="2">Are we dealing with the timer?</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -144,7 +144,7 @@ This routine is called between tape signals. It loads the buffer contents into m
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="33416"></span>8288</td>
 <td class="instruction">JR NZ,<a href="33492.html">$82D4</a></td>
-<td class="comment-11" rowspan="1">Yes, so go and do it</td>
+<td class="comment-11" rowspan="1">No, skip on to characters</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="4">

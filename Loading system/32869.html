@@ -20,13 +20,22 @@
 <td class="next"><span class="next-1">Next: <a href="32871.html">8067</a></span></td>
 </tr>
 </table>
-<div class="description">8065: Number of ticks until timer should be updated</div>
+<div class="description">8065: Data for the timer</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="4">
 <div class="details">
 <div class="paragraph">
-This evaluates to 1/10 second
+This block holds 2 bytes for the timer, with the same data as characters, ie: <table class="default">
+<tr>
+<td class="" colspan="1" rowspan="1">00</td>
+<td class="" colspan="1" rowspan="1">current speed hash value. This is decremented as tape bits are read. When it overflows past 0, animation is needed.</td>
+</tr>
+<tr>
+<td class="" colspan="1" rowspan="1">01</td>
+<td class="" colspan="1" rowspan="1">speed ( about 1/10 second )</td>
+</tr>
+</table>
 </div>
 </div>
 <table class="input-0">

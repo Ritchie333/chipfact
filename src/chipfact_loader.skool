@@ -292,25 +292,26 @@ i$5FA9
 ; Main entry point (second block)
 ;
 ; This block is loaded immediately after the screen is drawn and the banner
-; messages scrolled on screen.
+; messages scrolled on screen. Once loaded, control passes immediately into it
 c$8000 JP NC,$0000   ; Reset if previous block didn't load
  $8003 LD A,$08      ; { Make the border black
  $8005 OUT ($FE),A   ; }
- $8007 EXX           ;
- $8008 LD C,$00      ; Set the encryption byte
- $800A EXX           ;
+ $8007 EXX           ; { Set "animation hash change" value.
+ $8008 LD C,$00      ; This is used to determine when a character needs to be
+ $800A EXX           ; redrawn. For now, don't do anything.}
  $800B LD H,$00      ;
- $800D LD B,$80      ;
+ $800D LD B,$80      ; Initial timing constant
  $800F LD IX,$8C1C   ; Start of next block
- $8013 LD D,$05      ; 
+; The main block does not have a usual loading tone, so just ensure the tape is in sync
+ $8013 LD D,$05      ; Number of attempts
 *$8015 CALL $8341    ; Look for a bit on tape
  $8018 JP NC,$0000   ; Reset if we couldn't find one
- $801B LD B,$B1      ;
- $801D DEC D         ;
- $801E JR NZ,$8015   ;
- $8020 LD DE,$72D8   ; Length
+ $801B LD B,$B1      ; New timing constant
+ $801D DEC D         ; Reduce number of attempts
+ $801E JR NZ,$8015   ; Try again if we didn't find an edge change within the right time
+ $8020 LD DE,$72D8   ; Length of next block
  $8023 EXX           ;
- $8024 INC C         ; Increase encryption byte
+ $8024 INC C         ; Set "hash change" flag to 1 - equivalent to reading bit 0 from tape
  $8025 EXX           ;
  $8026 JP $837D      ; Onto the next part
 
@@ -318,7 +319,7 @@ c$8000 JP NC,$0000   ; Reset if previous block didn't load
 ;
 ; This block of memory holds 6 bytes for each character on screen. These are:
 ; #TABLE(default)
-; { 00 | current speed hash value }
+; { 00 | Current speed hash value. This is decremented as tape bits are read. When it overflows past 0, animation is needed. }
 ; { 01 | speed (lower = faster) }
 ; { 02 | current address onscreen }
 ; { 04 | current frame number. Bit 7 is off for left and on for right, other bits
@@ -337,9 +338,13 @@ b$8029 DEFB $00,$3C,$40,$48,$00,$01
  $8059 DEFB $00,$90,$80,$48,$00,$01
  $805F DEFB $00,$9C,$40,$40,$00,$01
 
-; Number of ticks until timer should be updated
+; Data for the timer
 ;
-; This evaluates to 1/10 second
+; This block holds 2 bytes for the timer, with the same data as characters, ie:
+; #TABLE(default)
+; { 00 | current speed hash value. This is decremented as tape bits are read. When it overflows past 0, animation is needed. }
+; { 01 | speed ( about 1/10 second ) }
+; TABLE#
 b$8065 DEFB $05,$CD
 
 ; Number of ticks until a whole second has elapsed
@@ -352,8 +357,13 @@ b$8067 DEFB $0A
 ; which holds the character to display.
 b$8068 DEFB $48,$08,$10  ; T MINUS 219 (3 minutes 39 seconds)
 
-; Temporary buffer for storing tape bits
-s$806B DEFS $0C
+; Animation queue
+;
+; When a sufficient number of bits have been loaded
+; from tape, the low byte of the character to update is queued here.
+; This occurs for every character that should be updated at this point.
+b$806B DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $8073 DEFB $00,$00,$00,$00
 
 ; Ted left
 b$8077 DEFB $1C,$00,$2E,$00,$1E,$00,$1C,$00 ; { #UDG$8077,7,,2#UDG$8078,7,,2
@@ -428,12 +438,12 @@ b$8177 DEFB $0E,$00,$1D,$00,$1E,$00,$0E,$00 ; { #UDG$8177,7,,2#UDG$8178,7,,2
 ; This routine is called between tape signals. It loads the buffer contents
 ; into memory, animates the onscreen graphics, and adjusts the timer.
 ;
-; DE Pointer to the tape buffer
+; DE Pointer to the animation queue
 ; A The low byte index of the buffer to adjust
-c$8277 PUSH DE       ; Store the base of the tape buffer for later
+c$8277 PUSH DE       ; Store the base of the animation queue for later
  $8278 LD L,A        ; Store the low byte
  $8279 XOR A         ;
- $827A LD (DE),A     ; Clear the start of the tape buffer
+ $827A LD (DE),A     ; Clear this value as it is being dealt with
  $827B LD H,$80      ; Run everything from 8000 - 80FF
  $827D LD A,(HL)     ; Get the current speed hash
  $827E INC HL        ; 
@@ -443,9 +453,9 @@ c$8277 PUSH DE       ; Store the base of the tape buffer for later
  $8282 INC HL        ; { Now point to the onscreen address
  $8283 INC HL        ; }
  $8284 PUSH BC       ;
- $8285 LD A,L        ; { Is it time to animate a sprite?
+ $8285 LD A,L        ; { Are we dealing with the timer?
  $8286 CP $67        ; }
- $8288 JR NZ,$82D4   ; Yes, so go and do it
+ $8288 JR NZ,$82D4   ; No, skip on to characters
 ; A timer tick has occurred. This happens every 1/10 of a second as defined in
 ; the speed byte at #R$8065
  $828A LD A,$03      ;
@@ -501,7 +511,7 @@ c$8277 PUSH DE       ; Store the base of the tape buffer for later
 ;
 ; Used by the routine at #R$8277.
 ;
-; HL Current screen address
+; HL Pointer to the sprite being updated, as an entry into the buffer at #R$8029
 c$82D4 LD E,(HL)     ; { Put the on-screen address in DE
  $82D5 INC HL        ;
  $82D6 LD D,(HL)     ; 
@@ -563,119 +573,136 @@ c$82D4 LD E,(HL)     ; { Put the on-screen address in DE
  $831A LD BC,$F820   ; Point to second half of sprite
  $831D ADD HL,BC     ;
  $831E JR Z,$830C    ; Loop back if second half not yet done
-; At this point we are done with all animation and can move on to retrieve a
-; bit from tape
-*$8320 POP BC        ;
+; At this point we are done with all animation and need to resync the tape signal
+*$8320 POP BC        ; { Restore flags
  $8321 POP DE        ;
- $8322 EXX           ;
- $8323 LD B,$B0      ;
- $8325 CALL $8362    ; Get a bit from tape
- $8328 LD A,$16      ; { Wait to try again
+ $8322 EXX           ; }
+ $8323 LD B,$B0      ; Timing constant
+ $8325 CALL $8362    ; Get a edge change from tape
+ $8328 LD A,$16      ; { Loop round again
 *$832A DEC A         ;
  $832B JR NZ,$832A   ; }
- $832D CALL C,$8362  ; Get the bit again if we didn't retrieve it
- $8330 JP NC,$0000   ; If we still can't get a bit, there's a loading error. Reset.
+ $832D CALL C,$8362  ; If we got an edge change, there shouldn't be another one within this time frame
+ $8330 JP NC,$0000   ; If there was an edge change, the tape is out of sync. Reset.
  $8333 LD B,$02      ; { Wait for a bit
 *$8335 DJNZ $8335    ; }
- $8337 EXX           ; { Get the encryption byte and increment it
+ $8337 EXX           ; { Increment the animation change flag to compensate for drawing
  $8338 INC C         ;
  $8339 INC C         ; }
- $833A INC DE        ; { Do we need to draw anything?
+ $833A INC DE        ; { Is anything else queued?
  $833B LD A,(DE)     ;
  $833C AND A         ; }
  $833D JP NZ,$8277   ; Jump back if so
  $8340 RET           ; Otherwise all done
 
-; Get bits from tape
+; Get an edge change from tape
 ;
 ; Used by the routine at #R$8000.
 ;
 ; IX Current address to load the next byte
-; DE Length remaining in bytes
-c$8341 EXX           ;
- $8342 LD DE,$806B   ;
- $8345 LD HL,$8029   ;
- $8348 LD B,$05      ;
- $834A CALL $8351    ;
+; B On entry, time to find an edge change. On exit, holds the time taken to find it.
+; C Holds the amount to decrease in the hash byte for each animation data set (usually 1 or 2, but can be more if lots of animation queued)
+; F On exit, the carry flag is set on success, or reset on failure
+c$8341 EXX           ; Store registers
+ $8342 LD DE,$806B   ; Point DE to the animation queue
+ $8345 LD HL,$8029   ; Point HL to the animation data
+ $8348 LD B,$05      ; Initialise timing constant
+ $834A CALL $8351    ; Read an edge into the alternate registers
  $834D RET NC        ; Bail out if error
- $834E EXX           ;
- $834F LD B,$06      ;
-*$8351 LD A,(HL)     ;
- $8352 SUB C         ;
- $8353 LD (HL),A     ;
- $8354 LD A,L        ;
- $8355 JR C,$835A    ;
+ $834E EXX           ; Restore registers
+ $834F LD B,$06      ; Number of bytes for each character
+*$8351 LD A,(HL)     ; { Reduce current hash value
+ $8352 SUB C         ; 
+ $8353 LD (HL),A     ; }
+ $8354 LD A,L        ; Did the hash value overflow?
+ $8355 JR C,$835A    ; Move on if it did
  $8357 NOP           ;
- $8358 JR $835C      ;
-*$835A LD (DE),A     ;
- $835B INC E         ;
-*$835C ADD A,$06     ;
+ $8358 JR $835C      ; Move on to next value
+*$835A LD (DE),A     ; Set next animation character to queue
+ $835B INC E         ; Move onto the next
+*$835C ADD A,$06     ; { Point to the next sprite data
  $835E LD L,A        ;
- $835F DJNZ $8351    ;
- $8361 EXX           ;
+ $835F DJNZ $8351    ; }
+ $8361 EXX           ; Restore registers
+; Sample a bit from the EAR port. This routine is similar to the LD_SAMPLE
+; routine at 05ED in the ROM.
 ; This entry point is used by the routine at #R$82D4.
-*$8362 AND A         ;
-*$8363 INC B         ;
- $8364 RET Z         ;
- $8365 LD A,$7F      ; { Get the EAR bit
- $8367 IN A,($FE)    ;
+*$8362 AND A         ; Test edges are still found or pending
+*$8363 INC B         ; Increase number of attemps to find edges
+ $8364 RET Z         ; Return if it's taken too long
+ $8365 LD A,$7F      ; { Get the EAR bit 
+ $8367 IN A,($FE)    ; and SPACE - B section of the keyboard
  $8369 RRA           ; }
- $836A RET NC        ; Bail out if error
- $836B XOR C         ; Hash against the encryption byte
- $836C AND $20       ; Is the EAR bit set?
- $836E JR Z,$8363    ; Move on if so
- $8370 LD A,C        ; { Set next encryption byte
+ $836A RET NC        ; Bail out if BREAK was pressed
+ $836B XOR C         ; { Test the EAR bit against the expected edge state
+ $836C AND $20       ; }
+ $836E JR Z,$8363    ; Loop back if it has not changed
+ $8370 LD A,C        ; { Set last edge type
  $8371 CPL           ;
  $8372 LD C,A        ; }
  $8373 SCF           ; { Signal okay
  $8374 RET           ; }
-*$8375 LD (IX+$00),L ; Got a byte, so store it
+
+; Save bytes from tape
+;
+; Used by the routine at #R$8341.
+;
+; IX Pointer to current byte to store
+; DE Remaining length to read
+; L The byte loaded from tape ready to store to memory
+c$8375 LD (IX+$00),L ; Got a byte, so store it
  $8378 INC IX        ; Next address
  $837A DEC DE        ; Decrease length
- $837B LD B,$B2      ;
+ $837B LD B,$B2      ; Timing constant
 ; This entry point is used by the routine at #R$8000.
-*$837D LD L,$01      ;
+; The timing constant is B1
+*$837D LD L,$01      ; Initialize L to build up a byte from tape
 *$837F CALL $8341    ; Get a bit from tape
  $8382 JP NC,$0000   ; Reset on error
- $8385 LD A,$CB      ;
- $8387 CP B          ;
- $8388 RLA           ;
- $8389 EXX           ;
- $838A LD B,A        ;
- $838B AND $01       ;
- $838D INC A         ;
- $838E LD C,A        ;
- $838F LD DE,$806B   ;
- $8392 LD A,(DE)     ;
- $8393 AND A         ;
- $8394 CALL NZ,$8277 ;
- $8397 RR B          ;
- $8399 EXX           ;
- $839A RL L          ;
- $839C LD B,$B1      ;
- $839E JR NC,$837F   ;
- $83A0 LD A,H        ;
- $83A1 XOR L         ;
- $83A2 LD H,A        ;
+ $8385 LD A,$CB      ; Timing constant
+ $8387 CP B          ; If an edge change was found quickly enough,
+                     ; reset the carry flag to denote "0" read. If not,
+                     ; set it to denote "1" read
+ $8388 RLA           ; Put the read bit in bit 0 of A
+ $8389 EXX           ; Save registers
+ $838A LD B,A        ; Remember the saved bit
+ $838B AND $01       ; { Store the next value to update in the animation
+ $838D INC A         ; buffers to 1 or 2 depending on what bit was read
+ $838E LD C,A        ; }
+ $838F LD DE,$806B   ; Point to animation queue
+ $8392 LD A,(DE)     ; { Is some animation required?
+ $8393 AND A         ; }
+ $8394 CALL NZ,$8277 ; Do some if so
+ $8397 RR B          ; Put the bit found in the carry flag
+ $8399 EXX           ; Restore registers
+ $839A RL L          ; Shift byte being read along ready for next bit
+ $839C LD B,$B1      ; Timing constant
+ $839E JR NC,$837F   ; Loop back if there are still bits left
+ $83A0 LD A,H        ; { Get the parity byte and save it
+ $83A1 XOR L         ; 
+ $83A2 LD H,A        ; }
  $83A3 LD A,D        ; { Reached the end of the block?
  $83A4 OR E          ; }
  $83A5 JR NZ,$8375   ; No, more work to do
- $83A7 LD A,H        ; { Test our checksum byte
+; At this point, the game has been read into memory. There are still
+; some bits on the tape, so retrieve those to check everything is
+; still in sync properly.
+ $83A7 LD A,H        ; { Test the parity byte
  $83A8 AND A         ; }
  $83A9 JP NZ,$0000   ; Reset if it doesn't match
  $83AC LD DE,$EC2F   ;
- $83AF LD B,$EB      ;
+ $83AF LD B,$EB      ; Timing constant
 *$83B1 CALL $8341    ; Read a bit from tape
  $83B4 CP (HL)       ;
  $83B5 NOP           ;
  $83B6 INC D         ;
- $83B7 LD A,$EA      ;
- $83B9 CP B          ;
- $83BA JP NC,$0000   ;
+ $83B7 LD A,$EA      ; { Did we find an edge quickly enough?
+ $83B9 CP B          ; }
+ $83BA JP NC,$0000   ; If so, something's gone wrong, so reset
  $83BD LD B,D        ;
  $83BE DEC D         ;
  $83BF DEC E         ;
- $83C0 JP NZ,$83B1   ;
+ $83C0 JP NZ,$83B1   ; Loop back if there are more bytes to be read
 
 ; End of loader
 ;

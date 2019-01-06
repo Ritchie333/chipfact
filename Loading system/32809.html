@@ -29,7 +29,7 @@
 This block of memory holds 6 bytes for each character on screen. These are: <table class="default">
 <tr>
 <td class="" colspan="1" rowspan="1">00</td>
-<td class="" colspan="1" rowspan="1">current speed hash value</td>
+<td class="" colspan="1" rowspan="1">Current speed hash value. This is decremented as tape bits are read. When it overflows past 0, animation is needed.</td>
 </tr>
 <tr>
 <td class="" colspan="1" rowspan="1">01</td>

@@ -26,7 +26,7 @@
 <td class="routine-comment" colspan="4">
 <div class="details">
 <div class="paragraph">
-This block is loaded immediately after the screen is drawn and the banner messages scrolled on screen.
+This block is loaded immediately after the screen is drawn and the banner messages scrolled on screen. Once loaded, control passes immediately into it
 </div>
 </div>
 <table class="input-0">
@@ -65,19 +65,19 @@ This block is loaded immediately after the screen is drawn and the banner messag
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32775"></span>8007</td>
 <td class="instruction">EXX</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="3">Set "animation hash change" value. This is used to determine when a character needs to be redrawn. For now, don't do anything.</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32776"></span>8008</td>
 <td class="instruction">LD C,$00</td>
-<td class="comment-11" rowspan="1">Set the encryption byte</td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32778"></span>800A</td>
 <td class="instruction">EXX</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-01" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -89,7 +89,7 @@ This block is loaded immediately after the screen is drawn and the banner messag
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32781"></span>800D</td>
 <td class="instruction">LD B,$80</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Initial timing constant</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -98,10 +98,20 @@ This block is loaded immediately after the screen is drawn and the banner messag
 <td class="comment-11" rowspan="1">Start of next block</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="4">
+<span id="32787"></span>
+<div class="comments">
+<div class="paragraph">
+The main block does not have a usual loading tone, so just ensure the tape is in sync
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32787"></span>8013</td>
 <td class="instruction">LD D,$05</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Number of attempts</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -119,25 +129,25 @@ This block is loaded immediately after the screen is drawn and the banner messag
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32795"></span>801B</td>
 <td class="instruction">LD B,$B1</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">New timing constant</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32797"></span>801D</td>
 <td class="instruction">DEC D</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Reduce number of attempts</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32798"></span>801E</td>
 <td class="instruction">JR NZ,$8015</td>
-<td class="comment-11" rowspan="1"></td>
+<td class="comment-11" rowspan="1">Try again if we didn't find an edge change within the right time</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32800"></span>8020</td>
 <td class="instruction">LD DE,$72D8</td>
-<td class="comment-11" rowspan="1">Length</td>
+<td class="comment-11" rowspan="1">Length of next block</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -149,7 +159,7 @@ This block is loaded immediately after the screen is drawn and the banner messag
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32804"></span>8024</td>
 <td class="instruction">INC C</td>
-<td class="comment-11" rowspan="1">Increase encryption byte</td>
+<td class="comment-11" rowspan="1">Set "hash change" flag to 1 - equivalent to reading bit 0 from tape</td>
 </tr>
 <tr>
 <td class="asm-label-0"></td>
@@ -160,7 +170,7 @@ This block is loaded immediately after the screen is drawn and the banner messag
 <tr>
 <td class="asm-label-0"></td>
 <td class="address-1"><span id="32806"></span>8026</td>
-<td class="instruction">JP <a href="33601.html#33661">$837D</a></td>
+<td class="instruction">JP <a href="33653.html#33661">$837D</a></td>
 <td class="comment-11" rowspan="1">Onto the next part</td>
 </tr>
 </table>

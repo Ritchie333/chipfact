@@ -67,6 +67,7 @@ N $8320 At this point we are done with all animation and can move on to retrieve
 c $8341 Get bits from tape
 R $8341 IX Current address to load the next byte
 R $8341 DE Length remaining in bytes
+c $8375 Save byte from tape
 s $83C3 End of loader
 D $83C3 We reach this point when the whole game has loaded. The memory contains instructions that do nothing except copy register values around. This was set up in the routine at #R$5F93.
 c $8C1C Game decrypter
