@@ -65,11 +65,11 @@ b$5DD7 DEFB $C8
 ;
 ; Used by the routine at #R$5E09.
 c$5DD8 LD A,($5DD7)  ; Get old value
- $5DDB LD B,A        ;
- $5DDC ADD A,A       ; Shift four times
+ $5DDB LD B,A        ; Remember it
+ $5DDC ADD A,A       ; { Shift four times
  $5DDD ADD A,A       ;
  $5DDE ADD A,A       ;
- $5DDF ADD A,A       ;
+ $5DDF ADD A,A       ; }
  $5DE0 ADD A,B       ; Add original value
  $5DE1 ADD A,$0B     ; Add 11
  $5DE3 LD ($5DD7),A  ; Store new value
@@ -99,12 +99,12 @@ c$5DE7 LD B,$20      ; Number of characters to scroll
  $5DFC INC HL        ; Next byte
  $5DFD INC D         ; { Onto the next line
  $5DFE DJNZ $5DFA    ; }
- $5E00 POP DE        ;
+ $5E00 POP DE        ; { Restore registers
  $5E01 POP HL        ;
- $5E02 POP BC        ;
- $5E03 INC DE        ;
+ $5E02 POP BC        ; }
+ $5E03 INC DE        ; {
  $5E04 INC HL        ;
- $5E05 DJNZ $5DE9    ; Onto the next character
+ $5E05 DJNZ $5DE9    ; Onto the next character }
  $5E07 RET           ;
 
 ; Current offset of text being drawn
@@ -113,32 +113,32 @@ g$5E08 DEFB $00
 ; Play a white noise
 ;
 ; Used by the routine at #R$5D80.
-c$5E09 EXX           ;
- $5E0A PUSH HL       ;
+c$5E09 EXX           ; Save registers
+ $5E0A PUSH HL       ; Remember HL
  $5E0B LD HL,$0050   ; Timing constant
  $5E0E LD C,$10      ; Value to write to the speaker
 *$5E10 LD A,C        ; Get current speaker bit
  $5E11 EX AF,AF'     ;
- $5E12 CALL $5DD8    ; Get timing value and wait
+ $5E12 CALL $5DD8    ; { Get timing value and wait
  $5E15 LD B,A        ;
  $5E16 EX AF,AF'     ;
-*$5E17 DJNZ $5E17    ;
+*$5E17 DJNZ $5E17    ; }
  $5E19 EX AF,AF'     ;
- $5E1A CALL $5DD8    ; Get timing value and wait
+ $5E1A CALL $5DD8    ; { Get timing value and wait
  $5E1D LD B,A        ;
  $5E1E EX AF,AF'     ;
-*$5E1F DJNZ $5E1F    ;
+*$5E1F DJNZ $5E1F    ; }
  $5E21 LD C,$FE      ; { Output to the speaker.
- $5E23 CALL $1E7D    ; This is equivalent to OUT (C),A}
+ $5E23 CALL $1E7D    ; This is equivalent to OUT (C),A }
  $5E26 XOR $10       ; Toggle speaker, so we can hear something
  $5E28 LD C,A        ; Store new value
- $5E29 DEC HL        ;
- $5E2A DEC HL        ;
- $5E2B LD A,H        ; {Time to stop?
+ $5E29 DEC HL        ; { Decrease time
+ $5E2A DEC HL        ; }
+ $5E2B LD A,H        ; { Time to stop?
  $5E2C OR L          ; }
  $5E2D JR NZ,$5E10   ; Not yet, so make some more noise
- $5E2F POP HL        ;
- $5E30 EXX           ;
+ $5E2F POP HL        ; Restore HL
+ $5E30 EXX           ; Restore registers
  $5E31 RET           ;
 
 ; Write the attributes for the loading display
@@ -442,8 +442,8 @@ b$8177 DEFB $0E,$00,$1D,$00,$1E,$00,$0E,$00 ; { #UDG$8177,7,,2#UDG$8178,7,,2
 ; A The low byte index of the buffer to adjust
 c$8277 PUSH DE       ; Store the base of the animation queue for later
  $8278 LD L,A        ; Store the low byte
- $8279 XOR A         ;
- $827A LD (DE),A     ; Clear this value as it is being dealt with
+ $8279 XOR A         ; {
+ $827A LD (DE),A     ; Clear this value as it is being dealt with }
  $827B LD H,$80      ; Run everything from 8000 - 80FF
  $827D LD A,(HL)     ; Get the current speed hash
  $827E INC HL        ; 
